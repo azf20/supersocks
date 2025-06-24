@@ -22,6 +22,7 @@ TODO:
 ```
 yarn install
 yarn chain
+yarn compile
 yarn deploy
 yarn start
 ```
