@@ -19,6 +19,7 @@ export default function StudioPage() {
   });
 
   const [previousSvg, setPreviousSvg] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"base" | "top" | "heel" | "toe" | "design">("base");
 
   const { data, isLoading: isLoadingCheckSock } = useReadContracts({
     contracts: [
@@ -219,6 +220,221 @@ export default function StudioPage() {
     </div>
   );
 
+  const tabs = [
+    { id: "base" as const, label: "Base Color", icon: "🎨" },
+    { id: "top" as const, label: "Top Stripes", icon: "📏" },
+    { id: "heel" as const, label: "Heel", icon: "👠" },
+    { id: "toe" as const, label: "Toe", icon: "🦶" },
+    { id: "design" as const, label: "Design", icon: "✨" },
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "base":
+        return (
+          <div className="space-y-4">
+            <ColorPicker
+              selectedIndex={sock.baseColorIndex}
+              onColorSelect={index => updateSock({ baseColorIndex: index })}
+              label="Base Color"
+            />
+          </div>
+        );
+
+      case "top":
+        return (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Top Stripes Configuration</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Stripes: {sock.top.stripes}</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="7"
+                  value={sock.top.stripes}
+                  onChange={e => updateTop({ stripes: Number(e.target.value) })}
+                  className="w-full"
+                />
+              </div>
+
+              {sock.top.stripes > 0 && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Offset: {sock.top.offset}</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="7"
+                      value={sock.top.offset}
+                      onChange={e => updateTop({ offset: Number(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Thickness: {sock.top.thickness}</label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="7"
+                      value={sock.top.thickness}
+                      onChange={e => updateTop({ thickness: Number(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+
+                  {sock.top.stripes > 1 && (
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Gap: {sock.top.gap}</label>
+                      <input
+                        type="range"
+                        min="1"
+                        max="7"
+                        value={sock.top.gap}
+                        onChange={e => updateTop({ gap: Number(e.target.value) })}
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <ColorPicker
+                      selectedIndex={sock.top.colorIndex}
+                      onColorSelect={index => updateTop({ colorIndex: index })}
+                      label="Stripe Color"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        );
+
+      case "heel":
+        return (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Heel Configuration</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Style: {Number(sock.heel.index) === 0 ? "None" : Number(sock.heel.index) === 1 ? "Small" : "Large"}
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  value={Number(sock.heel.index)}
+                  onChange={e => updateStyle("heel", { index: BigInt(e.target.value) })}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>None</span>
+                  <span>Small</span>
+                  <span>Large</span>
+                </div>
+              </div>
+              {Number(sock.heel.index) > 0 && (
+                <div>
+                  <ColorPicker
+                    selectedIndex={sock.heel.colorIndex}
+                    onColorSelect={index => updateStyle("heel", { colorIndex: index })}
+                    label="Heel Color"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case "toe":
+        return (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Toe Configuration</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Style: {Number(sock.toe.index) === 0 ? "None" : Number(sock.toe.index) === 1 ? "Small" : "Large"}
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  value={Number(sock.toe.index)}
+                  onChange={e => updateStyle("toe", { index: BigInt(e.target.value) })}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>None</span>
+                  <span>Small</span>
+                  <span>Large</span>
+                </div>
+              </div>
+              {Number(sock.toe.index) > 0 && (
+                <div>
+                  <ColorPicker
+                    selectedIndex={sock.toe.colorIndex}
+                    onColorSelect={index => updateStyle("toe", { colorIndex: index })}
+                    label="Toe Color"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case "design":
+        return (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Design Configuration</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Pattern:{" "}
+                  {Number(sock.design.index) === 0
+                    ? "None"
+                    : Number(sock.design.index) === 1
+                      ? "Optimism"
+                      : Number(sock.design.index) === 2
+                        ? "Base"
+                        : Number(sock.design.index) === 3
+                          ? "Across"
+                          : "Unisock"}
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="4"
+                  value={Number(sock.design.index)}
+                  onChange={e => updateStyle("design", { index: BigInt(e.target.value) })}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>None</span>
+                  <span>Optimism</span>
+                  <span>Base</span>
+                  <span>Across</span>
+                  <span>Unisock</span>
+                </div>
+              </div>
+              {Number(sock.design.index) > 0 && (
+                <div>
+                  <ColorPicker
+                    selectedIndex={sock.design.colorIndex}
+                    onColorSelect={index => updateStyle("design", { colorIndex: index })}
+                    label="Design Color"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex items-center flex-col flex-grow pt-10">
       <div className="px-5 w-full max-w-6xl">
@@ -242,191 +458,29 @@ export default function StudioPage() {
           <div className="space-y-6">
             <h2 className="text-xl font-bold">Sock Configuration</h2>
 
-            {/* Base Color */}
-            <div>
-              <ColorPicker
-                selectedIndex={sock.baseColorIndex}
-                onColorSelect={index => updateSock({ baseColorIndex: index })}
-                label="Base Color"
-              />
+            {/* Tab Navigation */}
+            <div className="border-b border-gray-200 dark:border-gray-700">
+              <nav className="flex space-x-8" aria-label="Tabs">
+                {tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
+                      activeTab === tab.id
+                        ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600"
+                    }`}
+                  >
+                    <span className="mr-1">{tab.icon}</span>
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
             </div>
 
-            {/* Top Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Top Stripes</h3>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Stripes: {sock.top.stripes}</label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="7"
-                    value={sock.top.stripes}
-                    onChange={e => updateTop({ stripes: Number(e.target.value) })}
-                    className="w-full"
-                  />
-                </div>
-
-                {sock.top.stripes > 0 && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Offset: {sock.top.offset}</label>
-                      <input
-                        type="range"
-                        min="0"
-                        max="7"
-                        value={sock.top.offset}
-                        onChange={e => updateTop({ offset: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Thickness: {sock.top.thickness}</label>
-                      <input
-                        type="range"
-                        min="0"
-                        max="7"
-                        value={sock.top.thickness}
-                        onChange={e => updateTop({ thickness: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Gap: {sock.top.gap}</label>
-                      <input
-                        type="range"
-                        min="0"
-                        max="7"
-                        value={sock.top.gap}
-                        onChange={e => updateTop({ gap: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {sock.top.stripes > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.top.colorIndex}
-                      onColorSelect={index => updateTop({ colorIndex: index })}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Heel Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Heel</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Style: {Number(sock.heel.index) === 0 ? "None" : Number(sock.heel.index) === 1 ? "Small" : "Large"}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="2"
-                    value={Number(sock.heel.index)}
-                    onChange={e => updateStyle("heel", { index: BigInt(e.target.value) })}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>None</span>
-                    <span>Small</span>
-                    <span>Large</span>
-                  </div>
-                </div>
-                {Number(sock.heel.index) > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.heel.colorIndex}
-                      onColorSelect={index => updateStyle("heel", { colorIndex: index })}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Toe Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Toe</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Style: {Number(sock.toe.index) === 0 ? "None" : Number(sock.toe.index) === 1 ? "Small" : "Large"}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="2"
-                    value={Number(sock.toe.index)}
-                    onChange={e => updateStyle("toe", { index: BigInt(e.target.value) })}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>None</span>
-                    <span>Small</span>
-                    <span>Large</span>
-                  </div>
-                </div>
-                {Number(sock.toe.index) > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.toe.colorIndex}
-                      onColorSelect={index => updateStyle("toe", { colorIndex: index })}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Design Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Design</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Pattern:{" "}
-                    {Number(sock.design.index) === 0
-                      ? "None"
-                      : Number(sock.design.index) === 1
-                        ? "Optimism"
-                        : Number(sock.design.index) === 2
-                          ? "Base"
-                          : Number(sock.design.index) === 3
-                            ? "Across"
-                            : "Unisock"}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="4"
-                    value={Number(sock.design.index)}
-                    onChange={e => updateStyle("design", { index: BigInt(e.target.value) })}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>None</span>
-                    <span>Optimism</span>
-                    <span>Base</span>
-                    <span>Across</span>
-                    <span>Unisock</span>
-                  </div>
-                </div>
-                {Number(sock.design.index) > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.design.colorIndex}
-                      onColorSelect={index => updateStyle("design", { colorIndex: index })}
-                    />
-                  </div>
-                )}
-              </div>
+            {/* Tab Content */}
+            <div className="min-h-[400px] p-6 border border-gray-200 rounded-lg bg-secondary dark:border-gray-700 dark:bg-gray-800">
+              {renderTabContent()}
             </div>
           </div>
 
