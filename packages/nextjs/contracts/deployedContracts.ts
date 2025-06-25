@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Metadata: {
-      address: "0xf1078fd568ad76e49e6f88d1ff485402a086976b",
+      address: "0xdbd296711ec8ef9aacb623ee3f1c0922dce0d7b2",
       abi: [
         {
           type: "constructor",
@@ -1234,11 +1234,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750851549.json",
+      deploymentFile: "run-1750862642.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xe8f76a822b57b973c7a89006092364fff8f69040",
+      address: "0xdfd787c807dea8d7e53311b779bc0c6a4704d286",
       abi: [
         {
           type: "constructor",
@@ -1789,6 +1789,31 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "CreatorPaid",
+          inputs: [
+            {
+              name: "sockId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+            {
+              name: "creator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
           name: "OwnershipHandoverCanceled",
           inputs: [
             {
@@ -1847,6 +1872,25 @@ const deployedContracts = {
               type: "address",
               indexed: true,
               internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "SocksPaid",
+          inputs: [
+            {
+              name: "total",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "creatorFee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
             },
           ],
           anonymous: false,
@@ -2011,11 +2055,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750851549.json",
+      deploymentFile: "run-1750862642.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x4e85dc48a70da1298489d5b6fc2492767d98f384",
+      address: "0x6d014319e0f36651997697c98da594c7cf235fa4",
       abi: [
         {
           type: "constructor",
@@ -2153,7 +2197,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750851549.json",
+      deploymentFile: "run-1750862642.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

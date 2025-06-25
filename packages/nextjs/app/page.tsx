@@ -5,6 +5,7 @@ import { desc } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
 import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
+import { decodeBase64SVG } from "~~/utils/svg";
 
 export default function HomePage() {
   const { basket } = useGlobalState();
@@ -106,9 +107,10 @@ export default function HomePage() {
                 const decodedSVG = metadata?.image ? decodeBase64SVG(metadata.image) : null;
 
                 return (
-                  <div
+                  <Link
                     key={sock.id.toString()}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                    href={`/sock/${sock.id}`}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                   >
                     <div className="aspect-square bg-gray-100 flex items-center justify-center">
                       {decodedSVG ? (
@@ -132,7 +134,7 @@ export default function HomePage() {
                         <span>ID: #{sock.id.toString()}</span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -174,28 +176,4 @@ export default function HomePage() {
       </div>
     </div>
   );
-}
-
-// Helper function to decode base64 SVG
-function decodeBase64SVG(base64String: string): string | null {
-  try {
-    // Check if it's a data URI
-    if (base64String.startsWith("data:image/svg+xml;base64,")) {
-      const base64Data = base64String.replace("data:image/svg+xml;base64,", "");
-      return Buffer.from(base64Data, "base64").toString("utf-8");
-    }
-    // If it's just base64 without the data URI prefix
-    if (base64String.startsWith("<svg")) {
-      return base64String; // Already decoded
-    }
-    // Try to decode as base64
-    const decoded = Buffer.from(base64String, "base64").toString("utf-8");
-    if (decoded.startsWith("<svg")) {
-      return decoded;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error decoding SVG:", error);
-    return null;
-  }
 }

@@ -20,6 +20,8 @@ contract SuperSocks is Ownable, ERC1155 {
 
     event CreatorBalanceWithdrawn(address indexed creator, uint256 amount);
     event SockCreated(uint256 indexed sockId, address indexed creator);
+    event CreatorPaid(uint256 indexed sockId, address indexed creator, uint256 amount);
+    event SocksPaid(uint256 total, uint256 creatorFee);
 
     uint256 public usdcPrice;
     uint256 public slippage;
@@ -76,8 +78,10 @@ contract SuperSocks is Ownable, ERC1155 {
                 creator[sockIds[i]] = to;
                 emit SockCreated(sockIds[i], to);
             }
-            creatorBalance[creator[sockIds[i]]] += valuePerSock * amounts[i] * creatorFee / 100;
+            uint256 creatorFeeAmount = valuePerSock * amounts[i] * creatorFee / 100;
+            creatorBalance[creator[sockIds[i]]] += creatorFeeAmount;
             totalAmount += amounts[i];
+            emit CreatorPaid(sockIds[i], creator[sockIds[i]], creatorFeeAmount);
         }
 
         totalCreatorBalance += valuePerSock * totalAmount * creatorFee / 100;
@@ -101,6 +105,8 @@ contract SuperSocks is Ownable, ERC1155 {
         uint256 valuePerSock = usdcAmount / totalAmount;
 
         _mint(to, sockIds, amounts, valuePerSock);
+
+        emit SocksPaid(usdcAmount, (usdcAmount * creatorFee) / 100);
     }
 
     /// @dev Withdraws accumulated USDC (after swapping ETH to USDC)

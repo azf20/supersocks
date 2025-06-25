@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { hardhat } from "viem/chains";
-import { Bars3Icon, BugAntIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { useAccount } from "wagmi";
+import { Bars3Icon, BugAntIcon, ShoppingBagIcon, UserIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick, useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
@@ -40,6 +41,7 @@ export const menuLinks: HeaderMenuLink[] = [
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
   const { basket } = useGlobalState();
+  const { address } = useAccount();
 
   // Add basket link with badge
   const basketLink = {
@@ -49,7 +51,16 @@ export const HeaderMenuLinks = () => {
     badge: basket.totalItems,
   };
 
-  const allLinks = [...menuLinks, basketLink];
+  // Add profile link when user is connected
+  const profileLink: HeaderMenuLink | null = address
+    ? {
+        label: "Profile",
+        href: `/profile/${address}`,
+        icon: <UserIcon className="h-4 w-4" />,
+      }
+    : null;
+
+  const allLinks = [...menuLinks, basketLink, ...(profileLink ? [profileLink] : [])];
 
   return (
     <>

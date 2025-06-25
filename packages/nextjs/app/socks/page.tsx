@@ -6,6 +6,7 @@ import { desc } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
 import { Address } from "~~/components/scaffold-eth/Address/Address";
 import { useGlobalState } from "~~/services/store/store";
+import { decodeBase64SVG } from "~~/utils/svg";
 
 interface SockMetadata {
   name: string;
@@ -15,30 +16,6 @@ interface SockMetadata {
     trait_type: string;
     value: string;
   }>;
-}
-
-// Helper function to decode base64 SVG
-function decodeBase64SVG(base64String: string): string | null {
-  try {
-    // Check if it's a data URI
-    if (base64String.startsWith("data:image/svg+xml;base64,")) {
-      const base64Data = base64String.replace("data:image/svg+xml;base64,", "");
-      return Buffer.from(base64Data, "base64").toString("utf-8");
-    }
-    // If it's just base64 without the data URI prefix
-    if (base64String.startsWith("<svg")) {
-      return base64String; // Already decoded
-    }
-    // Try to decode as base64
-    const decoded = Buffer.from(base64String, "base64").toString("utf-8");
-    if (decoded.startsWith("<svg")) {
-      return decoded;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error decoding SVG:", error);
-    return null;
-  }
 }
 
 export default function SocksPage() {

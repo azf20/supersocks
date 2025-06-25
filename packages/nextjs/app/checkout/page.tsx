@@ -16,11 +16,12 @@ export default function CheckoutPage() {
   const { basket, clearBasket } = useGlobalState();
   const { address } = useAccount();
   const [paymentMethod, setPaymentMethod] = useState<"usdc" | "eth">("usdc");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { sendCallsAsync, data: sendCallsData } = useSendCalls();
+  const { sendCallsAsync, data: sendCallsData, status: sendCallsStatus } = useSendCalls();
   const { data: callsStatusData } = useWaitForCallsStatus({
     id: sendCallsData?.id,
   });
+
+  const callFailure = sendCallsData && callsStatusData?.status === "failure";
 
   // Fetch the price once from the contract
   const { data: usdcPriceData } = useReadContracts({
@@ -69,8 +70,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    setIsProcessing(true);
-
     try {
       const encodedSocks = basket.items.flatMap(item => Array(item.count).fill(item.sockId));
       const quantities = basket.items.flatMap(item => Array(item.count).fill(BigInt(1)));
@@ -109,7 +108,6 @@ export default function CheckoutPage() {
       }
       // Do NOT clear basket or redirect here!
     } catch (error) {
-      setIsProcessing(false);
       console.error("Payment failed:", error);
       alert("Payment failed. Please try again.");
     }
@@ -125,7 +123,7 @@ export default function CheckoutPage() {
   }, [sendCallsData, callsStatusData, clearBasket]);
 
   // Show loading state while waiting for confirmation
-  if (sendCallsData && callsStatusData?.status !== "success") {
+  if (sendCallsData && callsStatusData?.status == "pending") {
     return (
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5 w-full max-w-4xl">
@@ -293,12 +291,12 @@ export default function CheckoutPage() {
             {/* Payment Button */}
             <button
               onClick={handlePayment}
-              disabled={!address || isProcessing || totalUsdcPrice === 0n}
+              disabled={!address || sendCallsStatus === "pending" || totalUsdcPrice === 0n}
               className="w-full bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded"
             >
               {!address
                 ? "Connect Wallet to Pay"
-                : isProcessing
+                : sendCallsStatus === "pending"
                   ? "Processing Payment..."
                   : `Pay with ${paymentMethod.toUpperCase()}`}
             </button>
@@ -306,6 +304,7 @@ export default function CheckoutPage() {
             {!address && (
               <p className="text-red-500 text-sm mt-2">Please connect your wallet to complete the purchase</p>
             )}
+            {callFailure && <p className="text-red-500 text-sm mt-2">Payment failed. Please try again.</p>}
           </div>
         </div>
       </div>

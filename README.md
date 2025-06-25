@@ -9,15 +9,19 @@
 
 TODO:
 - Robustness
-- More designs
+- More designs! Maybe make the socks look nicer?
 - Move to 1155 - DONE
-- Clean "customise" page
-- Explore page
-- Holdings page
+- Clean "studio" page
+- Explore page - DONE
+- Profile page - DONE
 - Give "creators" a share of the minting proceeds for socks they create - DONE
 - Add Uniswap swapping for USDC - DONE
 - Add Ponder indexer - DONE
 - Add "Basket" flow - DONE
+- Enable withdraw creator balance
+- Add meaning to the attributes on the sock pages
+- Allow users to transfer their socks
+- Allow users to buy socks for other people
 
 MINTING FLOWS:
 - Basic (approve then swap)
