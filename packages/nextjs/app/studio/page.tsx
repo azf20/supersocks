@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import deployedContracts from "../../contracts/deployedContracts";
 import { formatUnits } from "viem";
@@ -18,7 +18,9 @@ export default function StudioPage() {
     design: { colorIndex: 1, index: BigInt(2) },
   });
 
-  const { data } = useReadContracts({
+  const [previousSvg, setPreviousSvg] = useState<string | null>(null);
+
+  const { data, isLoading: isLoadingCheckSock } = useReadContracts({
     contracts: [
       {
         address: deployedContracts[31337].Metadata.address,
@@ -46,7 +48,7 @@ export default function StudioPage() {
   const encodedSock = data?.[1]?.result;
   const usdcPrice = data?.[2]?.result;
 
-  const { data: renderSockData } = useReadContracts({
+  const { data: renderSockData, isLoading } = useReadContracts({
     contracts: [
       {
         address: deployedContracts[31337].Metadata.address,
@@ -58,6 +60,13 @@ export default function StudioPage() {
   });
 
   const svgString = renderSockData?.[0]?.result;
+
+  // Update previous SVG when we get a new one and we're not loading
+  useEffect(() => {
+    if (svgString && !isLoading) {
+      setPreviousSvg(svgString);
+    }
+  }, [svgString, isLoading]);
 
   const handleAddToBasket = () => {
     if (!isValid || !encodedSock || Boolean(errors)) {
@@ -425,21 +434,47 @@ export default function StudioPage() {
           <div className="space-y-4">
             <h2 className="text-xl font-bold">Sock Preview</h2>
 
-            {svgString && (
-              <div className="flex justify-center">
+            <div className="flex justify-center">
+              {isLoading && previousSvg ? (
+                <div className="border border-gray-300 rounded-lg p-4 bg-white flex items-center justify-center">
+                  <div dangerouslySetInnerHTML={{ __html: previousSvg }} className="bg-white blur-sm" />
+                </div>
+              ) : svgString ? (
                 <div
                   dangerouslySetInnerHTML={{ __html: svgString }}
                   className="border border-gray-300 rounded-lg p-4 bg-white"
                 />
-              </div>
-            )}
+              ) : (
+                <div className="border border-gray-300 rounded-lg p-4 bg-white flex items-center justify-center">
+                  <div className="w-[300px] h-[300px] bg-gray-500 rounded-lg animate-pulse flex items-center justify-center">
+                    <div className="text-gray-400 text-sm">Loading sock...</div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Validation Status */}
             <div
-              className={`p-4 rounded ${isValid ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
+              className={`p-4 rounded ${
+                isLoadingCheckSock
+                  ? "bg-gray-100 border border-gray-400 text-gray-700"
+                  : isValid
+                    ? "bg-green-100 border border-green-400 text-green-700"
+                    : "bg-red-100 border border-red-400 text-red-700"
+              }`}
             >
-              <strong>Validation Status:</strong> {isValid ? "Valid" : "Invalid"}
-              {errors && (
+              <strong>Validation Status:</strong>{" "}
+              {isLoadingCheckSock ? (
+                <span className="inline-flex items-center">
+                  Loading...
+                  <div className="ml-2 animate-spin rounded-full h-4 w-4 border-b-2 border-gray-700"></div>
+                </span>
+              ) : isValid ? (
+                "Valid"
+              ) : (
+                "Invalid"
+              )}
+              {errors && !isLoadingCheckSock && (
                 <div className="mt-2">
                   <strong>Errors:</strong>
                   <p className="text-sm mt-1">{errors}</p>
@@ -451,23 +486,23 @@ export default function StudioPage() {
             <div className="space-y-3">
               <button
                 onClick={handleAddToBasket}
-                disabled={!isValid || !encodedSock || Boolean(errors)}
+                disabled={!isValid || !encodedSock || isLoadingCheckSock || Boolean(errors)}
                 className="w-full bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded"
               >
-                {!isValid || Boolean(errors)
-                  ? "Fix Validation Errors"
-                  : !encodedSock
-                    ? "Loading..."
+                {isLoadingCheckSock
+                  ? "Loading..."
+                  : !isValid || Boolean(errors)
+                    ? "Fix Validation Errors"
                     : `Add to Basket (${usdcPrice ? `${formatUnits(usdcPrice, 6)} USDC` : "0 USDC"})`}
               </button>
             </div>
 
             {/* Price Info */}
             {usdcPrice && (
-              <div className="p-4 border rounded bg-gray-50">
+              <div className="p-4 border rounded">
                 <h3 className="font-semibold mb-2">Pricing Information</h3>
-                <p className="text-sm text-gray-600">Each sock costs {formatUnits(usdcPrice, 6)} USDC</p>
-                <p className="text-sm text-gray-600">You can pay with USDC or ETH (with automatic conversion)</p>
+                <p className="text-sm">Each sock costs {formatUnits(usdcPrice, 6)} USDC</p>
+                <p className="text-sm">You can pay with USDC or ETH (with automatic conversion)</p>
               </div>
             )}
           </div>
