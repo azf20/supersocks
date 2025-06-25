@@ -176,7 +176,10 @@ export default function CheckoutPage() {
             </div>
 
             <div className="flex gap-4 justify-center">
-              <Link href="/socks" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
+              <Link
+                href={`/profile/${address}`}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+              >
                 View My Socks
               </Link>
               <Link href="/studio" className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded">

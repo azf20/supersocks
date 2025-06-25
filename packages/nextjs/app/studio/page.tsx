@@ -112,6 +112,11 @@ export default function StudioPage() {
         newTop.gap = 1;
       }
 
+      // If stripes goes from >1 to 1, set gap to 0 (since gaps are only relevant with multiple stripes)
+      if ("stripes" in updates && Number(updates.stripes) === 1 && prev.top.stripes > 1) {
+        newTop.gap = 0;
+      }
+
       // If stripes is set to non-zero and color is currently 0, pick first non-base color
       if ("stripes" in updates && Number(updates.stripes) > 0 && newTop.colorIndex === 0) {
         // Find first color that's not the base color
@@ -254,41 +259,45 @@ export default function StudioPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Offset: {sock.top.offset}</label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="7"
-                    value={sock.top.offset}
-                    onChange={e => updateTop({ offset: Number(e.target.value) })}
-                    className="w-full"
-                  />
-                </div>
+                {sock.top.stripes > 0 && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Offset: {sock.top.offset}</label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="7"
+                        value={sock.top.offset}
+                        onChange={e => updateTop({ offset: Number(e.target.value) })}
+                        className="w-full"
+                      />
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Thickness: {sock.top.thickness}</label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="7"
-                    value={sock.top.thickness}
-                    onChange={e => updateTop({ thickness: Number(e.target.value) })}
-                    className="w-full"
-                  />
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Thickness: {sock.top.thickness}</label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="7"
+                        value={sock.top.thickness}
+                        onChange={e => updateTop({ thickness: Number(e.target.value) })}
+                        className="w-full"
+                      />
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Gap: {sock.top.gap}</label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="7"
-                    value={sock.top.gap}
-                    onChange={e => updateTop({ gap: Number(e.target.value) })}
-                    className="w-full"
-                  />
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Gap: {sock.top.gap}</label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="7"
+                        value={sock.top.gap}
+                        onChange={e => updateTop({ gap: Number(e.target.value) })}
+                        className="w-full"
+                      />
+                    </div>
+                  </>
+                )}
 
                 {sock.top.stripes > 0 && (
                   <div>
