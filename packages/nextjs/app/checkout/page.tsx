@@ -31,10 +31,20 @@ export default function CheckoutPage() {
         abi: deployedContracts[31337].SuperSocks.abi,
         functionName: "usdcPrice",
       },
+      {
+        address: USDC_TOKEN.address,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [address!],
+      },
     ],
   });
   const usdcPrice = (usdcPriceData?.[0]?.result as bigint) || 0n;
   const totalUsdcPrice = usdcPrice * BigInt(basket.totalItems);
+  const usdcBalance = usdcPriceData?.[1]?.result as bigint;
+
+  // Check if USDC balance is sufficient
+  const hasSufficientUsdc = usdcBalance && usdcBalance >= totalUsdcPrice;
 
   // Get ETH quote for the total USDC amount
   const QuoteConfig = {
@@ -248,15 +258,20 @@ export default function CheckoutPage() {
             <div className="mb-6">
               <h3 className="font-semibold mb-3">Payment Method</h3>
               <div className="space-y-2">
-                <label className="flex items-center">
+                <label className={`flex items-center ${!hasSufficientUsdc ? "opacity-50 cursor-not-allowed" : ""}`}>
                   <input
                     type="radio"
                     value="usdc"
                     checked={paymentMethod === "usdc"}
                     onChange={e => setPaymentMethod(e.target.value as "usdc" | "eth")}
+                    disabled={!hasSufficientUsdc}
                     className="mr-2"
                   />
-                  Pay with USDC ({formatUnits(totalUsdcPrice, 6)} USDC)
+                  <div>
+                    <div>Pay with USDC ({formatUnits(totalUsdcPrice, 6)} USDC)</div>
+                    <div className="text-sm text-gray-500">Balance: {formatUnits(usdcBalance, 6)} USDC</div>
+                    {!hasSufficientUsdc && <div className="text-sm text-red-500">Insufficient balance</div>}
+                  </div>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -294,18 +309,30 @@ export default function CheckoutPage() {
             {/* Payment Button */}
             <button
               onClick={handlePayment}
-              disabled={!address || sendCallsStatus === "pending" || totalUsdcPrice === 0n}
+              disabled={
+                !address ||
+                sendCallsStatus === "pending" ||
+                totalUsdcPrice === 0n ||
+                (paymentMethod === "usdc" && !hasSufficientUsdc)
+              }
               className="w-full bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded"
             >
               {!address
                 ? "Connect Wallet to Pay"
                 : sendCallsStatus === "pending"
                   ? "Processing Payment..."
-                  : `Pay with ${paymentMethod.toUpperCase()}`}
+                  : paymentMethod === "usdc" && !hasSufficientUsdc
+                    ? "Insufficient USDC Balance"
+                    : `Pay with ${paymentMethod.toUpperCase()}`}
             </button>
 
             {!address && (
               <p className="text-red-500 text-sm mt-2">Please connect your wallet to complete the purchase</p>
+            )}
+            {paymentMethod === "usdc" && !hasSufficientUsdc && (
+              <p className="text-red-500 text-sm mt-2">
+                Your USDC balance is insufficient. Please use ETH payment or add more USDC.
+              </p>
             )}
             {callFailure && <p className="text-red-500 text-sm mt-2">Payment failed. Please try again.</p>}
           </div>
