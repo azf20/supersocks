@@ -11,15 +11,13 @@ contract Renderer {
     string[] public designs;
     
     // Bit positions for encoding (from right to left)
-    uint256 constant SUPPLY_BITS = 16;       // First 16 bits for supply (bits 0-15, supports 0-65535)
     uint256 constant TOP_CONFIG_BITS = 3;    // 3 bits for each top property (0-7)
     uint256 constant COLOR_BITS = 8;         // 8 bits for each color (0-255)
     uint256 constant STYLE_INDEX_BITS = 4;   // 4 bits for style index (0-15) - heel/toe
     uint256 constant DESIGN_INDEX_BITS = 6;  // 6 bits for design index (0-63)
     
-    // Bit positions (aligned with SuperSocks tokenId structure)
-    uint256 constant SUPPLY_POS = 0;         // Supply goes in first 16 bits
-    uint256 constant BASE_COLOR_POS = 16;    // Base color first (logical foundation)
+    // Bit positions (sock configuration starts from bit 0)
+    uint256 constant BASE_COLOR_POS = 0;     // Base color first (logical foundation)
     uint256 constant TOP_OFFSET_POS = BASE_COLOR_POS + COLOR_BITS;
     uint256 constant TOP_STRIPES_POS = TOP_OFFSET_POS + TOP_CONFIG_BITS;
     uint256 constant TOP_THICKNESS_POS = TOP_STRIPES_POS + TOP_CONFIG_BITS;
@@ -134,12 +132,12 @@ contract Renderer {
     }
 
     function validateTokenId(uint256 tokenId) public view returns (bool) {
-        (Sock memory sock, uint64 tokenCount) = decodeSock(tokenId);
+        Sock memory sock = decodeSock(tokenId);
         return validateSock(sock);
     }
 
-    function encodeSock(Sock memory sock, uint64 tokenCount) public view returns (uint256) {
-        uint256 encoded = tokenCount; // Start with token count
+    function encodeSock(Sock memory sock) public view returns (uint256) {
+        uint256 encoded = 0; // Start with 0, no token count
         
         // Validate the sock
         validateSock(sock);
@@ -165,10 +163,7 @@ contract Renderer {
         return encoded;
     }
 
-    function decodeSock(uint256 encoded) public view returns (Sock memory sock, uint64 tokenCount) {
-        // Extract token count
-        tokenCount = uint64(encoded & ((1 << SUPPLY_BITS) - 1));
-        
+    function decodeSock(uint256 encoded) public view returns (Sock memory sock) {
         // Decode the sock using helper functions
         sock = _decodeSockData(encoded);
     }
@@ -218,6 +213,30 @@ contract Renderer {
         
         // Validate the decoded sock
         validateSock(sock);
+    }
+
+    function _trait(string memory traitType, string memory value) internal pure returns (string memory) {
+        return string(abi.encodePacked(
+            '{"trait_type":"', traitType, '","value":"', value, '"}'
+        ));
+    }
+
+    function getTraits(uint256 encodedSockId) public view returns (string memory attributes) {
+        Sock memory sock = decodeSock(encodedSockId);
+        attributes = string(abi.encodePacked(
+            _trait("Base Color", utils.uint2str(sock.baseColorIndex)), ',',
+            _trait("Top Offset", utils.uint2str(sock.top.offset)), ',',
+            _trait("Top Stripes", utils.uint2str(sock.top.stripes)), ',',
+            _trait("Top Thickness", utils.uint2str(sock.top.thickness)), ',',
+            _trait("Top Gap", utils.uint2str(sock.top.gap)), ',',
+            _trait("Top Color", utils.uint2str(sock.top.colorIndex)), ',',
+            _trait("Heel Color", utils.uint2str(sock.heel.colorIndex)), ',',
+            _trait("Heel Style", utils.uint2str(sock.heel.index)), ',',
+            _trait("Toe Color", utils.uint2str(sock.toe.colorIndex)), ',',
+            _trait("Toe Style", utils.uint2str(sock.toe.index)), ',',
+            _trait("Design Color", utils.uint2str(sock.design.colorIndex)), ',',
+            _trait("Design Index", utils.uint2str(sock.design.index))
+            ));
     }
     
     function addDesign(string memory _design) public {
@@ -310,7 +329,7 @@ contract Renderer {
     }
 
     function generateStrokeStyle(string memory component, string memory sockId, string memory color) public pure returns (string memory) {
-        return string.concat('#', sockId, ' .', component, ' { stroke: ', color, '; stroke-width: 1; fill: none; } ');
+        return string.concat('#', sockId, ' .', component, ' { stroke: ', color, '; fill: none; } ');
     }
 
     function generateOutlineStyle(string memory sockId) public pure returns (string memory) {
@@ -353,7 +372,7 @@ contract Renderer {
     }
 
     function render(uint256 encodedSockId) public view returns (string memory) {
-        (Sock memory sock, uint64 tokenCount) = decodeSock(encodedSockId);
+        Sock memory sock = decodeSock(encodedSockId);
         return renderSock(sock, encodedSockId);
     }
 

@@ -50,7 +50,7 @@ contract Example is Renderer {
                 colorIndex: 0
             }),
             design: Style({
-                colorIndex: 1,
+                colorIndex: 4,
                 index: 1
             }),
             heel: Style({

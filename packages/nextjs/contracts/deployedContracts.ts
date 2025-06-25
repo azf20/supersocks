@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Metadata: {
-      address: "0x49b8e3b089d4ebf9f37b1da9b839ec013c2cd8c9",
+      address: "0xf1078fd568ad76e49e6f88d1ff485402a086976b",
       abi: [
         {
           type: "constructor",
@@ -298,11 +298,6 @@ const deployedContracts = {
                 },
               ],
             },
-            {
-              name: "tokenCount",
-              type: "uint64",
-              internalType: "uint64",
-            },
           ],
           stateMutability: "view",
         },
@@ -532,11 +527,6 @@ const deployedContracts = {
                   ],
                 },
               ],
-            },
-            {
-              name: "tokenCount",
-              type: "uint64",
-              internalType: "uint64",
             },
           ],
           outputs: [
@@ -790,6 +780,25 @@ const deployedContracts = {
           outputs: [
             {
               name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getTraits",
+          inputs: [
+            {
+              name: "encodedSockId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "attributes",
               type: "string",
               internalType: "string",
             },
@@ -1225,11 +1234,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750247622.json",
+      deploymentFile: "run-1750851549.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x067c804bb006836469379d4a2a69a81803bd1f45",
+      address: "0xe8f76a822b57b973c7a89006092364fff8f69040",
       abi: [
         {
           type: "constructor",
@@ -1253,23 +1262,10 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "MAX_SUPPLY",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint16",
-              internalType: "uint16",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "approve",
+          name: "balanceOf",
           inputs: [
             {
-              name: "account",
+              name: "owner",
               type: "address",
               internalType: "address",
             },
@@ -1279,24 +1275,35 @@ const deployedContracts = {
               internalType: "uint256",
             },
           ],
-          outputs: [],
-          stateMutability: "payable",
-        },
-        {
-          type: "function",
-          name: "balanceOf",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              internalType: "address",
-            },
-          ],
           outputs: [
             {
               name: "result",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "balanceOfBatch",
+          inputs: [
+            {
+              name: "owners",
+              type: "address[]",
+              internalType: "address[]",
+            },
+            {
+              name: "ids",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "balances",
+              type: "uint256[]",
+              internalType: "uint256[]",
             },
           ],
           stateMutability: "view",
@@ -1323,43 +1330,17 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "counter",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint16",
-              internalType: "uint16",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "ethPrice",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "getApproved",
+          name: "creator",
           inputs: [
             {
-              name: "id",
+              name: "",
               type: "uint256",
               internalType: "uint256",
             },
           ],
           outputs: [
             {
-              name: "result",
+              name: "",
               type: "address",
               internalType: "address",
             },
@@ -1368,14 +1349,27 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "getTokenId",
+          name: "creatorBalance",
           inputs: [
             {
-              name: "sockId",
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
               type: "uint256",
               internalType: "uint256",
             },
           ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "creatorFee",
+          inputs: [],
           outputs: [
             {
               name: "",
@@ -1424,7 +1418,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "mintWithEth",
+          name: "mint",
           inputs: [
             {
               name: "to",
@@ -1432,25 +1426,17 @@ const deployedContracts = {
               internalType: "address",
             },
             {
-              name: "sockId",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "payable",
-        },
-        {
-          type: "function",
-          name: "mintWithUSDC",
-          inputs: [
-            {
-              name: "to",
-              type: "address",
-              internalType: "address",
+              name: "sockIds",
+              type: "uint256[]",
+              internalType: "uint256[]",
             },
             {
-              name: "sockId",
+              name: "amounts",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "usdcAmount",
               type: "uint256",
               internalType: "uint256",
             },
@@ -1475,25 +1461,6 @@ const deployedContracts = {
           type: "function",
           name: "owner",
           inputs: [],
-          outputs: [
-            {
-              name: "result",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "ownerOf",
-          inputs: [
-            {
-              name: "id",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
           outputs: [
             {
               name: "result",
@@ -1538,7 +1505,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "safeTransferFrom",
+          name: "safeBatchTransferFrom",
           inputs: [
             {
               name: "from",
@@ -1551,13 +1518,23 @@ const deployedContracts = {
               internalType: "address",
             },
             {
-              name: "id",
-              type: "uint256",
-              internalType: "uint256",
+              name: "ids",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
             },
           ],
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
         },
         {
           type: "function",
@@ -1579,13 +1556,18 @@ const deployedContracts = {
               internalType: "uint256",
             },
             {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
               name: "data",
               type: "bytes",
               internalType: "bytes",
             },
           ],
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
         },
         {
           type: "function",
@@ -1600,19 +1582,6 @@ const deployedContracts = {
               name: "isApproved",
               type: "bool",
               internalType: "bool",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "setEthPrice",
-          inputs: [
-            {
-              name: "_price",
-              type: "uint256",
-              internalType: "uint256",
             },
           ],
           outputs: [],
@@ -1646,13 +1615,13 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "supply",
+          name: "slippage",
           inputs: [],
           outputs: [
             {
               name: "",
-              type: "uint16",
-              internalType: "uint16",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           stateMutability: "view",
@@ -1691,7 +1660,33 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "tokenURI",
+          name: "totalCreatorBalance",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "uri",
           inputs: [
             {
               name: "id",
@@ -1707,42 +1702,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "transferFrom",
-          inputs: [
-            {
-              name: "from",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "to",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "id",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "payable",
-        },
-        {
-          type: "function",
-          name: "transferOwnership",
-          inputs: [
-            {
-              name: "newOwner",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [],
-          stateMutability: "payable",
         },
         {
           type: "function",
@@ -1779,35 +1738,10 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "withdrawUSDC",
+          name: "withdrawCreatorBalance",
           inputs: [],
           outputs: [],
           stateMutability: "nonpayable",
-        },
-        {
-          type: "event",
-          name: "Approval",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "account",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "id",
-              type: "uint256",
-              indexed: true,
-              internalType: "uint256",
-            },
-          ],
-          anonymous: false,
         },
         {
           type: "event",
@@ -1830,6 +1764,25 @@ const deployedContracts = {
               type: "bool",
               indexed: false,
               internalType: "bool",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "CreatorBalanceWithdrawn",
+          inputs: [
+            {
+              name: "creator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
             },
           ],
           anonymous: false,
@@ -1881,8 +1834,33 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "Transfer",
+          name: "SockCreated",
           inputs: [
+            {
+              name: "sockId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+            {
+              name: "creator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "TransferBatch",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
             {
               name: "from",
               type: "address",
@@ -1894,6 +1872,68 @@ const deployedContracts = {
               type: "address",
               indexed: true,
               internalType: "address",
+            },
+            {
+              name: "ids",
+              type: "uint256[]",
+              indexed: false,
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              indexed: false,
+              internalType: "uint256[]",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "TransferSingle",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "id",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "URI",
+          inputs: [
+            {
+              name: "value",
+              type: "string",
+              indexed: false,
+              internalType: "string",
             },
             {
               name: "id",
@@ -1916,17 +1956,12 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "BalanceQueryForZeroAddress",
+          name: "ArrayLengthsMismatch",
           inputs: [],
         },
         {
           type: "error",
-          name: "FailedToSendEther",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "InsufficientETH",
+          name: "InsufficientBalance",
           inputs: [],
         },
         {
@@ -1936,7 +1971,7 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "MaxSupplyReached",
+          name: "InvalidTokenId",
           inputs: [],
         },
         {
@@ -1951,7 +1986,7 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "NoTokensToWithdraw",
+          name: "NoUSDCToWithdraw",
           inputs: [],
         },
         {
@@ -1961,22 +1996,7 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "TokenAlreadyExists",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "TokenDoesNotExist",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "TransferFromIncorrectOwner",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "TransferToNonERC721ReceiverImplementer",
+          name: "TransferToNonERC1155ReceiverImplementer",
           inputs: [],
         },
         {
@@ -1991,7 +2011,149 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750247622.json",
+      deploymentFile: "run-1750851549.json",
+      deploymentScript: "Deploy.s.sol",
+    },
+    Swapper: {
+      address: "0x4e85dc48a70da1298489d5b6fc2492767d98f384",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "currency1",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_superSocks",
+              type: "address",
+              internalType: "address payable",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "mintSocksWithETH",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "sockIds",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "minUsdcAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "refundAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "permit2",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPermit2",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolKey",
+          inputs: [],
+          outputs: [
+            {
+              name: "currency0",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "currency1",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "fee",
+              type: "uint24",
+              internalType: "uint24",
+            },
+            {
+              name: "tickSpacing",
+              type: "int24",
+              internalType: "int24",
+            },
+            {
+              name: "hooks",
+              type: "address",
+              internalType: "contract IHooks",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolManager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "router",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract UniversalRouter",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "superSocks",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract SuperSocks",
+            },
+          ],
+          stateMutability: "view",
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1750851549.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

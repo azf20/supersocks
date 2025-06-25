@@ -11,7 +11,7 @@
     "compile": "make compile",
     "deploy": "node scripts-js/parseArgs.js",
     "flatten": "make flatten",
-    "fork": "make fork FORK_URL=${1:-mainnet}",
+    "fork": "make fork FORK_URL=${1:-optimism}",
     "format": "make format",
     "postinstall": "shx cp -n .env.example .env",
     "lint": "make lint",

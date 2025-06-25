@@ -21,11 +21,13 @@ contract Metadata is Renderer {
         
         // Get SVG from renderer
         string memory _svg = render(id);
+        string memory _traits = getTraits(id);
         
         string memory json = string(abi.encodePacked(
             '{"name": "SuperSocks #',
             LibString.toString(id),
             '","description": "A unique Sock from the SuperSocks collection",',
+            '"attributes":[', _traits, '],',
             '"image": "data:image/svg+xml;base64,',
             Base64.encode(bytes(_svg)),
             '"}'
