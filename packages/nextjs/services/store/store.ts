@@ -43,6 +43,15 @@ type GlobalState = {
   updateBasketItemQuantity: (sockId: string, count: number) => void;
   removeFromBasket: (sockId: string) => void;
   clearBasket: () => void;
+  sock: {
+    baseColorIndex: number;
+    outlineColorIndex: number;
+    top: { colorIndex: number; index: string };
+    heel: { colorIndex: number; index: string };
+    toe: { colorIndex: number; index: string };
+    design: { colorIndex: number; index: string };
+  };
+  setSock: (sock: GlobalState["sock"]) => void;
 };
 
 export const useGlobalState = create<GlobalState>()(
@@ -146,10 +155,19 @@ export const useGlobalState = create<GlobalState>()(
           },
         }));
       },
+      sock: {
+        baseColorIndex: 1,
+        outlineColorIndex: 2,
+        top: { colorIndex: 0, index: "0" },
+        heel: { colorIndex: 0, index: "0" },
+        toe: { colorIndex: 0, index: "0" },
+        design: { colorIndex: 3, index: "1" },
+      },
+      setSock: sock => set(() => ({ sock })),
     }),
     {
       name: "super-socks-basket",
-      partialize: state => ({ basket: state.basket }),
+      partialize: state => ({ basket: state.basket, sock: state.sock }),
     },
   ),
 );

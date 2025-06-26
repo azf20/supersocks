@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Metadata: {
-      address: "0xdbd296711ec8ef9aacb623ee3f1c0922dce0d7b2",
+      address: "0x4d8e02bbfcf205828a8352af4376b165e123d7b0",
       abi: [
         {
           type: "constructor",
@@ -29,10 +29,15 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "addDesign",
+          name: "addStyle",
           inputs: [
             {
-              name: "_design",
+              name: "index",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "_style",
               type: "string",
               internalType: "string",
             },
@@ -45,7 +50,12 @@ const deployedContracts = {
           name: "baseSock",
           inputs: [
             {
-              name: "colorClass",
+              name: "baseColorClass",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "outlineColorClass",
               type: "string",
               internalType: "string",
             },
@@ -74,34 +84,24 @@ const deployedContracts = {
                   internalType: "uint8",
                 },
                 {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
                   name: "top",
                   type: "tuple",
-                  internalType: "struct Renderer.Top",
+                  internalType: "struct Renderer.Style",
                   components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
                     {
                       name: "colorIndex",
                       type: "uint8",
                       internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint256",
+                      internalType: "uint256",
                     },
                   ],
                 },
@@ -214,34 +214,24 @@ const deployedContracts = {
                   internalType: "uint8",
                 },
                 {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
                   name: "top",
                   type: "tuple",
-                  internalType: "struct Renderer.Top",
+                  internalType: "struct Renderer.Style",
                   components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
                     {
                       name: "colorIndex",
                       type: "uint8",
                       internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint256",
+                      internalType: "uint256",
                     },
                   ],
                 },
@@ -297,25 +287,6 @@ const deployedContracts = {
                   ],
                 },
               ],
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "designs",
-          inputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "string",
-              internalType: "string",
             },
           ],
           stateMutability: "view",
@@ -335,34 +306,24 @@ const deployedContracts = {
                   internalType: "uint8",
                 },
                 {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
                   name: "top",
                   type: "tuple",
-                  internalType: "struct Renderer.Top",
+                  internalType: "struct Renderer.Style",
                   components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
                     {
                       name: "colorIndex",
                       type: "uint8",
                       internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint256",
+                      internalType: "uint256",
                     },
                   ],
                 },
@@ -427,7 +388,7 @@ const deployedContracts = {
               internalType: "string",
             },
           ],
-          stateMutability: "pure",
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -444,34 +405,24 @@ const deployedContracts = {
                   internalType: "uint8",
                 },
                 {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
                   name: "top",
                   type: "tuple",
-                  internalType: "struct Renderer.Top",
+                  internalType: "struct Renderer.Style",
                   components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
                     {
                       name: "colorIndex",
                       type: "uint8",
                       internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint256",
+                      internalType: "uint256",
                     },
                   ],
                 },
@@ -569,25 +520,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "generateOutlineStyle",
-          inputs: [
-            {
-              name: "sockId",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          stateMutability: "pure",
-        },
-        {
-          type: "function",
           name: "generateStrokeStyle",
           inputs: [
             {
@@ -630,34 +562,24 @@ const deployedContracts = {
                   internalType: "uint8",
                 },
                 {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
                   name: "top",
                   type: "tuple",
-                  internalType: "struct Renderer.Top",
+                  internalType: "struct Renderer.Style",
                   components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
                     {
                       name: "colorIndex",
                       type: "uint8",
                       internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint256",
+                      internalType: "uint256",
                     },
                   ],
                 },
@@ -769,10 +691,15 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "getDesign",
+          name: "getStyle",
           inputs: [
             {
               name: "index",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "styleIndex",
               type: "uint256",
               internalType: "uint256",
             },
@@ -804,25 +731,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "heel",
-          inputs: [
-            {
-              name: "big",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          stateMutability: "pure",
         },
         {
           type: "function",
@@ -858,34 +766,24 @@ const deployedContracts = {
                   internalType: "uint8",
                 },
                 {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
                   name: "top",
                   type: "tuple",
-                  internalType: "struct Renderer.Top",
+                  internalType: "struct Renderer.Style",
                   components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
                     {
                       name: "colorIndex",
                       type: "uint8",
                       internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint256",
+                      internalType: "uint256",
                     },
                   ],
                 },
@@ -959,12 +857,17 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "toe",
+          name: "styleLookup",
           inputs: [
             {
-              name: "big",
-              type: "bool",
-              internalType: "bool",
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           outputs: [
@@ -974,7 +877,26 @@ const deployedContracts = {
               internalType: "string",
             },
           ],
-          stateMutability: "pure",
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "styleNames",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -997,221 +919,26 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "top",
-          inputs: [
-            {
-              name: "_top",
-              type: "tuple",
-              internalType: "struct Renderer.Top",
-              components: [
-                {
-                  name: "offset",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-                {
-                  name: "stripes",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-                {
-                  name: "thickness",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-                {
-                  name: "gap",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-                {
-                  name: "colorIndex",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-              ],
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          stateMutability: "pure",
-        },
-        {
-          type: "function",
-          name: "updateDesign",
+          name: "updateStyle",
           inputs: [
             {
               name: "index",
-              type: "uint256",
-              internalType: "uint256",
+              type: "uint8",
+              internalType: "uint8",
             },
             {
-              name: "_design",
+              name: "styleIndex",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "_style",
               type: "string",
               internalType: "string",
             },
           ],
           outputs: [],
           stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "validateSock",
-          inputs: [
-            {
-              name: "sock",
-              type: "tuple",
-              internalType: "struct Renderer.Sock",
-              components: [
-                {
-                  name: "baseColorIndex",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-                {
-                  name: "top",
-                  type: "tuple",
-                  internalType: "struct Renderer.Top",
-                  components: [
-                    {
-                      name: "offset",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "stripes",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "thickness",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "gap",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "colorIndex",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                  ],
-                },
-                {
-                  name: "heel",
-                  type: "tuple",
-                  internalType: "struct Renderer.Style",
-                  components: [
-                    {
-                      name: "colorIndex",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
-                    },
-                  ],
-                },
-                {
-                  name: "toe",
-                  type: "tuple",
-                  internalType: "struct Renderer.Style",
-                  components: [
-                    {
-                      name: "colorIndex",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
-                    },
-                  ],
-                },
-                {
-                  name: "design",
-                  type: "tuple",
-                  internalType: "struct Renderer.Style",
-                  components: [
-                    {
-                      name: "colorIndex",
-                      type: "uint8",
-                      internalType: "uint8",
-                    },
-                    {
-                      name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "validateStyle",
-          inputs: [
-            {
-              name: "name",
-              type: "string",
-              internalType: "string",
-            },
-            {
-              name: "style",
-              type: "tuple",
-              internalType: "struct Renderer.Style",
-              components: [
-                {
-                  name: "colorIndex",
-                  type: "uint8",
-                  internalType: "uint8",
-                },
-                {
-                  name: "index",
-                  type: "uint256",
-                  internalType: "uint256",
-                },
-              ],
-            },
-            {
-              name: "maxIndex",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "maxColorIndex",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "baseColorIndex",
-              type: "uint8",
-              internalType: "uint8",
-            },
-          ],
-          outputs: [],
-          stateMutability: "pure",
         },
         {
           type: "function",
@@ -1234,11 +961,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750862642.json",
+      deploymentFile: "run-1750952828.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xdfd787c807dea8d7e53311b779bc0c6a4704d286",
+      address: "0xeab25969e5285df34a3b245324d0b2b91e31cad4",
       abi: [
         {
           type: "constructor",
@@ -2055,11 +1782,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750862642.json",
+      deploymentFile: "run-1750952828.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x6d014319e0f36651997697c98da594c7cf235fa4",
+      address: "0x150890d6984e98f408162ee65684779804bff858",
       abi: [
         {
           type: "constructor",
@@ -2197,7 +1924,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750862642.json",
+      deploymentFile: "run-1750952828.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

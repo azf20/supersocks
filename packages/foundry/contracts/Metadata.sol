@@ -9,11 +9,32 @@ import "../lib/solady/src/utils/LibString.sol";
 contract Metadata is Renderer {
 
     constructor() {
-        designs.push('');
-        designs.push(PatternLib.optimism);
-        designs.push(PatternLib.base);
-        designs.push(PatternLib.across);
-        designs.push(PatternLib.unisock);
+                // Design patterns (index 0)
+        addStyle(0, ''); // Empty design
+        addStyle(0, PatternLib.designSmile);
+        addStyle(0, PatternLib.designHeart);
+        addStyle(0, PatternLib.designFrown);
+        addStyle(0, PatternLib.designAcross);
+        
+        // Heel patterns (index 1)
+        addStyle(1, ''); // Empty heel
+        addStyle(1, PatternLib.heel);
+        addStyle(1, PatternLib.heelBig);
+        
+        // Toe patterns (index 2)
+        addStyle(2, ''); // Empty toe
+        addStyle(2, PatternLib.toe);
+        addStyle(2, PatternLib.toeBig);
+        
+        // Top patterns (index 3)
+        addStyle(3, ''); // Empty top
+        addStyle(3, PatternLib.topOne);
+        addStyle(3, PatternLib.topTwo);
+        addStyle(3, PatternLib.topStripeNoOffset);
+        addStyle(3, PatternLib.topStripeThin);
+        addStyle(3, PatternLib.topBig);
+        addStyle(3, PatternLib.topVerticalStripes);
+        addStyle(3, PatternLib.topVerticalWithHorizontal);
     }
 
     /// @dev Returns the Uniform Resource Identifier (URI) for token `id`.

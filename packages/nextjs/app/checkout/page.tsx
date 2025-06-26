@@ -268,8 +268,8 @@ export default function CheckoutPage() {
                     className="mr-2"
                   />
                   <div>
-                    <div>Pay with USDC ({formatUnits(totalUsdcPrice, 6)} USDC)</div>
-                    <div className="text-sm text-gray-500">Balance: {formatUnits(usdcBalance, 6)} USDC</div>
+                    <div>Pay with USDC ({formatUnits(totalUsdcPrice || 0n, 6)} USDC)</div>
+                    <div className="text-sm text-gray-500">Balance: {formatUnits(usdcBalance || 0n, 6)} USDC</div>
                     {!hasSufficientUsdc && <div className="text-sm text-red-500">Insufficient balance</div>}
                   </div>
                 </label>

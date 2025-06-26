@@ -1,100 +1,88 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-import './Renderer.sol';
+import './NewRenderer.sol';
 import './PatternLib.sol';
 
 contract Example is Renderer {
 
     constructor() {
-        designs.push('');
-        designs.push(PatternLib.optimism);
-        designs.push(PatternLib.base);
-        designs.push(PatternLib.across);
-        designs.push(PatternLib.unisock);
+        // Design patterns (index 0)
+        addStyle(0, ''); // Empty design
+        addStyle(0, PatternLib.designSmile);
+        
+        // Heel patterns (index 1)
+        addStyle(1, ''); // Empty heel
+        addStyle(1, PatternLib.heel);
+        addStyle(1, PatternLib.heelBig);
+        
+        // Toe patterns (index 2)
+        addStyle(2, ''); // Empty toe
+        addStyle(2, PatternLib.toe);
+        addStyle(2, PatternLib.toeBig);
+        
+        // Top patterns (index 3)
+        addStyle(3, ''); // Empty top
+        addStyle(3, PatternLib.topOne);
+        addStyle(3, PatternLib.topTwo);
+        addStyle(3, PatternLib.topStripeNoOffset);
+        addStyle(3, PatternLib.topStripeThin);
+        addStyle(3, PatternLib.topBig);
+        addStyle(3, PatternLib.topVerticalStripes);
+        addStyle(3, PatternLib.topVerticalWithHorizontal);
     }
     
     function sock1() internal view returns (string memory) {
         return renderSock(Sock({
-            baseColorIndex: 10,
-            top: Top({
-                offset: 1,
-                stripes: 3,
-                thickness: 1,
-                gap: 1,
-                colorIndex: 2
+            baseColorIndex: 4,
+            outlineColorIndex: 11,
+            top: Style({
+                colorIndex: 2,
+                index: 7
             }),
             design: Style({
-                colorIndex: 9,
-                index: 3
+                colorIndex: 1,
+                index: 1
             }),
             heel: Style({
-                colorIndex: 4,
-                index: 0
+                colorIndex: 0,
+                index: 2
             }),
             toe: Style({
                 colorIndex: 14,
-                index: 1
+                index: 2
             })
         }), 1);
     }
 
     function sock2() internal view returns (string memory) {
         return renderSock(Sock({
-            baseColorIndex: 0,
-            top: Top({
-                offset: 0,
-                stripes: 0,
-                thickness: 0,
-                gap: 0,
-                colorIndex: 0
+            baseColorIndex: 1,
+            outlineColorIndex: 2,
+            top: Style({
+                colorIndex: 2,
+                index: 1
             }),
             design: Style({
+                colorIndex: 9,
+                index: 0
+            }),
+            heel: Style({
                 colorIndex: 4,
                 index: 1
             }),
-            heel: Style({
-                colorIndex: 0,
-                index: 0
-            }),
             toe: Style({
-                colorIndex: 0,
-                index: 0
+                colorIndex: 14,
+                index: 1
             })
         }), 2);
-    }
-
-    function sock3() internal view returns (string memory) {
-        return renderSock(Sock({
-            baseColorIndex: 0,
-            top: Top({
-                offset: 1,
-                stripes: 2,
-                thickness: 1,
-                gap: 1,
-                colorIndex: 12
-            }),
-            design: Style({
-                colorIndex: 12,
-                index: 4
-            }),
-            heel: Style({
-                colorIndex: 12,
-                index: 1
-            }),
-            toe: Style({
-                colorIndex: 0,
-                index: 0
-            })
-        }), 3);
     }
 
     function example() external view returns (string memory) {
         string memory _sock1 = sock1();
         string memory _sock2 = sock2();
-        string memory _sock3 = sock3();
     
-        return string.concat(_sock1, _sock2, _sock3);
+        return string.concat(_sock1, _sock2);
     }
     
 }

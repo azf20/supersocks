@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import deployedContracts from "../../contracts/deployedContracts";
 import { formatUnits } from "viem";
@@ -8,15 +7,37 @@ import { useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
 
 export default function StudioPage() {
-  const { basket, addToBasket } = useGlobalState();
+  const { basket, addToBasket, sock, setSock } = useGlobalState();
 
-  const [sock, setSock] = useState({
-    baseColorIndex: 0,
-    top: { offset: 0, stripes: 1, thickness: 1, gap: 0, colorIndex: 1 },
-    heel: { colorIndex: 1, index: BigInt(1) },
-    toe: { colorIndex: 0, index: BigInt(0) },
-    design: { colorIndex: 1, index: BigInt(2) },
-  });
+  // Color palette for the picker - updated to match new contract
+  const colorPalette = [
+    { name: "Transparent", value: "#FF000000", index: 0 },
+    { name: "White", value: "#FFFFFF", index: 1 },
+    { name: "Black", value: "#000000", index: 2 },
+    { name: "Red", value: "#FF0000", index: 3 },
+    { name: "Green", value: "#00FF00", index: 4 },
+    { name: "Blue", value: "#0000FF", index: 5 },
+    { name: "Yellow", value: "#FFFF00", index: 6 },
+    { name: "Magenta", value: "#FF00FF", index: 7 },
+    { name: "Cyan", value: "#00FFFF", index: 8 },
+    { name: "Orange", value: "#FFA500", index: 9 },
+    { name: "Purple", value: "#800080", index: 10 },
+    { name: "Brown", value: "#A52A2A", index: 11 },
+    { name: "Gray", value: "#808080", index: 12 },
+    { name: "Pink", value: "#FFC0CB", index: 13 },
+    { name: "Dark Green", value: "#008000", index: 14 },
+    { name: "Navy", value: "#000080", index: 15 },
+    { name: "Gold", value: "#FFD700", index: 16 },
+  ];
+
+  // For contract calls, convert indices to BigInt
+  const contractSock = {
+    ...sock,
+    top: { ...sock.top, index: BigInt(sock.top.index) },
+    heel: { ...sock.heel, index: BigInt(sock.heel.index) },
+    toe: { ...sock.toe, index: BigInt(sock.toe.index) },
+    design: { ...sock.design, index: BigInt(sock.design.index) },
+  };
 
   const { data } = useReadContracts({
     contracts: [
@@ -24,13 +45,13 @@ export default function StudioPage() {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "checkSock",
-        args: [sock],
+        args: [contractSock],
       },
       {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "encodeSock",
-        args: [sock],
+        args: [contractSock],
       },
       {
         address: deployedContracts[31337].SuperSocks.address,
@@ -52,7 +73,7 @@ export default function StudioPage() {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "renderSock",
-        args: [sock, encodedSock || BigInt(0)],
+        args: [contractSock, encodedSock || BigInt(0)],
       },
     ],
   });
@@ -64,11 +85,7 @@ export default function StudioPage() {
       alert("Please fix validation errors before adding to basket");
       return;
     }
-
-    // Generate a unique sock ID based on the encoded sock data
-    // Convert the encoded sock to a string and use a hash of it as the ID
     const sockId = encodedSock.toString();
-
     addToBasket({
       sockId,
       sockData: {
@@ -81,106 +98,67 @@ export default function StudioPage() {
         errors,
       },
     });
-
-    // Show success message
     alert("Sock added to basket!");
   };
 
   const updateSock = (updates: Partial<typeof sock>) => {
-    setSock(prev => ({ ...prev, ...updates }));
+    // Ensure any index fields are stored as string
+    const safeUpdates = { ...updates };
+    if (safeUpdates.top && typeof safeUpdates.top.index !== "undefined" && typeof safeUpdates.top.index !== "string")
+      safeUpdates.top = { ...safeUpdates.top, index: String(safeUpdates.top.index) };
+    if (safeUpdates.heel && typeof safeUpdates.heel.index !== "undefined" && typeof safeUpdates.heel.index !== "string")
+      safeUpdates.heel = { ...safeUpdates.heel, index: String(safeUpdates.heel.index) };
+    if (safeUpdates.toe && typeof safeUpdates.toe.index !== "undefined" && typeof safeUpdates.toe.index !== "string")
+      safeUpdates.toe = { ...safeUpdates.toe, index: String(safeUpdates.toe.index) };
+    if (
+      safeUpdates.design &&
+      typeof safeUpdates.design.index !== "undefined" &&
+      typeof safeUpdates.design.index !== "string"
+    )
+      safeUpdates.design = { ...safeUpdates.design, index: String(safeUpdates.design.index) };
+    // Ensure all index fields are string before updating state
+    if (safeUpdates.top && typeof safeUpdates.top.index !== "string")
+      safeUpdates.top.index = String(safeUpdates.top.index);
+    if (safeUpdates.heel && typeof safeUpdates.heel.index !== "string")
+      safeUpdates.heel.index = String(safeUpdates.heel.index);
+    if (safeUpdates.toe && typeof safeUpdates.toe.index !== "string")
+      safeUpdates.toe.index = String(safeUpdates.toe.index);
+    if (safeUpdates.design && typeof safeUpdates.design.index !== "string")
+      safeUpdates.design.index = String(safeUpdates.design.index);
+    setSock({ ...sock, ...safeUpdates });
   };
 
-  const updateTop = (updates: Partial<typeof sock.top>) => {
-    setSock(prev => {
-      const newTop = { ...prev.top, ...updates };
-
-      // If stripes is set to 0, set all other top properties to 0
-      if ("stripes" in updates && Number(updates.stripes) === 0) {
-        newTop.offset = 0;
-        newTop.thickness = 0;
-        newTop.gap = 0;
-        newTop.colorIndex = 0;
-      }
-
-      // If stripes goes from 0 to >0, set thickness to 1
-      if ("stripes" in updates && Number(updates.stripes) > 0 && prev.top.stripes === 0) {
-        newTop.thickness = 1;
-      }
-
-      // If stripes goes from 0 or 1 to 2+, set gap to 1
-      if ("stripes" in updates && Number(updates.stripes) >= 2 && prev.top.stripes <= 1) {
-        newTop.gap = 1;
-      }
-
-      // If stripes goes from >1 to 1, set gap to 0 (since gaps are only relevant with multiple stripes)
-      if ("stripes" in updates && Number(updates.stripes) === 1 && prev.top.stripes > 1) {
-        newTop.gap = 0;
-      }
-
-      // If stripes is set to non-zero and color is currently 0, pick first non-base color
-      if ("stripes" in updates && Number(updates.stripes) > 0 && newTop.colorIndex === 0) {
-        // Find first color that's not the base color
-        for (let i = 1; i < colorPalette.length; i++) {
-          if (i !== prev.baseColorIndex) {
-            newTop.colorIndex = i;
-            break;
-          }
+  const updateStyle = (styleKey: "heel" | "toe" | "design" | "top", updates: Partial<typeof sock.heel>) => {
+    const newStyle = { ...sock[styleKey], ...updates };
+    // Always store index as string
+    if ("index" in updates && typeof updates.index !== "undefined" && typeof updates.index !== "string") {
+      newStyle.index = String(updates.index);
+    }
+    if ("index" in updates && Number(newStyle.index) === 0) {
+      newStyle.colorIndex = 0;
+    }
+    if (
+      "index" in updates &&
+      Number(newStyle.index) > 0 &&
+      newStyle.colorIndex === 0 &&
+      ["design", "top"].includes(styleKey)
+    ) {
+      for (let i = 1; i < colorPalette.length; i++) {
+        if (i !== sock.baseColorIndex) {
+          newStyle.colorIndex = i;
+          break;
         }
       }
-
-      return {
-        ...prev,
-        top: newTop,
-      };
+    }
+    // Ensure index is always a string before updating state
+    if (typeof newStyle.index !== "string") {
+      newStyle.index = String(newStyle.index);
+    }
+    setSock({
+      ...sock,
+      [styleKey]: newStyle,
     });
   };
-
-  const updateStyle = (styleKey: "heel" | "toe" | "design", updates: Partial<typeof sock.heel>) => {
-    setSock(prev => {
-      const newStyle = { ...prev[styleKey], ...updates };
-
-      // If index is set to 0, set color to 0
-      if ("index" in updates && Number(updates.index) === 0) {
-        newStyle.colorIndex = 0;
-      }
-
-      // If index is set to non-zero and color is currently 0, pick first non-base color
-      if ("index" in updates && Number(updates.index) > 0 && newStyle.colorIndex === 0) {
-        // Find first color that's not the base color
-        for (let i = 1; i < colorPalette.length; i++) {
-          if (i !== prev.baseColorIndex) {
-            newStyle.colorIndex = i;
-            break;
-          }
-        }
-      }
-
-      return {
-        ...prev,
-        [styleKey]: newStyle,
-      };
-    });
-  };
-
-  // Color palette for the picker
-  const colorPalette = [
-    { name: "White", value: "#FFFFFF", index: 0 },
-    { name: "Black", value: "#000000", index: 1 },
-    { name: "Red", value: "#FF0000", index: 2 },
-    { name: "Green", value: "#00FF00", index: 3 },
-    { name: "Blue", value: "#0000FF", index: 4 },
-    { name: "Yellow", value: "#FFFF00", index: 5 },
-    { name: "Magenta", value: "#FF00FF", index: 6 },
-    { name: "Cyan", value: "#00FFFF", index: 7 },
-    { name: "Orange", value: "#FFA500", index: 8 },
-    { name: "Purple", value: "#800080", index: 9 },
-    { name: "Brown", value: "#A52A2A", index: 10 },
-    { name: "Gray", value: "#808080", index: 11 },
-    { name: "Pink", value: "#FFC0CB", index: 12 },
-    { name: "Dark Green", value: "#008000", index: 13 },
-    { name: "Navy", value: "#000080", index: 14 },
-    { name: "Gold", value: "#FFD700", index: 15 },
-  ];
 
   // Color picker component
   const ColorPicker = ({
@@ -194,280 +172,207 @@ export default function StudioPage() {
   }) => (
     <div>
       {label && <label className="block text-sm font-medium mb-2">{label}</label>}
-      <div className="grid grid-cols-8 gap-1">
+      <select
+        value={selectedIndex}
+        onChange={e => onColorSelect(Number(e.target.value))}
+        className="w-full p-1 border border-gray-300 rounded-md text-sm"
+      >
         {colorPalette.map(color => (
-          <button
-            key={color.index}
-            onClick={() => onColorSelect(color.index)}
-            className={`w-8 h-8 rounded border-2 transition-all ${
-              selectedIndex === color.index ? "border-gray-800 scale-110" : "border-gray-300 hover:border-gray-500"
-            }`}
-            style={{ backgroundColor: color.value }}
-            title={color.name}
-          />
+          <option key={color.index} value={color.index}>
+            {color.name}
+          </option>
         ))}
-      </div>
+      </select>
     </div>
   );
 
   return (
-    <div className="flex items-center flex-col flex-grow pt-10">
-      <div className="px-5 w-full max-w-6xl">
+    <div className="flex flex-col items-center flex-grow pt-6">
+      <div className="px-2 w-full max-w-6xl">
         {/* Header with Basket Info */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Sock Studio</h1>
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-100 px-4 py-2 rounded-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold">Sock Studio</h1>
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-100 px-3 py-1 rounded-lg">
               <span className="text-blue-800 font-medium">🛒 Basket: {basket.totalItems} items</span>
             </div>
             {basket.totalItems > 0 && (
-              <Link href="/basket" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              <Link
+                href="/basket"
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm"
+              >
                 View Basket
               </Link>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Sock Configuration Panel */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold">Sock Configuration</h2>
-
-            {/* Base Color */}
-            <div>
-              <ColorPicker
-                selectedIndex={sock.baseColorIndex}
-                onColorSelect={index => updateSock({ baseColorIndex: index })}
-                label="Base Color"
-              />
-            </div>
-
-            {/* Top Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Top Stripes</h3>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Stripes: {sock.top.stripes}</label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="7"
-                    value={sock.top.stripes}
-                    onChange={e => updateTop({ stripes: Number(e.target.value) })}
-                    className="w-full"
-                  />
-                </div>
-
-                {sock.top.stripes > 0 && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Offset: {sock.top.offset}</label>
-                      <input
-                        type="range"
-                        min="0"
-                        max="7"
-                        value={sock.top.offset}
-                        onChange={e => updateTop({ offset: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Thickness: {sock.top.thickness}</label>
-                      <input
-                        type="range"
-                        min="0"
-                        max="7"
-                        value={sock.top.thickness}
-                        onChange={e => updateTop({ thickness: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Gap: {sock.top.gap}</label>
-                      <input
-                        type="range"
-                        min="0"
-                        max="7"
-                        value={sock.top.gap}
-                        onChange={e => updateTop({ gap: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {sock.top.stripes > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.top.colorIndex}
-                      onColorSelect={index => updateTop({ colorIndex: index })}
-                    />
-                  </div>
-                )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          {/* Left: Sock Configuration Panel */}
+          <div className="space-y-3">
+            <h2 className="text-lg font-bold mb-1">Sock Configuration</h2>
+            {/* Color Pickers Row */}
+            <div className="flex flex-row gap-4">
+              <div className="flex-1">
+                <ColorPicker
+                  selectedIndex={sock.baseColorIndex}
+                  onColorSelect={index => updateSock({ baseColorIndex: index })}
+                  label="Base Color"
+                />
+              </div>
+              <div className="flex-1">
+                <ColorPicker
+                  selectedIndex={sock.outlineColorIndex}
+                  onColorSelect={index => updateSock({ outlineColorIndex: index })}
+                  label="Outline Color"
+                />
               </div>
             </div>
-
-            {/* Heel Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Heel</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Style: {Number(sock.heel.index) === 0 ? "None" : Number(sock.heel.index) === 1 ? "Small" : "Large"}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="2"
-                    value={Number(sock.heel.index)}
-                    onChange={e => updateStyle("heel", { index: BigInt(e.target.value) })}
-                    className="w-full"
+            {/* Style Controls Grid */}
+            <div className="grid grid-cols-1 gap-2">
+              {/* Top Style */}
+              <div className="border p-2 rounded">
+                <label className="block text-xs font-medium mb-1">Top Style</label>
+                <select
+                  value={sock.top.index}
+                  onChange={e => updateStyle("top", { index: e.target.value })}
+                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
+                >
+                  <option value="0">None</option>
+                  <option value="1">One Stripe</option>
+                  <option value="2">Two Stripes</option>
+                  <option value="3">Stripe No Offset</option>
+                  <option value="4">Thin Stripe</option>
+                  <option value="5">Big Top</option>
+                  <option value="6">Vertical Stripes</option>
+                  <option value="7">Vertical + Horizontal</option>
+                </select>
+                {Number(sock.top.index) > 0 && (
+                  <ColorPicker
+                    selectedIndex={sock.top.colorIndex}
+                    onColorSelect={index => updateStyle("top", { colorIndex: index })}
+                    label="Top Color"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>None</span>
-                    <span>Small</span>
-                    <span>Large</span>
-                  </div>
-                </div>
+                )}
+              </div>
+              {/* Heel Style */}
+              <div className="border p-2 rounded">
+                <label className="block text-xs font-medium mb-1">Heel Style</label>
+                <select
+                  value={sock.heel.index}
+                  onChange={e => updateStyle("heel", { index: e.target.value })}
+                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
+                >
+                  <option value="0">None</option>
+                  <option value="1">Small</option>
+                  <option value="2">Large</option>
+                </select>
                 {Number(sock.heel.index) > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.heel.colorIndex}
-                      onColorSelect={index => updateStyle("heel", { colorIndex: index })}
-                    />
-                  </div>
+                  <ColorPicker
+                    selectedIndex={sock.heel.colorIndex}
+                    onColorSelect={index => updateStyle("heel", { colorIndex: index })}
+                    label="Heel Color"
+                  />
                 )}
               </div>
-            </div>
-
-            {/* Toe Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Toe</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Style: {Number(sock.toe.index) === 0 ? "None" : Number(sock.toe.index) === 1 ? "Small" : "Large"}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="2"
-                    value={Number(sock.toe.index)}
-                    onChange={e => updateStyle("toe", { index: BigInt(e.target.value) })}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>None</span>
-                    <span>Small</span>
-                    <span>Large</span>
-                  </div>
-                </div>
+              {/* Toe Style */}
+              <div className="border p-2 rounded">
+                <label className="block text-xs font-medium mb-1">Toe Style</label>
+                <select
+                  value={sock.toe.index}
+                  onChange={e => updateStyle("toe", { index: e.target.value })}
+                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
+                >
+                  <option value="0">None</option>
+                  <option value="1">Small</option>
+                  <option value="2">Large</option>
+                </select>
                 {Number(sock.toe.index) > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.toe.colorIndex}
-                      onColorSelect={index => updateStyle("toe", { colorIndex: index })}
-                    />
-                  </div>
+                  <ColorPicker
+                    selectedIndex={sock.toe.colorIndex}
+                    onColorSelect={index => updateStyle("toe", { colorIndex: index })}
+                    label="Toe Color"
+                  />
                 )}
               </div>
-            </div>
-
-            {/* Design Configuration */}
-            <div className="border p-4 rounded">
-              <h3 className="font-semibold mb-3">Design</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Pattern:{" "}
-                    {Number(sock.design.index) === 0
-                      ? "None"
-                      : Number(sock.design.index) === 1
-                        ? "Optimism"
-                        : Number(sock.design.index) === 2
-                          ? "Base"
-                          : Number(sock.design.index) === 3
-                            ? "Across"
-                            : "Unisock"}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="4"
-                    value={Number(sock.design.index)}
-                    onChange={e => updateStyle("design", { index: BigInt(e.target.value) })}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>None</span>
-                    <span>Optimism</span>
-                    <span>Base</span>
-                    <span>Across</span>
-                    <span>Unisock</span>
-                  </div>
-                </div>
+              {/* Design Style */}
+              <div className="border p-2 rounded">
+                <label className="block text-xs font-medium mb-1">Design</label>
+                <select
+                  value={sock.design.index}
+                  onChange={e => updateStyle("design", { index: e.target.value })}
+                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
+                >
+                  <option value="0">None</option>
+                  <option value="1">Smile</option>
+                  <option value="2">Heart</option>
+                  <option value="3">Frown</option>
+                  <option value="4">Across</option>
+                </select>
                 {Number(sock.design.index) > 0 && (
-                  <div>
-                    <ColorPicker
-                      selectedIndex={sock.design.colorIndex}
-                      onColorSelect={index => updateStyle("design", { colorIndex: index })}
-                    />
-                  </div>
+                  <ColorPicker
+                    selectedIndex={sock.design.colorIndex}
+                    onColorSelect={index => updateStyle("design", { colorIndex: index })}
+                    label="Design Color"
+                  />
                 )}
               </div>
             </div>
           </div>
 
-          {/* Sock Preview Panel */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Sock Preview</h2>
-
-            {svgString && (
-              <div className="flex justify-center">
-                <div
-                  dangerouslySetInnerHTML={{ __html: svgString }}
-                  className="border border-gray-300 rounded-lg p-4 bg-white"
-                />
+          {/* Right: Sock Preview Panel */}
+          <div className="space-y-3">
+            <h2 className="text-lg font-bold mb-1">Sock Preview</h2>
+            <div className="flex justify-center">
+              <div
+                className="border border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center"
+                style={{ minWidth: 300, minHeight: 300, width: 300, height: 300 }}
+              >
+                {svgString ? (
+                  <div dangerouslySetInnerHTML={{ __html: svgString }} />
+                ) : (
+                  <svg width="300" height="300" viewBox="-1 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="0" width="300" height="300" rx="24" fill="#f3f4f6" />
+                    <path
+                      d="M60 40 h120 v160 h-10 v10 h-10 v10 h-10 v10 h-10 v10 h-10 v10 h-10 v10 H40 v-10 H30 v-10 H20 v-10 H10 v-40 h10 v-10 h10 v-10 h10 v-10 h10 V40"
+                      stroke="#bbb"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                  </svg>
+                )}
               </div>
-            )}
-
+            </div>
             {/* Validation Status */}
             <div
-              className={`p-4 rounded ${isValid ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
+              className={`p-2 rounded text-sm ${isValid ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
             >
               <strong>Validation Status:</strong> {isValid ? "Valid" : "Invalid"}
               {errors && (
-                <div className="mt-2">
+                <div className="mt-1">
                   <strong>Errors:</strong>
-                  <p className="text-sm mt-1">{errors}</p>
+                  <p className="text-xs mt-1">{errors}</p>
                 </div>
               )}
             </div>
-
             {/* Add to Basket Button */}
-            <div className="space-y-3">
-              <button
-                onClick={handleAddToBasket}
-                disabled={!isValid || !encodedSock || Boolean(errors)}
-                className="w-full bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded"
-              >
-                {!isValid || Boolean(errors)
-                  ? "Fix Validation Errors"
-                  : !encodedSock
-                    ? "Loading..."
-                    : `Add to Basket (${usdcPrice ? `${formatUnits(usdcPrice, 6)} USDC` : "0 USDC"})`}
-              </button>
-            </div>
-
+            <button
+              onClick={handleAddToBasket}
+              disabled={!isValid || !encodedSock || Boolean(errors)}
+              className="w-full bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
+            >
+              {!isValid || Boolean(errors)
+                ? "Fix Validation Errors"
+                : !encodedSock
+                  ? "Loading..."
+                  : `Add to Basket (${usdcPrice ? `${formatUnits(usdcPrice, 6)} USDC` : "0 USDC"})`}
+            </button>
             {/* Price Info */}
             {usdcPrice && (
-              <div className="p-4 border rounded bg-gray-50">
-                <h3 className="font-semibold mb-2">Pricing Information</h3>
-                <p className="text-sm text-gray-600">Each sock costs {formatUnits(usdcPrice, 6)} USDC</p>
-                <p className="text-sm text-gray-600">You can pay with USDC or ETH (with automatic conversion)</p>
+              <div className="p-2 border rounded bg-gray-50 text-xs">
+                <h3 className="font-semibold mb-1">Pricing Information</h3>
+                <p>Each sock costs {formatUnits(usdcPrice, 6)} USDC</p>
+                <p>You can pay with USDC or ETH (with automatic conversion)</p>
               </div>
             )}
           </div>
