@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BuyButtons } from "../../components/BuyButtons";
 import { schema } from "../../lib/ponder";
 import { desc } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
@@ -96,11 +97,11 @@ export default function SocksPage() {
                     <span>Creator:</span>
                     <Address address={sock.creator} size="sm" onlyEnsOrAddress={true} />
                   </div>
-                  {/* Add to Basket Button */}
-                  <button
-                    className={`mt-4 w-full py-2 px-4 rounded font-bold text-white transition-colors ${inBasket ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"}`}
-                    disabled={inBasket}
-                    onClick={() => {
+                  <BuyButtons
+                    isValid={true}
+                    errors={undefined}
+                    encodedSock={sock.id.toString()}
+                    onAddToBasket={() => {
                       if (!inBasket) {
                         addToBasket({
                           sockId: sock.id.toString(),
@@ -112,9 +113,8 @@ export default function SocksPage() {
                         });
                       }
                     }}
-                  >
-                    {inBasket ? "In Basket" : "Add to Basket"}
-                  </button>
+                    basketContainsSock={inBasket}
+                  />
                 </div>
               </div>
             );

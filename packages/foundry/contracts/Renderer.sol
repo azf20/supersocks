@@ -239,15 +239,15 @@ contract Renderer {
     function drawSock(Sock memory sock) public view returns (string memory) {
         return string.concat(
             baseSock('baseColor', 'outlineColor'),
-            getStyle(0, sock.design.index),
             getStyle(1, sock.heel.index),
             getStyle(2, sock.toe.index),
-            getStyle(3, sock.top.index)
+            getStyle(3, sock.top.index),
+            getStyle(0, sock.design.index)
         );
     }
 
     function generateFillStyle(string memory component, string memory sockId, string memory color) public pure returns (string memory) {
-        return string.concat('#', sockId, ' .', component, ' { fill: ', color, '; } ');
+        return string.concat('#', sockId, ' .', component, ' { fill: ', color, '; fill-rule: evenodd; } ');
     }
 
     function generateStrokeStyle(string memory component, string memory sockId, string memory color) public pure returns (string memory) {

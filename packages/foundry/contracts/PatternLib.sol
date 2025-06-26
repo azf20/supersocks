@@ -26,6 +26,9 @@ library PatternLib {
     string public constant designFrown = '<path d="M10.5 9v2h1v-2Zm0 4.5v1h1v-1Zm1-1v1h3v-1zm3 2h1v-1h-1Zm0-3.5h1v-2h-1Z" class="designColor"/>';
     string public constant designAcross = '<path d="M10.5 9l2 2m1 1 2 2m0-5-2 2m-1 1-2 2" class="designOutline"/>';
     string public constant designOP = '<path d="M9.5 9v5h3v-5Zm1 1v3h1v-3Zm3-1v5h1v-2h2v-3Zm1 1v1h1v-1Z" class="designColor"/>';
+    string public constant designCircle = '<path d="M9.5 10h1v-1h1v-1h3v1h1v1h1v3h-1v1h-1v1h-3v-1h-1v-1h-1v-3" class="designColor"/>';
+    string public constant designRing = '<path d="M9.5 9h1v-1h1v-1h3v1h1v1h1v3h-1v1h-1v1h-3v-1h-1v-1h-1Zm2 0h3v3h-3Z" class="designColor"/>';
+    string public constant designDog = '<path d="M11 8h-1v1h-1v1h2v3h-1v1h2v-2h3v1h-1v1h2v-4h1v-1h-1v1h-4v-3h-1v1Z" class="designColor"/>';
     
     // Legacy patterns (keeping for compatibility)
     string public constant optimism = '<path d="m10 15v3h2v-3Z" class="patternOutline"/><path d="m13.5 18.5v-3.5h2v2h-2" class="patternOutline"/><path d="m21 15v3h2v-3Z" class="patternOutline"/><path d="m24.5 18.5v-3.5h2v2h-2" class="patternOutline"/>';

@@ -9,7 +9,6 @@ import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
 import { decodeBase64SVG } from "~~/utils/svg";
 
-
 export default function SockDetailPage() {
   const params = useParams();
   const id = params?.id?.toString();
@@ -96,7 +95,7 @@ export default function SockDetailPage() {
             </div>
             {/* Add to Basket Button */}
             <button
-              className={`mt-4 w-full py-2 px-4 rounded font-bold text-white transition-colors ${inBasket ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"}`}
+              className={`mt-4 w-full py-2 px-1 rounded font-bold text-white transition-colors ${inBasket ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"}`}
               disabled={inBasket}
               onClick={() => {
                 if (!inBasket) {

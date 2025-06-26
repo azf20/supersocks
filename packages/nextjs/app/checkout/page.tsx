@@ -7,10 +7,16 @@ import externalContracts from "../../contracts/externalContracts";
 import { ChainId, Token } from "@uniswap/sdk-core";
 import { erc20Abi, formatEther, formatUnits } from "viem";
 import { useAccount, useReadContracts, useSendCalls, useSimulateContract, useWaitForCallsStatus } from "wagmi";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { useGlobalState } from "~~/services/store/store";
 
+const usdcAddress =
+  process.env.NEXT_PUBLIC_USDC == "faucet"
+    ? deployedContracts[31337].FreeRc20.address
+    : "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
+
 const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
-const USDC_TOKEN = new Token(ChainId.OPTIMISM, "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", 6, "USDC", "USDC");
+const USDC_TOKEN = new Token(ChainId.OPTIMISM, usdcAddress, 6, "USDC", "USDC");
 
 export default function CheckoutPage() {
   const { basket, clearBasket } = useGlobalState();
@@ -24,7 +30,7 @@ export default function CheckoutPage() {
   const callFailure = sendCallsData && callsStatusData?.status === "failure";
 
   // Fetch the price once from the contract
-  const { data: usdcPriceData } = useReadContracts({
+  const { data: usdcPriceData, refetch: refetchUsdc } = useReadContracts({
     contracts: [
       {
         address: deployedContracts[31337].SuperSocks.address,
@@ -74,6 +80,19 @@ export default function CheckoutPage() {
   const quote = quoteResult?.result[0];
   const ethPrice = quote ? (quote * (slippage + 100n)) / 100n : 0n;
 
+  const { writeContractAsync, isMining } = useScaffoldWriteContract({
+    contractName: "FreeRc20",
+  });
+
+  const handleFaucet = async () => {
+    if (!address) return;
+    await writeContractAsync({
+      functionName: "mint",
+      args: [address as string, BigInt(100_000_000)], // 100 USDC with 6 decimals
+    });
+    refetchUsdc();
+  };
+
   const handlePayment = async () => {
     if (!address || basket.items.length === 0) {
       alert("Please connect your wallet and ensure your basket is not empty");
@@ -85,6 +104,7 @@ export default function CheckoutPage() {
       const quantities = basket.items.flatMap(item => Array(item.count).fill(BigInt(1)));
 
       if (paymentMethod === "usdc") {
+        console.log("buying");
         await sendCallsAsync({
           calls: [
             {
@@ -114,6 +134,7 @@ export default function CheckoutPage() {
             },
           ],
           experimental_fallback: true,
+          experimental_fallbackDelay: 1000,
         });
       }
       // Do NOT clear basket or redirect here!
@@ -333,6 +354,15 @@ export default function CheckoutPage() {
               <p className="text-red-500 text-sm mt-2">
                 Your USDC balance is insufficient. Please use ETH payment or add more USDC.
               </p>
+            )}
+            {process.env.NEXT_PUBLIC_USDC === "faucet" && (
+              <button
+                className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleFaucet}
+                disabled={isMining}
+              >
+                {isMining ? "Minting..." : "Get Free USDC"}
+              </button>
             )}
             {callFailure && <p className="text-red-500 text-sm mt-2">Payment failed. Please try again.</p>}
           </div>

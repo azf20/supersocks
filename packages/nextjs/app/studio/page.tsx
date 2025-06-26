@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { BuyButtons } from "../../components/BuyButtons";
 import deployedContracts from "../../contracts/deployedContracts";
 import { formatUnits } from "viem";
 import { useReadContracts } from "wagmi";
@@ -75,10 +77,19 @@ export default function StudioPage() {
         functionName: "renderSock",
         args: [contractSock, encodedSock || BigInt(0)],
       },
+      {
+        address: deployedContracts[31337].Metadata.address,
+        abi: deployedContracts[31337].Metadata.abi,
+        functionName: "getStyle",
+        args: [0, contractSock.design.index],
+      },
     ],
   });
 
   const svgString = renderSockData?.[0]?.result;
+  const designStyle = renderSockData?.[1]?.result;
+
+  const showDesignColor = designStyle && (designStyle.includes("designColor") || designStyle.includes("designOutline"));
 
   const handleAddToBasket = () => {
     if (!isValid || !encodedSock || Boolean(errors)) {
@@ -160,31 +171,60 @@ export default function StudioPage() {
     });
   };
 
-  // Color picker component
+  // Custom Color picker component with swatch dropdown (no label)
   const ColorPicker = ({
     selectedIndex,
     onColorSelect,
-    label,
   }: {
     selectedIndex: number;
     onColorSelect: (index: number) => void;
-    label?: string;
-  }) => (
-    <div>
-      {label && <label className="block text-sm font-medium mb-2">{label}</label>}
-      <select
-        value={selectedIndex}
-        onChange={e => onColorSelect(Number(e.target.value))}
-        className="w-full p-1 border border-gray-300 rounded-md text-sm"
-      >
-        {colorPalette.map(color => (
-          <option key={color.index} value={color.index}>
-            {color.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
+  }) => {
+    const [open, setOpen] = useState(false);
+    const selectedColor = colorPalette.find(c => c.index === selectedIndex);
+    return (
+      <div className="relative">
+        <button
+          type="button"
+          className="w-full flex items-center border border-gray-300 rounded-md p-1 text-sm"
+          onClick={() => setOpen(o => !o)}
+        >
+          <span
+            className="inline-block w-5 h-5 rounded mr-2 border"
+            style={{ backgroundColor: selectedColor?.value }}
+          />
+          {selectedColor?.name}
+        </button>
+        {open && (
+          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow max-h-60 overflow-auto">
+            {colorPalette.map(color => (
+              <button
+                key={color.index}
+                type="button"
+                className="flex items-center w-full px-2 py-1 hover:bg-gray-100"
+                onClick={() => {
+                  onColorSelect(color.index);
+                  setOpen(false);
+                }}
+              >
+                <span className="inline-block w-5 h-5 rounded mr-2 border" style={{ backgroundColor: color.value }} />
+                {color.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Default sock state for reset
+  const defaultSock = {
+    baseColorIndex: 1,
+    outlineColorIndex: 2,
+    top: { colorIndex: 0, index: "0" },
+    heel: { colorIndex: 0, index: "0" },
+    toe: { colorIndex: 0, index: "0" },
+    design: { colorIndex: 0, index: "0" },
+  };
 
   return (
     <div className="flex flex-col items-center flex-grow pt-6">
@@ -211,113 +251,141 @@ export default function StudioPage() {
           {/* Left: Sock Configuration Panel */}
           <div className="space-y-3">
             <h2 className="text-lg font-bold mb-1">Sock Configuration</h2>
-            {/* Color Pickers Row */}
-            <div className="flex flex-row gap-4">
+            {/* Section 1: Base, Outline, Design */}
+            <div className="flex flex-row gap-4 mb-2">
               <div className="flex-1">
                 <ColorPicker
                   selectedIndex={sock.baseColorIndex}
                   onColorSelect={index => updateSock({ baseColorIndex: index })}
-                  label="Base Color"
                 />
               </div>
               <div className="flex-1">
                 <ColorPicker
                   selectedIndex={sock.outlineColorIndex}
                   onColorSelect={index => updateSock({ outlineColorIndex: index })}
-                  label="Outline Color"
                 />
               </div>
             </div>
-            {/* Style Controls Grid */}
-            <div className="grid grid-cols-1 gap-2">
-              {/* Top Style */}
-              <div className="border p-2 rounded">
-                <label className="block text-xs font-medium mb-1">Top Style</label>
-                <select
-                  value={sock.top.index}
-                  onChange={e => updateStyle("top", { index: e.target.value })}
-                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
-                >
-                  <option value="0">None</option>
-                  <option value="1">One Stripe</option>
-                  <option value="2">Two Stripes</option>
-                  <option value="3">Stripe No Offset</option>
-                  <option value="4">Thin Stripe</option>
-                  <option value="5">Big Top</option>
-                  <option value="6">Vertical Stripes</option>
-                  <option value="7">Vertical + Horizontal</option>
-                </select>
-                {Number(sock.top.index) > 0 && (
-                  <ColorPicker
-                    selectedIndex={sock.top.colorIndex}
-                    onColorSelect={index => updateStyle("top", { colorIndex: index })}
-                    label="Top Color"
-                  />
-                )}
-              </div>
-              {/* Heel Style */}
-              <div className="border p-2 rounded">
-                <label className="block text-xs font-medium mb-1">Heel Style</label>
-                <select
-                  value={sock.heel.index}
-                  onChange={e => updateStyle("heel", { index: e.target.value })}
-                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
-                >
-                  <option value="0">None</option>
-                  <option value="1">Small</option>
-                  <option value="2">Large</option>
-                </select>
-                {Number(sock.heel.index) > 0 && (
-                  <ColorPicker
-                    selectedIndex={sock.heel.colorIndex}
-                    onColorSelect={index => updateStyle("heel", { colorIndex: index })}
-                    label="Heel Color"
-                  />
-                )}
-              </div>
-              {/* Toe Style */}
-              <div className="border p-2 rounded">
-                <label className="block text-xs font-medium mb-1">Toe Style</label>
-                <select
-                  value={sock.toe.index}
-                  onChange={e => updateStyle("toe", { index: e.target.value })}
-                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
-                >
-                  <option value="0">None</option>
-                  <option value="1">Small</option>
-                  <option value="2">Large</option>
-                </select>
-                {Number(sock.toe.index) > 0 && (
-                  <ColorPicker
-                    selectedIndex={sock.toe.colorIndex}
-                    onColorSelect={index => updateStyle("toe", { colorIndex: index })}
-                    label="Toe Color"
-                  />
-                )}
-              </div>
-              {/* Design Style */}
-              <div className="border p-2 rounded">
-                <label className="block text-xs font-medium mb-1">Design</label>
-                <select
-                  value={sock.design.index}
-                  onChange={e => updateStyle("design", { index: e.target.value })}
-                  className="w-full p-1 border border-gray-300 rounded-md text-sm mb-1"
-                >
-                  <option value="0">None</option>
-                  <option value="1">Smile</option>
-                  <option value="2">Heart</option>
-                  <option value="3">Frown</option>
-                  <option value="4">Across</option>
-                </select>
-                {Number(sock.design.index) > 0 && (
-                  <ColorPicker
-                    selectedIndex={sock.design.colorIndex}
-                    onColorSelect={index => updateStyle("design", { colorIndex: index })}
-                    label="Design Color"
-                  />
+            {/* Design Style + Color */}
+            <div className="border p-2 rounded mb-2">
+              <label className="block text-xs font-medium mb-1">Design</label>
+              <div className="flex flex-row gap-2 items-center">
+                <div className="w-[180px]">
+                  <select
+                    value={sock.design.index}
+                    onChange={e => updateStyle("design", { index: e.target.value })}
+                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
+                  >
+                    <option value="0">None</option>
+                    <option value="1">Smile</option>
+                    <option value="2">Heart</option>
+                    <option value="3">Frown</option>
+                    <option value="4">Across</option>
+                    <option value="5">OP</option>
+                    <option value="6">Circle</option>
+                    <option value="7">Ring</option>
+                    <option value="8">Dog</option>
+                  </select>
+                </div>
+                {sock.design.index !== "0" && showDesignColor && (
+                  <div className="flex-1">
+                    <ColorPicker
+                      selectedIndex={sock.design.colorIndex}
+                      onColorSelect={index => updateStyle("design", { colorIndex: index })}
+                    />
+                  </div>
                 )}
               </div>
             </div>
+            {/* Section 2: Top, Heel, Toe */}
+            {/* Top Style + Color */}
+            <div className="border p-2 rounded mb-2">
+              <label className="block text-xs font-medium mb-1">Top Style</label>
+              <div className="flex flex-row gap-2 items-center">
+                <div className="w-[180px]">
+                  <select
+                    value={sock.top.index}
+                    onChange={e => updateStyle("top", { index: e.target.value })}
+                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
+                  >
+                    <option value="0">None</option>
+                    <option value="1">One Stripe</option>
+                    <option value="2">Two Stripes</option>
+                    <option value="3">Stripe No Offset</option>
+                    <option value="4">Thin Stripe</option>
+                    <option value="5">Big Top</option>
+                    <option value="6">Vertical Stripes</option>
+                    <option value="7">Vertical + Horizontal</option>
+                  </select>
+                </div>
+                {sock.top.index !== "0" && (
+                  <div className="flex-1">
+                    <ColorPicker
+                      selectedIndex={sock.top.colorIndex}
+                      onColorSelect={index => updateStyle("top", { colorIndex: index })}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Heel Style + Color */}
+            <div className="border p-2 rounded mb-2">
+              <label className="block text-xs font-medium mb-1">Heel Style</label>
+              <div className="flex flex-row gap-2 items-center">
+                <div className="w-[180px]">
+                  <select
+                    value={sock.heel.index}
+                    onChange={e => updateStyle("heel", { index: e.target.value })}
+                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
+                  >
+                    <option value="0">None</option>
+                    <option value="1">Small</option>
+                    <option value="2">Large</option>
+                  </select>
+                </div>
+                {sock.heel.index !== "0" && (
+                  <div className="flex-1">
+                    <ColorPicker
+                      selectedIndex={sock.heel.colorIndex}
+                      onColorSelect={index => updateStyle("heel", { colorIndex: index })}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Toe Style + Color */}
+            <div className="border p-2 rounded mb-2">
+              <label className="block text-xs font-medium mb-1">Toe Style</label>
+              <div className="flex flex-row gap-2 items-center">
+                <div className="w-[180px]">
+                  <select
+                    value={sock.toe.index}
+                    onChange={e => updateStyle("toe", { index: e.target.value })}
+                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
+                  >
+                    <option value="0">None</option>
+                    <option value="1">Small</option>
+                    <option value="2">Large</option>
+                  </select>
+                </div>
+                {sock.toe.index !== "0" && (
+                  <div className="flex-1">
+                    <ColorPicker
+                      selectedIndex={sock.toe.colorIndex}
+                      onColorSelect={index => updateStyle("toe", { colorIndex: index })}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Reset Button */}
+            <button
+              type="button"
+              className="mt-2 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded border border-gray-300"
+              onClick={() => setSock(defaultSock)}
+            >
+              Reset
+            </button>
           </div>
 
           {/* Right: Sock Preview Panel */}
@@ -355,18 +423,16 @@ export default function StudioPage() {
                 </div>
               )}
             </div>
-            {/* Add to Basket Button */}
-            <button
-              onClick={handleAddToBasket}
-              disabled={!isValid || !encodedSock || Boolean(errors)}
-              className="w-full bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
-            >
-              {!isValid || Boolean(errors)
-                ? "Fix Validation Errors"
-                : !encodedSock
-                  ? "Loading..."
-                  : `Add to Basket (${usdcPrice ? `${formatUnits(usdcPrice, 6)} USDC` : "0 USDC"})`}
-            </button>
+            {/* Add to Basket and Buy Now Buttons */}
+            <BuyButtons
+              isValid={!!isValid}
+              errors={errors}
+              encodedSock={encodedSock}
+              onAddToBasket={handleAddToBasket}
+              basketContainsSock={basket.items.some(
+                item => item.sockId === (encodedSock ? encodedSock.toString() : ""),
+              )}
+            />
             {/* Price Info */}
             {usdcPrice && (
               <div className="p-2 border rounded bg-gray-50 text-xs">

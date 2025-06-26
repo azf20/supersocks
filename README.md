@@ -9,7 +9,7 @@
 
 TODO:
 - Robustness
-- More designs! Maybe make the socks look nicer?
+- More designs! Maybe make the socks look nicer? - DONE
 - Move to 1155 - DONE
 - Clean "studio" page
 - Explore page - DONE

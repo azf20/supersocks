@@ -15,6 +15,10 @@ contract Metadata is Renderer {
         addStyle(0, PatternLib.designHeart);
         addStyle(0, PatternLib.designFrown);
         addStyle(0, PatternLib.designAcross);
+        addStyle(0, PatternLib.designOP);
+        addStyle(0, PatternLib.designCircle);
+        addStyle(0, PatternLib.designRing);
+        addStyle(0, PatternLib.designDog);
         
         // Heel patterns (index 1)
         addStyle(1, ''); // Empty heel

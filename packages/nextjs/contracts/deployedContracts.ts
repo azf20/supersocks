@@ -6,8 +6,394 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
+    FreeRc20: {
+      address: "0xf56aa3aceddf88ab12e494d0b96da3c09a5d264e",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "DOMAIN_SEPARATOR",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "allowance",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "approve",
+          inputs: [
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "burn",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "decimals",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "name",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "nonces",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permit",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "value",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transfer",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "transferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "Approval",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Transfer",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AllowanceOverflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "AllowanceUnderflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientAllowance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientBalance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidPermit",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Permit2AllowanceIsFixedAtInfinity",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PermitExpired",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TotalSupplyOverflow",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1750971870.json",
+      deploymentScript: "Deploy.s.sol",
+    },
     Metadata: {
-      address: "0x4d8e02bbfcf205828a8352af4376b165e123d7b0",
+      address: "0xdbd296711ec8ef9aacb623ee3f1c0922dce0d7b2",
       abi: [
         {
           type: "constructor",
@@ -961,11 +1347,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750952828.json",
+      deploymentFile: "run-1750971870.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xeab25969e5285df34a3b245324d0b2b91e31cad4",
+      address: "0xdfd787c807dea8d7e53311b779bc0c6a4704d286",
       abi: [
         {
           type: "constructor",
@@ -1782,11 +2168,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750952828.json",
+      deploymentFile: "run-1750971870.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x150890d6984e98f408162ee65684779804bff858",
+      address: "0x6d014319e0f36651997697c98da594c7cf235fa4",
       abi: [
         {
           type: "constructor",
@@ -1924,7 +2310,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750952828.json",
+      deploymentFile: "run-1750971870.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { BuyButtons } from "../../../components/BuyButtons";
 import deployedContracts from "../../../contracts/deployedContracts";
 import { and, eq, gt, inArray } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
@@ -9,6 +10,7 @@ import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { schema } from "~~/lib/ponder";
+import { useGlobalState } from "~~/services/store/store";
 import { decodeBase64SVG } from "~~/utils/svg";
 
 export default function ProfilePage() {
@@ -67,6 +69,8 @@ export default function ProfilePage() {
 
   const isPending = balancesPending || tokensPending;
   const isError = balancesError || tokensError;
+
+  const { basket, addToBasket } = useGlobalState();
 
   if (isPending) {
     return (
@@ -149,25 +153,29 @@ export default function ProfilePage() {
                 // Decode SVG if available
                 const decodedSVG = metadata?.image ? decodeBase64SVG(metadata.image) : null;
 
+                const inBasket = basket.items.some(item => item.sockId === balance.tokenId.toString());
+
                 return (
-                  <Link
+                  <div
                     key={balance.tokenId.toString()}
-                    href={`/sock/${balance.tokenId}`}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
-                    <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                      {decodedSVG ? (
-                        <div
-                          className="w-full h-full flex items-center justify-center"
-                          dangerouslySetInnerHTML={{ __html: decodedSVG }}
-                        />
-                      ) : (
-                        <div className="text-gray-400 text-center">
-                          <div className="text-4xl mb-2">🧦</div>
-                          <div className="text-sm">No Image</div>
-                        </div>
-                      )}
-                    </div>
+                    <Address address={address} />
+                    <Link href={`/sock/${balance.tokenId}`}>
+                      <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                        {decodedSVG ? (
+                          <div
+                            className="w-full h-full flex items-center justify-center"
+                            dangerouslySetInnerHTML={{ __html: decodedSVG }}
+                          />
+                        ) : (
+                          <div className="text-gray-400 text-center">
+                            <div className="text-4xl mb-2">🧦</div>
+                            <div className="text-sm">No Image</div>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
 
                     <div className="p-4">
                       <h3 className="font-semibold mb-2">{metadata?.name || `Sock #${balance.tokenId}`}</h3>
@@ -185,8 +193,26 @@ export default function ProfilePage() {
                           </div>
                         </div>
                       )}
+                      <BuyButtons
+                        isValid={true}
+                        errors={undefined}
+                        encodedSock={balance.tokenId.toString()}
+                        onAddToBasket={() => {
+                          if (!inBasket) {
+                            addToBasket({
+                              sockId: balance.tokenId.toString(),
+                              sockData: {
+                                svgString: decodedSVG || "",
+                                metadata,
+                                isValid: true,
+                              },
+                            });
+                          }
+                        }}
+                        basketContainsSock={inBasket}
+                      />
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
