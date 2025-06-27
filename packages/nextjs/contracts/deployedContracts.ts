@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0xd49880bddfac4fd20d3b6bee01c71231c0c63789",
+      address: "0xe61a6e7442ce84072db14423ffbbe2609908ee38",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751034195.json",
+      deploymentFile: "run-1751042416.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0x45b0bbaceedcfbae96aec2d2ffef70777b0b3ae3",
+      address: "0xdce79d5f359c7ab52e3d6b45be2d0d382696d323",
       abi: [
         {
           type: "constructor",
@@ -1058,6 +1058,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "getStyles",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string[][]",
+              internalType: "string[][]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "getTraits",
           inputs: [
             {
@@ -1304,11 +1317,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751034195.json",
+      deploymentFile: "run-1751042416.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x8f3024d12c3d702930f2ff98aa8e2261f0be490a",
+      address: "0x86b3e65cdd7f9321118d5d4901a9800200c11b8a",
       abi: [
         {
           type: "constructor",
@@ -2125,11 +2138,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751034195.json",
+      deploymentFile: "run-1751042416.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x67f65b834aaac92c15c2eba9ff7e81f2d33a1cfd",
+      address: "0xc624801dd98bef87c0718ddb43ad3a566cc51ecc",
       abi: [
         {
           type: "constructor",
@@ -2267,7 +2280,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751034195.json",
+      deploymentFile: "run-1751042416.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

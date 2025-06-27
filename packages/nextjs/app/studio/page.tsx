@@ -137,6 +137,12 @@ export default function StudioPage() {
         abi: deployedContracts[31337].SuperSocks.abi,
         functionName: "usdcPrice",
       },
+      {
+        address: deployedContracts[31337].Metadata.address,
+        abi: deployedContracts[31337].Metadata.abi,
+        functionName: "getStyles",
+        args: [],
+      },
     ],
   });
 
@@ -145,6 +151,9 @@ export default function StudioPage() {
   const errors = checkResult?.[1];
   const encodedSock = data?.[1]?.result;
   const usdcPrice = data?.[2]?.result;
+  const styles = data?.[3]?.result;
+
+  console.log(styles);
 
   const { data: renderSockData } = useReadContracts({
     contracts: [
@@ -350,6 +359,101 @@ export default function StudioPage() {
     );
   };
 
+  // Custom Style picker component with SVG previews
+  const StylePicker = ({
+    styles,
+    selectedIndex,
+    onSelect,
+    isOpen,
+    onToggle,
+    baseColorIndex,
+    viewBox,
+  }: {
+    styles: string[];
+    selectedIndex: number;
+    onSelect: (index: number) => void;
+    isOpen: boolean;
+    onToggle: () => void;
+    baseColorIndex: number;
+    viewBox: string;
+  }) => {
+    const selectedStyle = styles[selectedIndex] || "";
+
+    // Generate SVG preview for a style
+    const generateStylePreview = (style: string) => {
+      if (!style) return "";
+
+      const baseColor = colorPalette.find(c => c.index === baseColorIndex)?.value || "#000000";
+      const designColor = "#000000"; // Always use black for design color
+
+      return `<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"${viewBox}\">\n        <defs>\n          <style>\n            .baseColor { fill: ${baseColor}; }\n            .designColor { fill: ${designColor}; fill-rule: evenodd; }\n            .designOutline { stroke: ${designColor}; fill: none; stroke-width: 0.5; }\n          </style>\n        </defs>\n        <rect x=\"${viewBox.split(" ")[0]}\" y=\"${viewBox.split(" ")[1]}\" width=\"${viewBox.split(" ")[2]}\" height=\"${viewBox.split(" ")[3]}\" fill=\"transparent\"/>\n        ${style}\n      </svg>`;
+    };
+
+    return (
+      <div className="relative">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <div
+            className="w-6 h-6 rounded border border-gray-300 bg-gray-100 flex items-center justify-center"
+            dangerouslySetInnerHTML={{
+              __html: generateStylePreview(selectedStyle),
+            }}
+          />
+          <span className="text-sm">{selectedIndex === 0 ? "No Style" : `Style ${selectedIndex}`}</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {isOpen && (
+          <div className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-96 overflow-y-auto min-w-[240px]">
+            <div className="p-3 flex flex-col gap-y-2">
+              {/* Split styles into rows of 4 */}
+              {Array.from({ length: Math.ceil(styles.length / 4) }).map((_, rowIdx) => {
+                const row = styles.slice(rowIdx * 4, rowIdx * 4 + 4);
+                return (
+                  <div key={rowIdx} className="grid grid-cols-4 gap-2">
+                    {row.map((style, index) => {
+                      const styleIdx = rowIdx * 4 + index;
+                      return (
+                        <button
+                          key={styleIdx}
+                          onClick={() => {
+                            onSelect(styleIdx);
+                            onToggle();
+                          }}
+                          className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 bg-gray-100 flex items-center justify-center ${
+                            selectedIndex === styleIdx ? "border-blue-500" : "border-gray-300"
+                          }`}
+                          title={styleIdx === 0 ? "No Style" : `Style ${styleIdx}`}
+                        >
+                          <div
+                            className="w-8 h-8"
+                            dangerouslySetInnerHTML={{
+                              __html: generateStylePreview(style),
+                            }}
+                          />
+                        </button>
+                      );
+                    })}
+                    {/* Pad row with empty cells if needed */}
+                    {row.length < 4 &&
+                      Array.from({ length: 4 - row.length }).map((_, i) => (
+                        <div key={`empty-${i}`} className="w-12 h-12" />
+                      ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Default sock state for reset
   const defaultSock = {
     baseColorIndex: 1,
@@ -413,22 +517,15 @@ export default function StudioPage() {
               <label className="block text-xs font-medium mb-1">Design</label>
               <div className="flex flex-row gap-2 items-center">
                 <div className="w-[180px]">
-                  <select
-                    value={sock.design.index}
-                    onChange={e => updateStyle("design", { index: e.target.value })}
-                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
-                  >
-                    <option value="0">None</option>
-                    <option value="1">Smile</option>
-                    <option value="2">Heart</option>
-                    <option value="3">Frown</option>
-                    <option value="4">Across</option>
-                    <option value="5">OP</option>
-                    <option value="6">Circle</option>
-                    <option value="7">Ring</option>
-                    <option value="8">Dog</option>
-                    <option value="9">BuidlGuidl</option>
-                  </select>
+                  <StylePicker
+                    styles={styles && Array.isArray(styles[0]) ? [...styles[0]] : []}
+                    selectedIndex={Number(sock.design.index)}
+                    onSelect={index => updateStyle("design", { index: String(index) })}
+                    isOpen={openColorPicker === "designStylePicker"}
+                    onToggle={() => toggleColorPicker("designStylePicker")}
+                    baseColorIndex={sock.baseColorIndex}
+                    viewBox="8 6 10 11"
+                  />
                 </div>
                 {sock.design.index !== "0" && showDesignColor && (
                   <div className="flex-1">
@@ -450,20 +547,15 @@ export default function StudioPage() {
               <label className="block text-xs font-medium mb-1">Top Style</label>
               <div className="flex flex-row gap-2 items-center">
                 <div className="w-[180px]">
-                  <select
-                    value={sock.top.index}
-                    onChange={e => updateStyle("top", { index: e.target.value })}
-                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
-                  >
-                    <option value="0">None</option>
-                    <option value="1">One Stripe</option>
-                    <option value="2">Two Stripes</option>
-                    <option value="3">Stripe No Offset</option>
-                    <option value="4">Thin Stripe</option>
-                    <option value="5">Big Top</option>
-                    <option value="6">Vertical Stripes</option>
-                    <option value="7">Vertical + Horizontal</option>
-                  </select>
+                  <StylePicker
+                    styles={styles && styles[3] ? [...styles[3]] : []}
+                    selectedIndex={Number(sock.top.index)}
+                    onSelect={index => updateStyle("top", { index: String(index) })}
+                    isOpen={openColorPicker === "topStylePicker"}
+                    onToggle={() => toggleColorPicker("topStylePicker")}
+                    baseColorIndex={sock.baseColorIndex}
+                    viewBox="5 1 15 7"
+                  />
                 </div>
                 {sock.top.index !== "0" && (
                   <div className="flex-1">
@@ -484,15 +576,15 @@ export default function StudioPage() {
               <label className="block text-xs font-medium mb-1">Heel Style</label>
               <div className="flex flex-row gap-2 items-center">
                 <div className="w-[180px]">
-                  <select
-                    value={sock.heel.index}
-                    onChange={e => updateStyle("heel", { index: e.target.value })}
-                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
-                  >
-                    <option value="0">None</option>
-                    <option value="1">Small</option>
-                    <option value="2">Large</option>
-                  </select>
+                  <StylePicker
+                    styles={styles && styles[1] ? [...styles[1]] : []}
+                    selectedIndex={Number(sock.heel.index)}
+                    onSelect={index => updateStyle("heel", { index: String(index) })}
+                    isOpen={openColorPicker === "heelStylePicker"}
+                    onToggle={() => toggleColorPicker("heelStylePicker")}
+                    baseColorIndex={sock.baseColorIndex}
+                    viewBox="12 14 8 7"
+                  />
                 </div>
                 {sock.heel.index !== "0" && (
                   <div className="flex-1">
@@ -513,15 +605,15 @@ export default function StudioPage() {
               <label className="block text-xs font-medium mb-1">Toe Style</label>
               <div className="flex flex-row gap-2 items-center">
                 <div className="w-[180px]">
-                  <select
-                    value={sock.toe.index}
-                    onChange={e => updateStyle("toe", { index: e.target.value })}
-                    className="w-full p-1 border border-gray-300 rounded-md text-sm"
-                  >
-                    <option value="0">None</option>
-                    <option value="1">Small</option>
-                    <option value="2">Large</option>
-                  </select>
+                  <StylePicker
+                    styles={styles && styles[2] ? [...styles[2]] : []}
+                    selectedIndex={Number(sock.toe.index)}
+                    onSelect={index => updateStyle("toe", { index: String(index) })}
+                    isOpen={openColorPicker === "toeStylePicker"}
+                    onToggle={() => toggleColorPicker("toeStylePicker")}
+                    baseColorIndex={sock.baseColorIndex}
+                    viewBox="2 15 10 10"
+                  />
                 </div>
                 {sock.toe.index !== "0" && (
                   <div className="flex-1">

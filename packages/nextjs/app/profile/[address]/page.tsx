@@ -106,7 +106,7 @@ export default function ProfilePage() {
         <div className="text-center mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="mb-4">
-              <Address address={address} />
+              <Address address={address} onlyEnsOrAddress={true} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
@@ -160,7 +160,7 @@ export default function ProfilePage() {
                     key={balance.tokenId.toString()}
                     className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
-                    <Address address={address} />
+                    <Address address={address} onlyEnsOrAddress={true} />
                     <Link href={`/sock/${balance.tokenId}`}>
                       <div className="aspect-square bg-gray-100 flex items-center justify-center">
                         {decodedSVG ? (
@@ -181,15 +181,16 @@ export default function ProfilePage() {
                       <h3 className="font-semibold mb-2">{metadata?.name || `Sock #${balance.tokenId}`}</h3>
 
                       <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
-                        <span>You own: {balance.balance.toString()}</span>
+                        <span>
+                          You own: {balance.balance.toString()} / {token.total.toString()}
+                        </span>
                         <span>ID: #{balance.tokenId.toString()}</span>
                       </div>
 
                       {token && (
                         <div className="text-xs text-gray-400">
-                          <div>Total Supply: {token.total.toString()}</div>
-                          <div>
-                            Created by: <Address address={token.creator} size="xs" />
+                          <div className="flex gap-1 mb-1">
+                            Created by: <Address address={token.creator} size="xs" onlyEnsOrAddress={true} />
                           </div>
                         </div>
                       )}

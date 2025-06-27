@@ -30,6 +30,14 @@ contract Renderer {
     string[] public styleNames = ["design", "heel", "toe", "top"];
     mapping(uint8 => string[]) public styleLookup;
 
+    function getStyles() public view returns (string[][] memory) {
+        string[][] memory styles = new string[][](styleNames.length);
+        for (uint8 i = 0; i < styleNames.length; i++) {
+            styles[i] = styleLookup[i];
+        }
+        return styles;
+    }
+
     function _addStyle(uint8 index, string memory _style) internal virtual {
         styleLookup[index].push(_style);
     }
