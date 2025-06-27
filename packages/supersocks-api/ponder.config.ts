@@ -4,7 +4,10 @@ import { erc1155ABI } from "./abis/erc1155Abi";
 
 import SuperSocksDeploy from "../foundry/broadcast/Deploy.s.sol/31337/run-latest.json";
 
-const address = getAddress(SuperSocksDeploy.transactions[2]!.contractAddress);
+const contractIndex = process.env.USDC === "faucet" ? 2 : 1;
+const address = getAddress(
+  SuperSocksDeploy.transactions[contractIndex]!.contractAddress
+);
 const startBlock = hexToNumber(
   SuperSocksDeploy.receipts[1]!.blockNumber as `0x${string}`
 );

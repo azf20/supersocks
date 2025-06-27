@@ -3,10 +3,11 @@ pragma solidity ^0.8.11;
 
 import "./Renderer.sol";
 import "./PatternLib.sol";
-import "../lib/solady/src/utils/Base64.sol";
-import "../lib/solady/src/utils/LibString.sol";
+import "solady/utils/Base64.sol";
+import "solady/utils/LibString.sol";
+import "solady/auth/Ownable.sol";
 
-contract Metadata is Renderer {
+contract Metadata is Renderer, Ownable {
 
     constructor() {
                 // Design patterns (index 0)
@@ -42,6 +43,10 @@ contract Metadata is Renderer {
         _addStyle(3, PatternLib.topVerticalWithHorizontal);
     }
 
+    function addStyle(uint8 index, string memory style) public onlyOwner {
+        _addStyle(index, style);
+    }
+
     /// @dev Returns the Uniform Resource Identifier (URI) for token `id`.
     function tokenURI(uint256 id) public view returns (string memory) {
         
@@ -63,6 +68,4 @@ contract Metadata is Renderer {
             Base64.encode(bytes(json))
         ));
     }
-
-    
 }

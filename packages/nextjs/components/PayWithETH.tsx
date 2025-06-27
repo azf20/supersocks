@@ -57,7 +57,7 @@ export function PayWithETH({
   const quote = quoteResult?.result[0];
   const ethPrice = quote ? (quote * (slippage + 100n)) / 100n : 0n;
 
-  const { writeContractAsync, isMining } = useScaffoldWriteContract({
+  const { writeContractAsync, isPending } = useScaffoldWriteContract({
     contractName: "Swapper",
   });
 
@@ -90,8 +90,10 @@ export function PayWithETH({
 
   return (
     <div>
-      <button onClick={handlePayment} className="btn" disabled={isMining || ethPrice === 0n}>
-        {isMining ? "Processing..." : `Pay with ETH (${ethPrice > 0n ? formatEther(ethPrice) : "Calculating..."} ETH)`}
+      <button onClick={handlePayment} className="btn" disabled={isPending || ethPrice === 0n}>
+        {isPending
+          ? "Processing..."
+          : `Buy now ${ethPrice > 0n ? Number(formatEther(ethPrice)).toPrecision(2) : "Calculating..."} ETH`}
       </button>
       {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       {ethPrice === 0n && totalUsdcPrice > 0n && (

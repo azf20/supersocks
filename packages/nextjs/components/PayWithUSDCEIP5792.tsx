@@ -71,7 +71,7 @@ export function PayWithUSDCEIP5792({
   return (
     <div>
       <button onClick={handleBatchPay} className="btn" disabled={status === "pending"}>
-        {status === "pending" ? "Processing..." : "Pay with USDC (Batch)"}
+        {status === "pending" ? "Processing..." : "Buy now"}
       </button>
       {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       {callsStatusData?.status === "failure" && (

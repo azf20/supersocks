@@ -54,6 +54,11 @@ contract SuperSocks is Ownable, ERC1155 {
         return "SOCKS";
     }
 
+    function contractURI() public pure returns (string memory) {
+        string memory json = '{"name": "SuperSocks","description":"Onchain customizable socks."}';
+        return string.concat("data:application/json;utf8,", json);
+    }
+
     /// @dev Updates the renderer contract
     function setMetadata(Metadata _metadata) external onlyOwner {
         metadata = _metadata;

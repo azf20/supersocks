@@ -42,20 +42,18 @@ contract Renderer {
         styleLookup[index].push(_style);
     }
 
-    function getStyle(uint8 index, uint256 styleIndex) public view returns (string memory) {
+    function getStyle(uint8 index, uint16 styleIndex) public view returns (string memory) {
         require(index < styleNames.length, "Style index out of bounds");
         return styleLookup[index][styleIndex];
     }
     
     
-    // Bit positions for encoding (from right to left)
-    uint256 constant TOP_CONFIG_BITS = 3;    // 3 bits for each top property (0-7)
+    // Bit sizes
     uint256 constant COLOR_BITS = 8;         // 8 bits for each color (0-255)
-    uint256 constant STYLE_INDEX_BITS = 4;   // 4 bits for style index (0-15) - heel/toe
-    uint256 constant DESIGN_INDEX_BITS = 6;  // 6 bits for design index (0-63)
-    
+    uint256 constant STYLE_INDEX_BITS = 16;  // 16 bits for each style index (0-65535)
+
     // Bit positions (sock configuration starts from bit 0)
-    uint256 constant BASE_COLOR_POS = 0;     // Base color first (logical foundation)
+    uint256 constant BASE_COLOR_POS = 0;
     uint256 constant OUTLINE_COLOR_POS = BASE_COLOR_POS + COLOR_BITS;
     uint256 constant TOP_COLOR_POS = OUTLINE_COLOR_POS + COLOR_BITS;
     uint256 constant TOP_INDEX_POS = TOP_COLOR_POS + COLOR_BITS;
@@ -68,7 +66,7 @@ contract Renderer {
 
     struct Style {
         uint8 colorIndex;  // Index into colorPalette
-        uint256 index;
+        uint16 index;
     }
 
     struct Sock {
@@ -93,42 +91,18 @@ contract Renderer {
     }
 
     function encodeSock(Sock memory sock) public view returns (uint256) {
-        // Validate the sock first
         checkSock(sock);
-        
         uint256 encoded = 0;
-        
-        // Encode in order of bit positions (lowest to highest)
-        // Base color (bits 0-7)
         encoded |= uint256(sock.baseColorIndex) << BASE_COLOR_POS;
-        
-        // Outline color (bits 8-15)
         encoded |= uint256(sock.outlineColorIndex) << OUTLINE_COLOR_POS;
-        
-        // Top color (bits 16-23)
         encoded |= uint256(sock.top.colorIndex) << TOP_COLOR_POS;
-        
-        // Top index (bits 24-27)
         encoded |= uint256(sock.top.index) << TOP_INDEX_POS;
-        
-        // Heel color (bits 28-35)
         encoded |= uint256(sock.heel.colorIndex) << HEEL_COLOR_POS;
-        
-        // Heel index (bits 36-39)
         encoded |= uint256(sock.heel.index) << HEEL_INDEX_POS;
-        
-        // Toe color (bits 40-47)
         encoded |= uint256(sock.toe.colorIndex) << TOE_COLOR_POS;
-        
-        // Toe index (bits 48-51)
         encoded |= uint256(sock.toe.index) << TOE_INDEX_POS;
-        
-        // Design color (bits 52-59)
         encoded |= uint256(sock.design.colorIndex) << DESIGN_COLOR_POS;
-        
-        // Design index (bits 60-65)
         encoded |= uint256(sock.design.index) << DESIGN_INDEX_POS;
-        
         return encoded;
     }
 
@@ -136,56 +110,32 @@ contract Renderer {
         sock = _decodeSockData(encoded);
     }
 
+    // Utility function for extracting values from encoded sock
+    function _extract(uint256 encoded, uint256 position, uint256 bits) internal pure returns (uint256) {
+        return (encoded >> position) & ((1 << bits) - 1);
+    }
+
     function _decodeSockData(uint256 encoded) internal view returns (Sock memory sock) {
-        // Extract colors and indices in order of bit positions
-        uint8 baseColorIndex = _extractColor(encoded, BASE_COLOR_POS);
-        uint8 outlineColorIndex = _extractColor(encoded, OUTLINE_COLOR_POS);
-        uint8 topColorIndex = _extractColor(encoded, TOP_COLOR_POS);
-        uint256 topIndex = _extractStyleIndex(encoded, TOP_INDEX_POS);
-        uint8 heelColorIndex = _extractColor(encoded, HEEL_COLOR_POS);
-        uint256 heelIndex = _extractStyleIndex(encoded, HEEL_INDEX_POS);
-        uint8 toeColorIndex = _extractColor(encoded, TOE_COLOR_POS);
-        uint256 toeIndex = _extractStyleIndex(encoded, TOE_INDEX_POS);
-        uint8 designColorIndex = _extractColor(encoded, DESIGN_COLOR_POS);
-        uint256 designIndex = _extractDesignIndex(encoded, DESIGN_INDEX_POS);
-        
-        // Construct Sock struct
+        uint8 baseColorIndex = uint8(_extract(encoded, BASE_COLOR_POS, COLOR_BITS));
+        uint8 outlineColorIndex = uint8(_extract(encoded, OUTLINE_COLOR_POS, COLOR_BITS));
+        uint8 topColorIndex = uint8(_extract(encoded, TOP_COLOR_POS, COLOR_BITS));
+        uint16 topIndex = uint16(_extract(encoded, TOP_INDEX_POS, STYLE_INDEX_BITS));
+        uint8 heelColorIndex = uint8(_extract(encoded, HEEL_COLOR_POS, COLOR_BITS));
+        uint16 heelIndex = uint16(_extract(encoded, HEEL_INDEX_POS, STYLE_INDEX_BITS));
+        uint8 toeColorIndex = uint8(_extract(encoded, TOE_COLOR_POS, COLOR_BITS));
+        uint16 toeIndex = uint16(_extract(encoded, TOE_INDEX_POS, STYLE_INDEX_BITS));
+        uint8 designColorIndex = uint8(_extract(encoded, DESIGN_COLOR_POS, COLOR_BITS));
+        uint16 designIndex = uint16(_extract(encoded, DESIGN_INDEX_POS, STYLE_INDEX_BITS));
         sock = Sock({
             baseColorIndex: baseColorIndex,
             outlineColorIndex: outlineColorIndex,
-            top: Style({
-                colorIndex: topColorIndex,
-                index: topIndex
-            }),
-            heel: Style({
-                colorIndex: heelColorIndex,
-                index: heelIndex
-            }),
-            toe: Style({
-                colorIndex: toeColorIndex,
-                index: toeIndex
-            }),
-            design: Style({
-                colorIndex: designColorIndex,
-                index: designIndex
-            })
+            top: Style({ colorIndex: topColorIndex, index: topIndex }),
+            heel: Style({ colorIndex: heelColorIndex, index: heelIndex }),
+            toe: Style({ colorIndex: toeColorIndex, index: toeIndex }),
+            design: Style({ colorIndex: designColorIndex, index: designIndex })
         });
-        
-        // Validate the decoded sock
         (bool isValid, string memory errors) = checkSock(sock);
         require(isValid, errors);
-    }
-
-    function _extractColor(uint256 encoded, uint256 position) internal pure returns (uint8) {
-        return uint8((encoded >> position) & ((1 << COLOR_BITS) - 1));
-    }
-
-    function _extractStyleIndex(uint256 encoded, uint256 position) internal pure returns (uint256) {
-        return (encoded >> position) & ((1 << STYLE_INDEX_BITS) - 1);
-    }
-
-    function _extractDesignIndex(uint256 encoded, uint256 position) internal pure returns (uint256) {
-        return (encoded >> position) & ((1 << DESIGN_INDEX_BITS) - 1);
     }
 
     function _trait(string memory traitType, string memory value) internal pure returns (string memory) {

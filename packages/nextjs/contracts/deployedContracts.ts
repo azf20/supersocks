@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0xe61a6e7442ce84072db14423ffbbe2609908ee38",
+      address: "0x5d1ce2a19aa885765abcef89b7590e213422a8b9",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751042416.json",
+      deploymentFile: "run-1751049573.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0xdce79d5f359c7ab52e3d6b45be2d0d382696d323",
+      address: "0x2f634917cc00a9897621cd3490327721198fa369",
       abi: [
         {
           type: "constructor",
@@ -412,6 +412,24 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "addStyle",
+          inputs: [
+            {
+              name: "index",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "style",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
           type: "function",
@@ -436,6 +454,13 @@ const deployedContracts = {
             },
           ],
           stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "cancelOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
         },
         {
           type: "function",
@@ -468,8 +493,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -485,8 +510,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -502,8 +527,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -519,8 +544,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -540,6 +565,19 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "completeOwnershipHandover",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
         },
         {
           type: "function",
@@ -579,8 +617,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -596,8 +634,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -613,8 +651,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -630,8 +668,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -671,8 +709,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -688,8 +726,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -705,8 +743,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -722,8 +760,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -770,8 +808,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -787,8 +825,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -804,8 +842,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -821,8 +859,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -927,8 +965,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -944,8 +982,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -961,8 +999,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -978,8 +1016,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -1043,8 +1081,8 @@ const deployedContracts = {
             },
             {
               name: "styleIndex",
-              type: "uint256",
-              internalType: "uint256",
+              type: "uint16",
+              internalType: "uint16",
             },
           ],
           outputs: [
@@ -1084,6 +1122,38 @@ const deployedContracts = {
               name: "attributes",
               type: "string",
               internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "ownershipHandoverExpiresAt",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           stateMutability: "view",
@@ -1138,8 +1208,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -1155,8 +1225,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -1172,8 +1242,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -1189,8 +1259,8 @@ const deployedContracts = {
                     },
                     {
                       name: "index",
-                      type: "uint256",
-                      internalType: "uint256",
+                      type: "uint16",
+                      internalType: "uint16",
                     },
                   ],
                 },
@@ -1210,6 +1280,20 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "requestOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
         },
         {
           type: "function",
@@ -1275,6 +1359,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
           name: "updateStyle",
           inputs: [
             {
@@ -1315,13 +1412,78 @@ const deployedContracts = {
           ],
           stateMutability: "view",
         },
+        {
+          type: "event",
+          name: "OwnershipHandoverCanceled",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverRequested",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "oldOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NewOwnerIsZeroAddress",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoHandoverRequest",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Unauthorized",
+          inputs: [],
+        },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751042416.json",
+      deploymentFile: "run-1751055908.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x86b3e65cdd7f9321118d5d4901a9800200c11b8a",
+      address: "0xef1707af46b68aa697c427325aea18f82b6b2629",
       abi: [
         {
           type: "constructor",
@@ -1410,6 +1572,19 @@ const deployedContracts = {
           ],
           outputs: [],
           stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "contractURI",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
         },
         {
           type: "function",
@@ -2138,11 +2313,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751042416.json",
+      deploymentFile: "run-1751055908.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0xc624801dd98bef87c0718ddb43ad3a566cc51ecc",
+      address: "0x1f9bcc15221eccc5204eb30b5a156031423700ac",
       abi: [
         {
           type: "constructor",
@@ -2280,7 +2455,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751042416.json",
+      deploymentFile: "run-1751055908.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { BuyButtons } from "../../../components/BuyButtons";
 import { desc, eq } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
 import { Address } from "~~/components/scaffold-eth/Address/Address";
@@ -94,24 +95,26 @@ export default function SockDetailPage() {
               <Address address={sockData.creator} size="sm" onlyEnsOrAddress={true} />
             </div>
             {/* Add to Basket Button */}
-            <button
-              className={`mt-4 w-full py-2 px-1 rounded font-bold text-white transition-colors ${inBasket ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"}`}
-              disabled={inBasket}
-              onClick={() => {
-                if (!inBasket) {
-                  addToBasket({
-                    sockId: sockData.id.toString(),
-                    sockData: {
-                      svgString: decodedSVG || "",
-                      metadata,
-                      isValid: true,
-                    },
-                  });
-                }
-              }}
-            >
-              {inBasket ? "In Basket" : "Add to Basket"}
-            </button>
+            <div className="mt-4">
+              <BuyButtons
+                isValid={true}
+                errors={undefined}
+                encodedSock={sockData.id}
+                onAddToBasket={() => {
+                  if (!inBasket) {
+                    addToBasket({
+                      sockId: sockData.id.toString(),
+                      sockData: {
+                        svgString: decodedSVG || "",
+                        metadata,
+                        isValid: true,
+                      },
+                    });
+                  }
+                }}
+                basketContainsSock={inBasket}
+              />
+            </div>
             {metadata?.attributes && metadata.attributes.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <div className="flex flex-wrap gap-1">

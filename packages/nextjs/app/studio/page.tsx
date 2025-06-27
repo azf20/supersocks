@@ -3,11 +3,36 @@
 import { useState } from "react";
 import Link from "next/link";
 import { BuyButtons } from "../../components/BuyButtons";
+import { Address } from "../../components/scaffold-eth/Address/Address";
 import deployedContracts from "../../contracts/deployedContracts";
 import toast from "react-hot-toast";
 import { formatUnits } from "viem";
 import { useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
+
+// Reusable configuration row component
+const ConfigRow = ({
+  label,
+  stylePicker,
+  colorPicker,
+  children,
+  border = true,
+}: {
+  label?: string;
+  stylePicker?: React.ReactNode;
+  colorPicker?: React.ReactNode;
+  children?: React.ReactNode;
+  border?: boolean;
+}) => (
+  <div className={(border ? "border " : "") + "p-2 rounded mb-2"}>
+    {label && <label className="block text-xs font-medium mb-1">{label}</label>}
+    <div className="flex flex-row items-center gap-2">
+      {stylePicker && <div className="w-[180px]">{stylePicker}</div>}
+      {colorPicker && <div className="flex-1">{colorPicker}</div>}
+      {children}
+    </div>
+  </div>
+);
 
 export default function StudioPage() {
   const { basket, addToBasket, sock, setSock } = useGlobalState();
@@ -102,19 +127,19 @@ export default function StudioPage() {
     outlineColorIndex: Number(sock.outlineColorIndex),
     design: {
       colorIndex: Number(sock.design.colorIndex),
-      index: BigInt(sock.design.index),
+      index: Number(sock.design.index),
     },
     top: {
       colorIndex: Number(sock.top.colorIndex),
-      index: BigInt(sock.top.index),
+      index: Number(sock.top.index),
     },
     heel: {
       colorIndex: Number(sock.heel.colorIndex),
-      index: BigInt(sock.heel.index),
+      index: Number(sock.heel.index),
     },
     toe: {
       colorIndex: Number(sock.toe.colorIndex),
-      index: BigInt(sock.toe.index),
+      index: Number(sock.toe.index),
     },
   };
 
@@ -153,29 +178,11 @@ export default function StudioPage() {
   const usdcPrice = data?.[2]?.result;
   const styles = data?.[3]?.result;
 
-  console.log(styles);
+  const selectedDesignStyle = styles?.[0]?.[Number(sock.design.index)] || "";
 
-  const { data: renderSockData } = useReadContracts({
-    contracts: [
-      {
-        address: deployedContracts[31337].Metadata.address,
-        abi: deployedContracts[31337].Metadata.abi,
-        functionName: "renderSock",
-        args: [sockForContract, encodedSock || BigInt(0)],
-      },
-      {
-        address: deployedContracts[31337].Metadata.address,
-        abi: deployedContracts[31337].Metadata.abi,
-        functionName: "getStyle",
-        args: [0, sockForContract.design.index],
-      },
-    ],
-  });
-
-  const svgString = renderSockData?.[0]?.result;
-  const designStyle = renderSockData?.[1]?.result;
-
-  const showDesignColor = designStyle && (designStyle.includes("designColor") || designStyle.includes("designOutline"));
+  const showDesignColor =
+    selectedDesignStyle &&
+    (selectedDesignStyle.includes("designColor") || selectedDesignStyle.includes("designOutline"));
 
   const handleAddToBasket = () => {
     if (!isValid || !encodedSock || Boolean(errors)) {
@@ -386,7 +393,7 @@ export default function StudioPage() {
       const baseColor = colorPalette.find(c => c.index === baseColorIndex)?.value || "#000000";
       const designColor = "#000000"; // Always use black for design color
 
-      return `<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"${viewBox}\">\n        <defs>\n          <style>\n            .baseColor { fill: ${baseColor}; }\n            .designColor { fill: ${designColor}; fill-rule: evenodd; }\n            .designOutline { stroke: ${designColor}; fill: none; stroke-width: 0.5; }\n          </style>\n        </defs>\n        <rect x=\"${viewBox.split(" ")[0]}\" y=\"${viewBox.split(" ")[1]}\" width=\"${viewBox.split(" ")[2]}\" height=\"${viewBox.split(" ")[3]}\" fill=\"transparent\"/>\n        ${style}\n      </svg>`;
+      return `<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"${viewBox}\">\n        <defs>\n          <style>\n            .baseColor { fill: ${baseColor}; }\n            .designColor { fill: ${designColor}; fill-rule: evenodd; }\n            .designOutline { stroke: ${designColor}; fill: none; }\n          </style>\n        </defs>\n        <rect x=\"${viewBox.split(" ")[0]}\" y=\"${viewBox.split(" ")[1]}\" width=\"${viewBox.split(" ")[2]}\" height=\"${viewBox.split(" ")[3]}\" fill=\"transparent\"/>\n        ${style}\n      </svg>`;
     };
 
     return (
@@ -464,6 +471,26 @@ export default function StudioPage() {
     design: { colorIndex: 0, index: "0" },
   };
 
+  const { data: renderSockData } = useReadContracts({
+    contracts: [
+      {
+        address: deployedContracts[31337].Metadata.address,
+        abi: deployedContracts[31337].Metadata.abi,
+        functionName: "renderSock",
+        args: [sockForContract, encodedSock || BigInt(0)],
+      },
+      {
+        address: deployedContracts[31337].SuperSocks.address,
+        abi: deployedContracts[31337].SuperSocks.abi,
+        functionName: "creator",
+        args: [encodedSock || BigInt(0)],
+      },
+    ],
+  });
+  const svgString = renderSockData?.[0]?.result;
+  const creator = renderSockData?.[1]?.result;
+  const sockExists = creator !== "0x0000000000000000000000000000000000000000";
+
   return (
     <div className="flex flex-col items-center flex-grow pt-6">
       <div className="px-2 w-full max-w-6xl">
@@ -490,8 +517,9 @@ export default function StudioPage() {
           <div className="space-y-3">
             <h2 className="text-lg font-bold mb-1">Sock Configuration</h2>
             {/* Section 1: Base, Outline, Design */}
-            <div className="flex flex-row gap-4 mb-2">
-              <div className="flex-1">
+            <ConfigRow
+              border={false}
+              stylePicker={
                 <ColorPicker
                   colors={getFilteredColors("baseColorPicker")}
                   selectedIndex={sock.baseColorIndex}
@@ -500,8 +528,8 @@ export default function StudioPage() {
                   onToggle={() => toggleColorPicker("baseColorPicker")}
                   pickerType="baseColorPicker"
                 />
-              </div>
-              <div className="flex-1">
+              }
+              colorPicker={
                 <ColorPicker
                   colors={getFilteredColors("outlineColorPicker")}
                   selectedIndex={sock.outlineColorIndex}
@@ -510,125 +538,113 @@ export default function StudioPage() {
                   onToggle={() => toggleColorPicker("outlineColorPicker")}
                   pickerType="outlineColorPicker"
                 />
-              </div>
-            </div>
-            {/* Design Style + Color */}
-            <div className="border p-2 rounded mb-2">
-              <label className="block text-xs font-medium mb-1">Design</label>
-              <div className="flex flex-row gap-2 items-center">
-                <div className="w-[180px]">
-                  <StylePicker
-                    styles={styles && Array.isArray(styles[0]) ? [...styles[0]] : []}
-                    selectedIndex={Number(sock.design.index)}
-                    onSelect={index => updateStyle("design", { index: String(index) })}
-                    isOpen={openColorPicker === "designStylePicker"}
-                    onToggle={() => toggleColorPicker("designStylePicker")}
-                    baseColorIndex={sock.baseColorIndex}
-                    viewBox="8 6 10 11"
+              }
+            />
+            <ConfigRow
+              label="Design"
+              stylePicker={
+                <StylePicker
+                  styles={styles && Array.isArray(styles[0]) ? [...styles[0]] : []}
+                  selectedIndex={Number(sock.design.index)}
+                  onSelect={index => updateStyle("design", { index: String(index) })}
+                  isOpen={openColorPicker === "designStylePicker"}
+                  onToggle={() => toggleColorPicker("designStylePicker")}
+                  baseColorIndex={sock.baseColorIndex}
+                  viewBox="8 6 10 11"
+                />
+              }
+              colorPicker={
+                sock.design.index !== "0" &&
+                showDesignColor && (
+                  <ColorPicker
+                    colors={getFilteredColors("designColorPicker")}
+                    selectedIndex={sock.design.colorIndex}
+                    onSelect={index => updateStyle("design", { colorIndex: index })}
+                    isOpen={openColorPicker === "designColorPicker"}
+                    onToggle={() => toggleColorPicker("designColorPicker")}
+                    pickerType="designColorPicker"
                   />
-                </div>
-                {sock.design.index !== "0" && showDesignColor && (
-                  <div className="flex-1">
-                    <ColorPicker
-                      colors={getFilteredColors("designColorPicker")}
-                      selectedIndex={sock.design.colorIndex}
-                      onSelect={index => updateStyle("design", { colorIndex: index })}
-                      isOpen={openColorPicker === "designColorPicker"}
-                      onToggle={() => toggleColorPicker("designColorPicker")}
-                      pickerType="designColorPicker"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-            {/* Section 2: Top, Heel, Toe */}
-            {/* Top Style + Color */}
-            <div className="border p-2 rounded mb-2">
-              <label className="block text-xs font-medium mb-1">Top Style</label>
-              <div className="flex flex-row gap-2 items-center">
-                <div className="w-[180px]">
-                  <StylePicker
-                    styles={styles && styles[3] ? [...styles[3]] : []}
-                    selectedIndex={Number(sock.top.index)}
-                    onSelect={index => updateStyle("top", { index: String(index) })}
-                    isOpen={openColorPicker === "topStylePicker"}
-                    onToggle={() => toggleColorPicker("topStylePicker")}
-                    baseColorIndex={sock.baseColorIndex}
-                    viewBox="5 1 15 7"
+                )
+              }
+            />
+            <ConfigRow
+              label="Top Style"
+              stylePicker={
+                <StylePicker
+                  styles={styles && styles[3] ? [...styles[3]] : []}
+                  selectedIndex={Number(sock.top.index)}
+                  onSelect={index => updateStyle("top", { index: String(index) })}
+                  isOpen={openColorPicker === "topStylePicker"}
+                  onToggle={() => toggleColorPicker("topStylePicker")}
+                  baseColorIndex={sock.baseColorIndex}
+                  viewBox="5 1 15 7"
+                />
+              }
+              colorPicker={
+                sock.top.index !== "0" && (
+                  <ColorPicker
+                    colors={getFilteredColors("topColorPicker")}
+                    selectedIndex={sock.top.colorIndex}
+                    onSelect={index => updateStyle("top", { colorIndex: index })}
+                    isOpen={openColorPicker === "topColorPicker"}
+                    onToggle={() => toggleColorPicker("topColorPicker")}
+                    pickerType="topColorPicker"
                   />
-                </div>
-                {sock.top.index !== "0" && (
-                  <div className="flex-1">
-                    <ColorPicker
-                      colors={getFilteredColors("topColorPicker")}
-                      selectedIndex={sock.top.colorIndex}
-                      onSelect={index => updateStyle("top", { colorIndex: index })}
-                      isOpen={openColorPicker === "topColorPicker"}
-                      onToggle={() => toggleColorPicker("topColorPicker")}
-                      pickerType="topColorPicker"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-            {/* Heel Style + Color */}
-            <div className="border p-2 rounded mb-2">
-              <label className="block text-xs font-medium mb-1">Heel Style</label>
-              <div className="flex flex-row gap-2 items-center">
-                <div className="w-[180px]">
-                  <StylePicker
-                    styles={styles && styles[1] ? [...styles[1]] : []}
-                    selectedIndex={Number(sock.heel.index)}
-                    onSelect={index => updateStyle("heel", { index: String(index) })}
-                    isOpen={openColorPicker === "heelStylePicker"}
-                    onToggle={() => toggleColorPicker("heelStylePicker")}
-                    baseColorIndex={sock.baseColorIndex}
-                    viewBox="12 14 8 7"
+                )
+              }
+            />
+            <ConfigRow
+              label="Heel Style"
+              stylePicker={
+                <StylePicker
+                  styles={styles && styles[1] ? [...styles[1]] : []}
+                  selectedIndex={Number(sock.heel.index)}
+                  onSelect={index => updateStyle("heel", { index: String(index) })}
+                  isOpen={openColorPicker === "heelStylePicker"}
+                  onToggle={() => toggleColorPicker("heelStylePicker")}
+                  baseColorIndex={sock.baseColorIndex}
+                  viewBox="12 14 8 7"
+                />
+              }
+              colorPicker={
+                sock.heel.index !== "0" && (
+                  <ColorPicker
+                    colors={getFilteredColors("heelColorPicker")}
+                    selectedIndex={sock.heel.colorIndex}
+                    onSelect={index => updateStyle("heel", { colorIndex: index })}
+                    isOpen={openColorPicker === "heelColorPicker"}
+                    onToggle={() => toggleColorPicker("heelColorPicker")}
+                    pickerType="heelColorPicker"
                   />
-                </div>
-                {sock.heel.index !== "0" && (
-                  <div className="flex-1">
-                    <ColorPicker
-                      colors={getFilteredColors("heelColorPicker")}
-                      selectedIndex={sock.heel.colorIndex}
-                      onSelect={index => updateStyle("heel", { colorIndex: index })}
-                      isOpen={openColorPicker === "heelColorPicker"}
-                      onToggle={() => toggleColorPicker("heelColorPicker")}
-                      pickerType="heelColorPicker"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-            {/* Toe Style + Color */}
-            <div className="border p-2 rounded mb-2">
-              <label className="block text-xs font-medium mb-1">Toe Style</label>
-              <div className="flex flex-row gap-2 items-center">
-                <div className="w-[180px]">
-                  <StylePicker
-                    styles={styles && styles[2] ? [...styles[2]] : []}
-                    selectedIndex={Number(sock.toe.index)}
-                    onSelect={index => updateStyle("toe", { index: String(index) })}
-                    isOpen={openColorPicker === "toeStylePicker"}
-                    onToggle={() => toggleColorPicker("toeStylePicker")}
-                    baseColorIndex={sock.baseColorIndex}
-                    viewBox="2 15 10 10"
+                )
+              }
+            />
+            <ConfigRow
+              label="Toe Style"
+              stylePicker={
+                <StylePicker
+                  styles={styles && styles[2] ? [...styles[2]] : []}
+                  selectedIndex={Number(sock.toe.index)}
+                  onSelect={index => updateStyle("toe", { index: String(index) })}
+                  isOpen={openColorPicker === "toeStylePicker"}
+                  onToggle={() => toggleColorPicker("toeStylePicker")}
+                  baseColorIndex={sock.baseColorIndex}
+                  viewBox="2 15 10 10"
+                />
+              }
+              colorPicker={
+                sock.toe.index !== "0" && (
+                  <ColorPicker
+                    colors={getFilteredColors("toeColorPicker")}
+                    selectedIndex={sock.toe.colorIndex}
+                    onSelect={index => updateStyle("toe", { colorIndex: index })}
+                    isOpen={openColorPicker === "toeColorPicker"}
+                    onToggle={() => toggleColorPicker("toeColorPicker")}
+                    pickerType="toeColorPicker"
                   />
-                </div>
-                {sock.toe.index !== "0" && (
-                  <div className="flex-1">
-                    <ColorPicker
-                      colors={getFilteredColors("toeColorPicker")}
-                      selectedIndex={sock.toe.colorIndex}
-                      onSelect={index => updateStyle("toe", { colorIndex: index })}
-                      isOpen={openColorPicker === "toeColorPicker"}
-                      onToggle={() => toggleColorPicker("toeColorPicker")}
-                      pickerType="toeColorPicker"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+                )
+              }
+            />
             {/* Reset Button */}
             <button
               type="button"
@@ -662,6 +678,13 @@ export default function StudioPage() {
                 )}
               </div>
             </div>
+            {/* Sock Exists Info */}
+            {sockExists && (
+              <div className="p-2 rounded bg-blue-50 border border-blue-300 text-blue-800 text-sm flex items-center gap-2">
+                <span>This sock already exists! Creator:</span>
+                <Address address={creator} size="sm" />
+              </div>
+            )}
             {/* Validation Status */}
             <div
               className={`p-2 rounded text-sm ${isValid ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
