@@ -64,6 +64,18 @@ contract SuperSocks is Ownable, ERC1155 {
         metadata = _metadata;
     }
 
+    function setPrice(uint256 _price) external onlyOwner {
+        usdcPrice = _price;
+    }
+
+    function setCreatorFee(uint256 _creatorFee) external onlyOwner {
+        creatorFee = _creatorFee;
+    }
+
+    function setSlippage(uint256 _slippage) external onlyOwner {
+        slippage = _slippage;
+    }
+
     /// @dev Returns the Uniform Resource Identifier (URI) for token `id`.
     function uri(uint256 id) public view override returns (string memory) {
         return metadata.tokenURI(id);
