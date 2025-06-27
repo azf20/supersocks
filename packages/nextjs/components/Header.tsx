@@ -11,6 +11,7 @@ import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaff
 import { useOutsideClick, useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
 
+
 type HeaderMenuLink = {
   label: string;
   href: string;
@@ -41,7 +42,7 @@ export const HeaderMenuLinks = () => {
   // Add basket link with badge
   const basketLink = {
     label: "Basket",
-    href: "/basket",
+    href: "/checkout",
     icon: <ShoppingBagIcon className="h-4 w-4" />,
     badge: basket.totalItems,
   };

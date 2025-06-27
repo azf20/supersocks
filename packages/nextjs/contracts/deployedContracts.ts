@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0xf56aa3aceddf88ab12e494d0b96da3c09a5d264e",
+      address: "0xd49880bddfac4fd20d3b6bee01c71231c0c63789",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750971870.json",
+      deploymentFile: "run-1751034195.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0xdbd296711ec8ef9aacb623ee3f1c0922dce0d7b2",
+      address: "0x45b0bbaceedcfbae96aec2d2ffef70777b0b3ae3",
       abi: [
         {
           type: "constructor",
@@ -402,34 +402,16 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "addColor",
-          inputs: [
+          name: "COLORS",
+          inputs: [],
+          outputs: [
             {
-              name: "color",
+              name: "",
               type: "string",
               internalType: "string",
             },
           ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "addStyle",
-          inputs: [
-            {
-              name: "index",
-              type: "uint8",
-              internalType: "uint8",
-            },
-            {
-              name: "_style",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -553,25 +535,6 @@ const deployedContracts = {
             },
             {
               name: "errors",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "colorPalette",
-          inputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
               type: "string",
               internalType: "string",
             },
@@ -1042,9 +1005,9 @@ const deployedContracts = {
           name: "getColor",
           inputs: [
             {
-              name: "index",
-              type: "uint8",
-              internalType: "uint8",
+              name: "spot",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           outputs: [
@@ -1054,26 +1017,20 @@ const deployedContracts = {
               internalType: "string",
             },
           ],
-          stateMutability: "view",
+          stateMutability: "pure",
         },
         {
           type: "function",
-          name: "getColorIndex",
-          inputs: [
-            {
-              name: "color",
-              type: "string",
-              internalType: "string",
-            },
-          ],
+          name: "getColorCount",
+          inputs: [],
           outputs: [
             {
               name: "",
-              type: "uint8",
-              internalType: "uint8",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
-          stateMutability: "view",
+          stateMutability: "pure",
         },
         {
           type: "function",
@@ -1347,11 +1304,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750971870.json",
+      deploymentFile: "run-1751034195.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xdfd787c807dea8d7e53311b779bc0c6a4704d286",
+      address: "0x8f3024d12c3d702930f2ff98aa8e2261f0be490a",
       abi: [
         {
           type: "constructor",
@@ -2168,11 +2125,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750971870.json",
+      deploymentFile: "run-1751034195.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x6d014319e0f36651997697c98da594c7cf235fa4",
+      address: "0x67f65b834aaac92c15c2eba9ff7e81f2d33a1cfd",
       abi: [
         {
           type: "constructor",
@@ -2310,7 +2267,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1750971870.json",
+      deploymentFile: "run-1751034195.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

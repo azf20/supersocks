@@ -6,8 +6,22 @@ import './svg/Utils.sol';
 
 contract Renderer {
 
-    // Color mapping - we'll encode colors as uint8 indices
-    string[] public colorPalette;
+    // Color storage - efficient constant string approach
+    string public constant COLORS = '------F1F5F9E2E8F0CBD5E194A3B864748B4755693341551E293BF5F5F4E7E5E4D6D3D1A8A29E78716C57534E44403C292524FEE2E2FECACAFCA5A5F87171EF4444DC2626B91C1C991B1BFFEDD5FED7AAFDBA74FB923CF97316EA580CC2410C9A3412FEF3C7FDE68AFCD34DFBBF24F59E0BD97706B4530992400EFEF9C3FEF08AFDE047FACC15EAB308CA8A04A16207854D0EECFCCBD9F99DBEF264A3E63584CC1665A30D4D7C0F3F6212DCFCE7BBF7D086EFAC4ADE8022C55E16A34A15803D166534D1FAE5A7F3D06EE7B734D39910B981059669047857065F46CCFBF199F6E45EEAD42DD4BF14B8A60D94880F766E115E59CFFAFEA5F3FC67E8F922D3EE06B6D40891B20E7490155E75E0F2FEBAE6FD7DD3FC38BDF80EA5E90284C70369A1075985DBEAFEBFDBFE93C5FD60A5FA3B82F62563EB1D4ED81E40AFE0E7FFC7D2FEA5B4FC818CF86366F14F46E54338CA3730A3EDE9FEDDD6FEC4B5FDA78BFA8B5CF67C3AED6D28D95B21B6F3E8FFE9D5FFD8B4FEC084FCA855F79333EA7E22CE6B21A8FAE8FFF5D0FEF0ABFCE879F9D946EFC026D3A21CAF86198FFCE7F3FBCFE8F9A8D4F472B6EC4899DB2777BE185D9D174DFFE4E6FECDD3FDA4AFFB7185F43F5EE11D48BE123C9F1239';
+
+    // Extract 0-6 substring at spot within mega palette string
+    function getColor(uint256 spot) public pure returns (string memory) {
+        if (spot == 0) return 'FF000000';
+        bytes memory strBytes = bytes(COLORS);
+        bytes memory result = new bytes(6);
+        for (uint256 i = (spot * 6); i < ((spot + 1) * 6); i++) result[i - (spot * 6)] = strBytes[i];
+        return string(result);
+    }
+
+    // Get total number of colors available
+    function getColorCount() public pure returns (uint256) {
+        return bytes(COLORS).length / 6;
+    }
 
     // 0 = designs
     // 1 = heels
@@ -16,7 +30,7 @@ contract Renderer {
     string[] public styleNames = ["design", "heel", "toe", "top"];
     mapping(uint8 => string[]) public styleLookup;
 
-    function addStyle(uint8 index, string memory _style) public {
+    function _addStyle(uint8 index, string memory _style) internal virtual {
         styleLookup[index].push(_style);
     }
 
@@ -59,46 +73,10 @@ contract Renderer {
     }
 
     constructor() {
-        // Initialize color palette with common colors
-        colorPalette = [
-            "#FF000000", // 0 - Transparent
-            "#FFFFFF", // 1 - White
-            "#000000", // 2 - Black
-            "#FF0000", // 3 - Red
-            "#00FF00", // 4 - Green
-            "#0000FF", // 5 - Blue
-            "#FFFF00", // 6 - Yellow
-            "#FF00FF", // 7 - Magenta
-            "#00FFFF", // 8 - Cyan
-            "#FFA500", // 9 - Orange
-            "#800080", // 10 - Purple
-            "#A52A2A", // 11 - Brown
-            "#808080", // 12 - Gray
-            "#FFC0CB", // 13 - Pink
-            "#008000", // 14 - Dark Green
-            "#000080", // 15 - Navy
-            "#FFD700"  // 16 - Gold
-        ];
-        
+        // No initialization needed - colors are stored in constant string
     }
 
-    function addColor(string memory color) public {
-        colorPalette.push(color);
-    }
 
-    function getColorIndex(string memory color) public view returns (uint8) {
-        for (uint8 i = 0; i < colorPalette.length; i++) {
-            if (keccak256(abi.encodePacked(colorPalette[i])) == keccak256(abi.encodePacked(color))) {
-                return i;
-            }
-        }
-        revert("Color not found in palette");
-    }
-
-    function getColor(uint8 index) public view returns (string memory) {
-        require(index < colorPalette.length, "Color index out of bounds");
-        return colorPalette[index];
-    }
 
     function validateTokenId(uint256 tokenId) public view returns (bool) {
         Sock memory sock = decodeSock(tokenId);
@@ -260,13 +238,13 @@ contract Renderer {
         string memory toeColor = sock.toe.colorIndex == 0 ? getColor(sock.baseColorIndex) : getColor(sock.toe.colorIndex);
         
         return string.concat(
-            generateFillStyle('baseColor', sockId, getColor(sock.baseColorIndex)),
-            generateFillStyle('outlineColor', sockId, getColor(sock.outlineColorIndex)),
-            generateFillStyle('topColor', sockId, getColor(sock.top.colorIndex)),
-            generateFillStyle('heelColor', sockId, heelColor),
-            generateFillStyle('toeColor', sockId, toeColor),
-            generateFillStyle('designColor', sockId, getColor(sock.design.colorIndex)),
-            generateStrokeStyle('designOutline', sockId, getColor(sock.design.colorIndex))
+            generateFillStyle('baseColor', sockId, string.concat('#', getColor(sock.baseColorIndex))),
+            generateFillStyle('outlineColor', sockId, string.concat('#', getColor(sock.outlineColorIndex))),
+            generateFillStyle('topColor', sockId, string.concat('#', getColor(sock.top.colorIndex))),
+            generateFillStyle('heelColor', sockId, string.concat('#', heelColor)),
+            generateFillStyle('toeColor', sockId, string.concat('#', toeColor)),
+            generateFillStyle('designColor', sockId, string.concat('#', getColor(sock.design.colorIndex))),
+            generateStrokeStyle('designOutline', sockId, string.concat('#', getColor(sock.design.colorIndex)))
         );
     }
 
@@ -295,14 +273,15 @@ contract Renderer {
 
     function checkSock(Sock memory sock) public view returns (bool isValid, string memory errors) {
         errors = "";
+        uint256 colorCount = getColorCount();
         
         // Check base color index
-        if (sock.baseColorIndex >= colorPalette.length) {
+        if (sock.baseColorIndex >= colorCount) {
             errors = string.concat(errors, "Base color index out of bounds; ");
         }
         
         // Check outline color index
-        if (sock.outlineColorIndex >= colorPalette.length) {
+        if (sock.outlineColorIndex >= colorCount) {
             errors = string.concat(errors, "Outline color index out of bounds; ");
         }
         
@@ -354,6 +333,7 @@ contract Renderer {
 
     function checkStyle(string memory name, Style memory style, uint256 maxIndex, uint8 baseColorIndex) internal view returns (bool isValid, string memory errors) {
         errors = "";
+        uint256 colorCount = getColorCount();
         
         if (style.index > maxIndex) {
             errors = string.concat(name, " index too large; ");
@@ -367,7 +347,7 @@ contract Renderer {
                 errors = string.concat(errors, name, " color must be different from base color if ", name, " index is not 0; ");
             }
         }
-        if (style.colorIndex > colorPalette.length - 1) {
+        if (style.colorIndex > colorCount - 1) {
             errors = string.concat(errors, name, " color index too large; ");
         }
         

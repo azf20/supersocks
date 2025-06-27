@@ -222,7 +222,7 @@ export default function ProfilePage() {
               <p className="text-xl text-gray-500">No socks found</p>
               <p className="text-sm mt-2">This address doesn&apos;t own any socks yet</p>
               <div className="mt-4">
-                <Link href="/studio" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <Link href="/studio" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">
                   Create Your First Sock
                 </Link>
               </div>
@@ -232,7 +232,7 @@ export default function ProfilePage() {
 
         {/* Back to Home */}
         <div className="text-center">
-          <Link href="/" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          <Link href="/" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4">
             ← Back to Home
           </Link>
         </div>

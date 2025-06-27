@@ -1,33 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { PayWithETH } from "../../components/PayWithETH";
+import { PayWithUSDCBasic } from "../../components/PayWithUSDCBasic";
+import { PayWithUSDCEIP5792 } from "../../components/PayWithUSDCEIP5792";
+import { USDCFaucet } from "../../components/USDCFaucet";
 import deployedContracts from "../../contracts/deployedContracts";
-import externalContracts from "../../contracts/externalContracts";
-import { ChainId, Token } from "@uniswap/sdk-core";
-import { erc20Abi, formatEther, formatUnits } from "viem";
-import { useAccount, useReadContracts, useSendCalls, useSimulateContract, useWaitForCallsStatus } from "wagmi";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import { erc20Abi, formatUnits } from "viem";
+import { useAccount, useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
-
-const usdcAddress =
-  process.env.NEXT_PUBLIC_USDC == "faucet"
-    ? deployedContracts[31337].FreeRc20.address
-    : "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
-
-const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
-const USDC_TOKEN = new Token(ChainId.OPTIMISM, usdcAddress, 6, "USDC", "USDC");
+import { usdcAddress } from "~~/utils/supersocks";
 
 export default function CheckoutPage() {
-  const { basket, clearBasket } = useGlobalState();
+  const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
   const { address } = useAccount();
   const [paymentMethod, setPaymentMethod] = useState<"usdc" | "eth">("usdc");
-  const { sendCallsAsync, data: sendCallsData, status: sendCallsStatus } = useSendCalls();
-  const { data: callsStatusData } = useWaitForCallsStatus({
-    id: sendCallsData?.id,
-  });
-
-  const callFailure = sendCallsData && callsStatusData?.status === "failure";
+  const [success, setSuccess] = useState(false);
 
   // Fetch the price once from the contract
   const { data: usdcPriceData, refetch: refetchUsdc } = useReadContracts({
@@ -38,10 +27,16 @@ export default function CheckoutPage() {
         functionName: "usdcPrice",
       },
       {
-        address: USDC_TOKEN.address,
+        address: usdcAddress,
         abi: erc20Abi,
         functionName: "balanceOf",
         args: [address!],
+      },
+      {
+        address: usdcAddress,
+        abi: erc20Abi,
+        functionName: "allowance",
+        args: [address!, deployedContracts[31337].SuperSocks.address],
       },
     ],
   });
@@ -52,124 +47,25 @@ export default function CheckoutPage() {
   // Check if USDC balance is sufficient
   const hasSufficientUsdc = usdcBalance && usdcBalance >= totalUsdcPrice;
 
-  // Get ETH quote for the total USDC amount
-  const QuoteConfig = {
-    poolKey: {
-      currency0: ETH_TOKEN.address,
-      currency1: USDC_TOKEN.address,
-      fee: 500,
-      tickSpacing: 10,
-      hooks: "0x0000000000000000000000000000000000000000",
-    },
-    zeroForOne: true,
-    exactAmount: totalUsdcPrice,
-    hookData: "0x00",
-  };
-
-  const { data: quoteResult } = useSimulateContract({
-    address: externalContracts[31337].QUOTER.address,
-    abi: externalContracts[31337].QUOTER.abi,
-    functionName: "quoteExactOutputSingle",
-    args: [QuoteConfig],
-    query: {
-      enabled: totalUsdcPrice > 0n,
-    },
-  });
-
-  const slippage = 50n; // 50% slippage
-  const quote = quoteResult?.result[0];
-  const ethPrice = quote ? (quote * (slippage + 100n)) / 100n : 0n;
-
-  const { writeContractAsync, isMining } = useScaffoldWriteContract({
-    contractName: "FreeRc20",
-  });
-
-  const handleFaucet = async () => {
-    if (!address) return;
-    await writeContractAsync({
-      functionName: "mint",
-      args: [address as string, BigInt(100_000_000)], // 100 USDC with 6 decimals
-    });
-    refetchUsdc();
-  };
-
-  const handlePayment = async () => {
-    if (!address || basket.items.length === 0) {
-      alert("Please connect your wallet and ensure your basket is not empty");
-      return;
-    }
-
-    try {
-      const encodedSocks = basket.items.flatMap(item => Array(item.count).fill(item.sockId));
-      const quantities = basket.items.flatMap(item => Array(item.count).fill(BigInt(1)));
-
-      if (paymentMethod === "usdc") {
-        console.log("buying");
-        await sendCallsAsync({
-          calls: [
-            {
-              to: USDC_TOKEN.address,
-              abi: erc20Abi,
-              functionName: "approve",
-              args: [deployedContracts[31337].SuperSocks.address, totalUsdcPrice],
-            },
-            {
-              to: deployedContracts[31337].SuperSocks.address,
-              abi: deployedContracts[31337].SuperSocks.abi,
-              functionName: "mint",
-              args: [address, encodedSocks, quantities, totalUsdcPrice],
-            },
-          ],
-          experimental_fallback: true,
-        });
-      } else {
-        await sendCallsAsync({
-          calls: [
-            {
-              to: deployedContracts[31337].Swapper.address,
-              abi: deployedContracts[31337].Swapper.abi,
-              functionName: "mintSocksWithETH",
-              args: [address, encodedSocks, quantities, totalUsdcPrice, address],
-              value: ethPrice,
-            },
-          ],
-          experimental_fallback: true,
-          experimental_fallbackDelay: 1000,
-        });
-      }
-      // Do NOT clear basket or redirect here!
-    } catch (error) {
-      console.error("Payment failed:", error);
-      alert("Payment failed. Please try again.");
+  const handleQuantityChange = (sockId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromBasket(sockId);
+    } else {
+      updateBasketItemQuantity(sockId, newQuantity);
     }
   };
 
-  useEffect(() => {
-    if (sendCallsData && callsStatusData?.status === "success") {
-      const timeout = setTimeout(() => {
-        clearBasket();
-      }, 500); // 500ms delay
-      return () => clearTimeout(timeout);
-    }
-  }, [sendCallsData, callsStatusData, clearBasket]);
+  const handlePaymentSuccess = () => {
+    // Clear basket after successful payment
+    setSuccess(true);
 
-  // Show loading state while waiting for confirmation
-  if (sendCallsData && callsStatusData?.status == "pending") {
-    return (
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5 w-full max-w-4xl">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Processing Payment...</h1>
-            <div className="bg-yellow-100 p-8 rounded-lg text-yellow-800 text-xl">
-              Waiting for transaction confirmation...
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    const timeout = setTimeout(() => {
+      clearBasket();
+    }, 500); // 500ms delay
+    return () => clearTimeout(timeout);
+  };
 
-  if (sendCallsData && callsStatusData?.status === "success") {
+  if (success) {
     return (
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5 w-full max-w-2xl">
@@ -241,30 +137,63 @@ export default function CheckoutPage() {
     );
   }
 
+  const encodedSocks = basket.items.map(item => item.sockId);
+  const quantities = basket.items.map(item => BigInt(item.count));
+  console.log(encodedSocks, quantities);
+
   return (
     <div className="flex items-center flex-col flex-grow pt-10">
       <div className="px-5 w-full max-w-4xl">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">Checkout</h1>
-          <Link href="/basket" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-            Back to Basket
-          </Link>
+          <button onClick={clearBasket} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Clear Basket
+          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Order Summary */}
           <div>
             <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {basket.items.map(item => (
-                <div key={item.sockId} className="flex items-center gap-3 p-3 border rounded">
-                  <div
-                    dangerouslySetInnerHTML={{ __html: item.sockData.svgString }}
-                    className="sock-svg-preview w-16 h-16 border border-gray-300 rounded flex-shrink-0 flex items-center justify-center overflow-hidden"
-                  />
-                  <div className="flex-grow">
-                    <h3 className="font-semibold">{item.sockData.metadata?.name || `Sock #${item.sockId}`}</h3>
-                    <p className="text-gray-600 text-sm">Quantity: {item.count}</p>
+                <div key={item.sockId} className="border rounded-lg p-4 bg-white shadow-sm">
+                  <div className="flex items-center gap-4">
+                    {/* Sock Preview */}
+                    <div className="flex-shrink-0">
+                      <div
+                        dangerouslySetInnerHTML={{ __html: item.sockData.svgString }}
+                        className="sock-svg-preview w-24 h-24 border border-gray-300 rounded flex items-center justify-center overflow-hidden"
+                      />
+                    </div>
+
+                    {/* Item Details */}
+                    <div className="flex-grow">
+                      <h3 className="font-semibold text-lg">{`#${item.sockId}`}</h3>
+
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          onClick={() => handleQuantityChange(item.sockId, item.count - 1)}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-3 rounded"
+                        >
+                          -
+                        </button>
+                        <span className="text-lg font-medium min-w-[2rem] text-center">{item.count}</span>
+                        <button
+                          onClick={() => handleQuantityChange(item.sockId, item.count + 1)}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-3 rounded"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => removeFromBasket(item.sockId)}
+                          className="text-red-500 hover:text-red-700 font-medium ml-auto"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -294,16 +223,18 @@ export default function CheckoutPage() {
                     {!hasSufficientUsdc && <div className="text-sm text-red-500">Insufficient balance</div>}
                   </div>
                 </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="eth"
-                    checked={paymentMethod === "eth"}
-                    onChange={e => setPaymentMethod(e.target.value as "usdc" | "eth")}
-                    className="mr-2"
-                  />
-                  Pay with ETH ({ethPrice > 0n ? formatEther(ethPrice) : "Calculating..."} ETH)
-                </label>
+                {process.env.NEXT_PUBLIC_USDC !== "faucet" && (
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="eth"
+                      checked={paymentMethod === "eth"}
+                      onChange={e => setPaymentMethod(e.target.value as "usdc" | "eth")}
+                      className="mr-2"
+                    />
+                    Pay with ETH
+                  </label>
+                )}
               </div>
             </div>
 
@@ -320,32 +251,41 @@ export default function CheckoutPage() {
               <div className="flex justify-between items-center text-xl font-bold">
                 <span>Total:</span>
                 <span>
-                  {paymentMethod === "usdc"
-                    ? `${formatUnits(totalUsdcPrice, 6)} USDC`
-                    : `${ethPrice > 0n ? formatEther(ethPrice) : "Calculating..."} ETH`}
+                  {paymentMethod === "usdc" ? `${formatUnits(totalUsdcPrice, 6)} USDC` : "Calculating ETH price..."}
                 </span>
               </div>
             </div>
 
             {/* Payment Button */}
-            <button
-              onClick={handlePayment}
-              disabled={
-                !address ||
-                sendCallsStatus === "pending" ||
-                totalUsdcPrice === 0n ||
-                (paymentMethod === "usdc" && !hasSufficientUsdc)
-              }
-              className="w-full bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded"
-            >
-              {!address
-                ? "Connect Wallet to Pay"
-                : sendCallsStatus === "pending"
-                  ? "Processing Payment..."
-                  : paymentMethod === "usdc" && !hasSufficientUsdc
-                    ? "Insufficient USDC Balance"
-                    : `Pay with ${paymentMethod.toUpperCase()}`}
-            </button>
+            {paymentMethod === "usdc" && (
+              <div className="flex flex-col gap-2">
+                <PayWithUSDCBasic
+                  allowance={(usdcPriceData?.[2]?.result as bigint) || 0n}
+                  cost={totalUsdcPrice}
+                  address={address as string}
+                  encodedSocks={encodedSocks}
+                  quantities={quantities}
+                  onSuccess={handlePaymentSuccess}
+                />
+                <PayWithUSDCEIP5792
+                  allowance={(usdcPriceData?.[2]?.result as bigint) || 0n}
+                  cost={totalUsdcPrice}
+                  address={address as string}
+                  encodedSocks={encodedSocks}
+                  quantities={quantities}
+                  onSuccess={handlePaymentSuccess}
+                />
+              </div>
+            )}
+            {paymentMethod === "eth" && (
+              <PayWithETH
+                totalUsdcPrice={totalUsdcPrice}
+                encodedSocks={encodedSocks}
+                quantities={quantities}
+                address={address as string}
+                onSuccess={handlePaymentSuccess}
+              />
+            )}
 
             {!address && (
               <p className="text-red-500 text-sm mt-2">Please connect your wallet to complete the purchase</p>
@@ -355,16 +295,7 @@ export default function CheckoutPage() {
                 Your USDC balance is insufficient. Please use ETH payment or add more USDC.
               </p>
             )}
-            {process.env.NEXT_PUBLIC_USDC === "faucet" && (
-              <button
-                className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleFaucet}
-                disabled={isMining}
-              >
-                {isMining ? "Minting..." : "Get Free USDC"}
-              </button>
-            )}
-            {callFailure && <p className="text-red-500 text-sm mt-2">Payment failed. Please try again.</p>}
+            <USDCFaucet onSuccess={refetchUsdc} />
           </div>
         </div>
       </div>

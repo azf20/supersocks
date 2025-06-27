@@ -19,7 +19,7 @@ export function BuyButtons({
     if (!basketContainsSock && onAddToBasket) {
       onAddToBasket();
     }
-    router.push("/basket");
+    router.push("/checkout");
   };
 
   return (
@@ -27,7 +27,7 @@ export function BuyButtons({
       <button
         onClick={onAddToBasket}
         disabled={!isValid || !encodedSock || Boolean(errors) || basketContainsSock}
-        className="flex-1 bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-2 rounded"
+        className="flex-1 bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-2"
       >
         {basketContainsSock
           ? "Already in Basket"
@@ -39,7 +39,7 @@ export function BuyButtons({
       </button>
       <button
         type="button"
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-center"
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 text-center"
         onClick={handleBuyNow}
       >
         Buy Now

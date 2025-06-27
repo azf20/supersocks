@@ -29,6 +29,7 @@ library PatternLib {
     string public constant designCircle = '<path d="M9.5 10h1v-1h1v-1h3v1h1v1h1v3h-1v1h-1v1h-3v-1h-1v-1h-1v-3" class="designColor"/>';
     string public constant designRing = '<path d="M9.5 9h1v-1h1v-1h3v1h1v1h1v3h-1v1h-1v1h-3v-1h-1v-1h-1Zm2 0h3v3h-3Z" class="designColor"/>';
     string public constant designDog = '<path d="M11 8h-1v1h-1v1h2v3h-1v1h2v-2h3v1h-1v1h2v-4h1v-1h-1v1h-4v-3h-1v1Z" class="designColor"/>';
+    string public constant designBG = '<path d="M9 10.5v5h3v-2h2v2h3v-5h-2v1h-1v-1h-2v1h-1v-1Zm3.5-1h3v-1h-1v-1h-1v-1h-1Zm0 0v1h1v-1Z" class="designColor"/>';
     
     // Legacy patterns (keeping for compatibility)
     string public constant optimism = '<path d="m10 15v3h2v-3Z" class="patternOutline"/><path d="m13.5 18.5v-3.5h2v2h-2" class="patternOutline"/><path d="m21 15v3h2v-3Z" class="patternOutline"/><path d="m24.5 18.5v-3.5h2v2h-2" class="patternOutline"/>';

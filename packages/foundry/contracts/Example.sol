@@ -1,35 +1,35 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-import './NewRenderer.sol';
+import './Renderer.sol';
 import './PatternLib.sol';
 
 contract Example is Renderer {
 
     constructor() {
         // Design patterns (index 0)
-        addStyle(0, ''); // Empty design
-        addStyle(0, PatternLib.designSmile);
+        _addStyle(0, ''); // Empty design
+        _addStyle(0, PatternLib.designSmile);
         
         // Heel patterns (index 1)
-        addStyle(1, ''); // Empty heel
-        addStyle(1, PatternLib.heel);
-        addStyle(1, PatternLib.heelBig);
+        _addStyle(1, ''); // Empty heel
+        _addStyle(1, PatternLib.heel);
+        _addStyle(1, PatternLib.heelBig);
         
         // Toe patterns (index 2)
-        addStyle(2, ''); // Empty toe
-        addStyle(2, PatternLib.toe);
-        addStyle(2, PatternLib.toeBig);
+        _addStyle(2, ''); // Empty toe
+        _addStyle(2, PatternLib.toe);
+        _addStyle(2, PatternLib.toeBig);
         
         // Top patterns (index 3)
-        addStyle(3, ''); // Empty top
-        addStyle(3, PatternLib.topOne);
-        addStyle(3, PatternLib.topTwo);
-        addStyle(3, PatternLib.topStripeNoOffset);
-        addStyle(3, PatternLib.topStripeThin);
-        addStyle(3, PatternLib.topBig);
-        addStyle(3, PatternLib.topVerticalStripes);
-        addStyle(3, PatternLib.topVerticalWithHorizontal);
+        _addStyle(3, ''); // Empty top
+        _addStyle(3, PatternLib.topOne);
+        _addStyle(3, PatternLib.topTwo);
+        _addStyle(3, PatternLib.topStripeNoOffset);
+        _addStyle(3, PatternLib.topStripeThin);
+        _addStyle(3, PatternLib.topBig);
+        _addStyle(3, PatternLib.topVerticalStripes);
+        _addStyle(3, PatternLib.topVerticalWithHorizontal);
     }
     
     function sock1() internal view returns (string memory) {

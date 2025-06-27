@@ -1,5 +1,5 @@
+import { erc20Abi } from "viem";
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
-
 
 /**
  * @example
@@ -14,6 +14,10 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
  */
 const externalContracts = {
   31337: {
+    USDC: {
+      address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+      abi: erc20Abi,
+    },
     UNIVERSAL_ROUTER: {
       address: "0x851116D9223fabED8E56C0E6b8Ad0c31d98B3507",
       abi: [

@@ -10,35 +10,36 @@ contract Metadata is Renderer {
 
     constructor() {
                 // Design patterns (index 0)
-        addStyle(0, ''); // Empty design
-        addStyle(0, PatternLib.designSmile);
-        addStyle(0, PatternLib.designHeart);
-        addStyle(0, PatternLib.designFrown);
-        addStyle(0, PatternLib.designAcross);
-        addStyle(0, PatternLib.designOP);
-        addStyle(0, PatternLib.designCircle);
-        addStyle(0, PatternLib.designRing);
-        addStyle(0, PatternLib.designDog);
+        _addStyle(0, ''); // Empty design
+        _addStyle(0, PatternLib.designSmile);
+        _addStyle(0, PatternLib.designHeart);
+        _addStyle(0, PatternLib.designFrown);
+        _addStyle(0, PatternLib.designAcross);
+        _addStyle(0, PatternLib.designOP);
+        _addStyle(0, PatternLib.designCircle);
+        _addStyle(0, PatternLib.designRing);
+        _addStyle(0, PatternLib.designDog);
+        _addStyle(0, PatternLib.designBG);
         
         // Heel patterns (index 1)
-        addStyle(1, ''); // Empty heel
-        addStyle(1, PatternLib.heel);
-        addStyle(1, PatternLib.heelBig);
+        _addStyle(1, ''); // Empty heel
+        _addStyle(1, PatternLib.heel);
+        _addStyle(1, PatternLib.heelBig);
         
         // Toe patterns (index 2)
-        addStyle(2, ''); // Empty toe
-        addStyle(2, PatternLib.toe);
-        addStyle(2, PatternLib.toeBig);
+        _addStyle(2, ''); // Empty toe
+        _addStyle(2, PatternLib.toe);
+        _addStyle(2, PatternLib.toeBig);
         
         // Top patterns (index 3)
-        addStyle(3, ''); // Empty top
-        addStyle(3, PatternLib.topOne);
-        addStyle(3, PatternLib.topTwo);
-        addStyle(3, PatternLib.topStripeNoOffset);
-        addStyle(3, PatternLib.topStripeThin);
-        addStyle(3, PatternLib.topBig);
-        addStyle(3, PatternLib.topVerticalStripes);
-        addStyle(3, PatternLib.topVerticalWithHorizontal);
+        _addStyle(3, ''); // Empty top
+        _addStyle(3, PatternLib.topOne);
+        _addStyle(3, PatternLib.topTwo);
+        _addStyle(3, PatternLib.topStripeNoOffset);
+        _addStyle(3, PatternLib.topStripeThin);
+        _addStyle(3, PatternLib.topBig);
+        _addStyle(3, PatternLib.topVerticalStripes);
+        _addStyle(3, PatternLib.topVerticalWithHorizontal);
     }
 
     /// @dev Returns the Uniform Resource Identifier (URI) for token `id`.

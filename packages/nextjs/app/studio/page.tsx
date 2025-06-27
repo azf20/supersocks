@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { BuyButtons } from "../../components/BuyButtons";
 import deployedContracts from "../../contracts/deployedContracts";
+import toast from "react-hot-toast";
 import { formatUnits } from "viem";
 import { useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
@@ -11,34 +12,110 @@ import { useGlobalState } from "~~/services/store/store";
 export default function StudioPage() {
   const { basket, addToBasket, sock, setSock } = useGlobalState();
 
-  // Color palette for the picker - updated to match new contract
-  const colorPalette = [
-    { name: "Transparent", value: "#FF000000", index: 0 },
-    { name: "White", value: "#FFFFFF", index: 1 },
-    { name: "Black", value: "#000000", index: 2 },
-    { name: "Red", value: "#FF0000", index: 3 },
-    { name: "Green", value: "#00FF00", index: 4 },
-    { name: "Blue", value: "#0000FF", index: 5 },
-    { name: "Yellow", value: "#FFFF00", index: 6 },
-    { name: "Magenta", value: "#FF00FF", index: 7 },
-    { name: "Cyan", value: "#00FFFF", index: 8 },
-    { name: "Orange", value: "#FFA500", index: 9 },
-    { name: "Purple", value: "#800080", index: 10 },
-    { name: "Brown", value: "#A52A2A", index: 11 },
-    { name: "Gray", value: "#808080", index: 12 },
-    { name: "Pink", value: "#FFC0CB", index: 13 },
-    { name: "Dark Green", value: "#008000", index: 14 },
-    { name: "Navy", value: "#000080", index: 15 },
-    { name: "Gold", value: "#FFD700", index: 16 },
-  ];
+  // Single state for which color picker is open (null if none)
+  const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
 
-  // For contract calls, convert indices to BigInt
-  const contractSock = {
-    ...sock,
-    top: { ...sock.top, index: BigInt(sock.top.index) },
-    heel: { ...sock.heel, index: BigInt(sock.heel.index) },
-    toe: { ...sock.toe, index: BigInt(sock.toe.index) },
-    design: { ...sock.design, index: BigInt(sock.design.index) },
+  const toggleColorPicker = (pickerId: string) => {
+    setOpenColorPicker(prev => (prev === pickerId ? null : pickerId));
+  };
+
+  // Generate color palette from contract's COLORS string
+  const generateColorPalette = () => {
+    const COLORS =
+      "------F1F5F9E2E8F0CBD5E194A3B864748B4755693341551E293BF5F5F4E7E5E4D6D3D1A8A29E78716C57534E44403C292524FEE2E2FECACAFCA5A5F87171EF4444DC2626B91C1C991B1BFFEDD5FED7AAFDBA74FB923CF97316EA580CC2410C9A3412FEF3C7FDE68AFCD34DFBBF24F59E0BD97706B4530992400EFEF9C3FEF08AFDE047FACC15EAB308CA8A04A16207854D0EECFCCBD9F99DBEF264A3E63584CC1665A30D4D7C0F3F6212DCFCE7BBF7D086EFAC4ADE8022C55E16A34A15803D166534D1FAE5A7F3D06EE7B734D39910B981059669047857065F46CCFBF199F6E45EEAD42DD4BF14B8A60D94880F766E115E59CFFAFEA5F3FC67E8F922D3EE06B6D40891B20E7490155E75E0F2FEBAE6FD7DD3FC38BDF80EA5E90284C70369A1075985DBEAFEBFDBFE93C5FD60A5FA3B82F62563EB1D4ED81E40AFE0E7FFC7D2FEA5B4FC818CF86366F14F46E54338CA3730A3EDE9FEDDD6FEC4B5FDA78BFA8B5CF67C3AED6D28D95B21B6F3E8FFE9D5FFD8B4FEC084FCA855F79333EA7E22CE6B21A8FAE8FFF5D0FEF0ABFCE879F9D946EFC026D3A21CAF86198FFCE7F3FBCFE8F9A8D4F472B6EC4899DB2777BE185D9D174DFFE4E6FECDD3FDA4AFFB7185F43F5EE11D48BE123C9F1239";
+    const colors = [];
+
+    for (let i = 0; i < COLORS.length; i += 6) {
+      const hexCode = COLORS.slice(i, i + 6);
+      const index = i / 6;
+
+      if (index === 0) {
+        colors.push({ name: "Transparent", value: "#FF000000", index: 0 });
+      } else {
+        colors.push({
+          name: `Color ${index}`,
+          value: `#${hexCode}`,
+          index: index,
+        });
+      }
+    }
+
+    return colors;
+  };
+
+  const colorPalette = generateColorPalette();
+
+  // Filter colors based on picker type
+  const getFilteredColors = (pickerType: string) => {
+    if (["baseColorPicker", "outlineColorPicker", "designColorPicker", "topColorPicker"].includes(pickerType)) {
+      // Hide transparent for these pickers
+      return colorPalette.filter(color => color.index !== 0);
+    }
+    return colorPalette;
+  };
+
+  // Check if a color is selectable for a given picker type
+  const isColorSelectable = (colorIndex: number, pickerType: string) => {
+    // Transparent is not selectable for base, outline, design, top
+    if (
+      colorIndex === 0 &&
+      ["baseColorPicker", "outlineColorPicker", "designColorPicker", "topColorPicker"].includes(pickerType)
+    ) {
+      return false;
+    }
+
+    // Base color is not selectable for outline, design, top, heel, toe
+    if (
+      colorIndex === sock.baseColorIndex &&
+      ["outlineColorPicker", "designColorPicker", "topColorPicker", "heelColorPicker", "toeColorPicker"].includes(
+        pickerType,
+      )
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
+  // Organize colors into rows: transparent on its own row, then rows of 8
+  const organizeColorsIntoRows = (colors: Array<{ name: string; value: string; index: number }>) => {
+    const rows = [];
+
+    // Transparent on its own row
+    const transparent = colors.find(c => c.index === 0);
+    if (transparent) {
+      rows.push([transparent]);
+    }
+
+    // Other colors in rows of 8
+    const nonTransparentColors = colors.filter(c => c.index !== 0);
+    for (let i = 0; i < nonTransparentColors.length; i += 8) {
+      rows.push(nonTransparentColors.slice(i, i + 8));
+    }
+
+    return rows;
+  };
+
+  // For contract calls, use correct types: uint8 for colors, uint256 for indices
+  const sockForContract = {
+    baseColorIndex: Number(sock.baseColorIndex),
+    outlineColorIndex: Number(sock.outlineColorIndex),
+    design: {
+      colorIndex: Number(sock.design.colorIndex),
+      index: BigInt(sock.design.index),
+    },
+    top: {
+      colorIndex: Number(sock.top.colorIndex),
+      index: BigInt(sock.top.index),
+    },
+    heel: {
+      colorIndex: Number(sock.heel.colorIndex),
+      index: BigInt(sock.heel.index),
+    },
+    toe: {
+      colorIndex: Number(sock.toe.colorIndex),
+      index: BigInt(sock.toe.index),
+    },
   };
 
   const { data } = useReadContracts({
@@ -47,13 +124,13 @@ export default function StudioPage() {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "checkSock",
-        args: [contractSock],
+        args: [sockForContract],
       },
       {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "encodeSock",
-        args: [contractSock],
+        args: [sockForContract],
       },
       {
         address: deployedContracts[31337].SuperSocks.address,
@@ -75,13 +152,13 @@ export default function StudioPage() {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "renderSock",
-        args: [contractSock, encodedSock || BigInt(0)],
+        args: [sockForContract, encodedSock || BigInt(0)],
       },
       {
         address: deployedContracts[31337].Metadata.address,
         abi: deployedContracts[31337].Metadata.abi,
         functionName: "getStyle",
-        args: [0, contractSock.design.index],
+        args: [0, sockForContract.design.index],
       },
     ],
   });
@@ -93,7 +170,7 @@ export default function StudioPage() {
 
   const handleAddToBasket = () => {
     if (!isValid || !encodedSock || Boolean(errors)) {
-      alert("Please fix validation errors before adding to basket");
+      toast.error("Please fix validation errors before adding to basket");
       return;
     }
     const sockId = encodedSock.toString();
@@ -109,7 +186,7 @@ export default function StudioPage() {
         errors,
       },
     });
-    alert("Sock added to basket!");
+    toast.success("Sock added to basket!");
   };
 
   const updateSock = (updates: Partial<typeof sock>) => {
@@ -173,43 +250,100 @@ export default function StudioPage() {
 
   // Custom Color picker component with swatch dropdown (no label)
   const ColorPicker = ({
+    colors,
     selectedIndex,
-    onColorSelect,
+    onSelect,
+    isOpen,
+    onToggle,
+    pickerType,
   }: {
+    colors: Array<{ name: string; value: string; index: number }>;
     selectedIndex: number;
-    onColorSelect: (index: number) => void;
+    onSelect: (index: number) => void;
+    isOpen: boolean;
+    onToggle: () => void;
+    pickerType: string;
   }) => {
-    const [open, setOpen] = useState(false);
-    const selectedColor = colorPalette.find(c => c.index === selectedIndex);
+    const selectedColor = colors.find(c => c.index === selectedIndex);
+    const colorRows = organizeColorsIntoRows(colors);
+
     return (
       <div className="relative">
         <button
           type="button"
-          className="w-full flex items-center border border-gray-300 rounded-md p-1 text-sm"
-          onClick={() => setOpen(o => !o)}
+          onClick={onToggle}
+          className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <span
-            className="inline-block w-5 h-5 rounded mr-2 border"
-            style={{ backgroundColor: selectedColor?.value }}
+          <div
+            className="w-6 h-6 rounded border border-gray-300"
+            style={{
+              backgroundColor: selectedColor?.value === "#FF000000" ? "transparent" : selectedColor?.value,
+              backgroundImage:
+                selectedColor?.value === "#FF000000"
+                  ? "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)"
+                  : "none",
+              backgroundSize: selectedColor?.value === "#FF000000" ? "8px 8px" : "auto",
+              backgroundPosition: selectedColor?.value === "#FF000000" ? "0 0, 0 4px, 4px -4px, -4px 0px" : "auto",
+            }}
           />
-          {selectedColor?.name}
+          <span className="text-sm">{selectedColor?.name}</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
-        {open && (
-          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow max-h-60 overflow-auto">
-            {colorPalette.map(color => (
-              <button
-                key={color.index}
-                type="button"
-                className="flex items-center w-full px-2 py-1 hover:bg-gray-100"
-                onClick={() => {
-                  onColorSelect(color.index);
-                  setOpen(false);
-                }}
-              >
-                <span className="inline-block w-5 h-5 rounded mr-2 border" style={{ backgroundColor: color.value }} />
-                {color.name}
-              </button>
-            ))}
+
+        {isOpen && (
+          <div className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-96 overflow-y-auto">
+            <div className="p-3">
+              {colorRows.map((row: Array<{ name: string; value: string; index: number }>, rowIndex: number) => (
+                <div
+                  key={rowIndex}
+                  className={`grid gap-2 ${row.length === 1 ? "grid-cols-1" : "grid-cols-8"} ${rowIndex > 0 ? "mt-2" : ""}`}
+                >
+                  {row.map((color: { name: string; value: string; index: number }) => {
+                    const isSelectable = isColorSelectable(color.index, pickerType);
+                    return (
+                      <button
+                        key={color.index}
+                        onClick={() => {
+                          if (isSelectable) {
+                            onSelect(color.index);
+                            onToggle();
+                          }
+                        }}
+                        disabled={!isSelectable}
+                        className={`w-8 h-8 rounded border-2 transition-all hover:scale-110 relative ${
+                          selectedIndex === color.index ? "border-blue-500" : "border-gray-300"
+                        } ${!isSelectable ? "opacity-50 cursor-not-allowed" : "hover:scale-110"}`}
+                        style={{
+                          backgroundColor: color.value === "#FF000000" ? "transparent" : color.value,
+                          backgroundImage:
+                            color.value === "#FF000000"
+                              ? "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)"
+                              : "none",
+                          backgroundSize: color.value === "#FF000000" ? "4px 4px" : "auto",
+                          backgroundPosition: color.value === "#FF000000" ? "0 0, 0 2px, 2px -2px, -2px 0px" : "auto",
+                        }}
+                        title={color.name}
+                      >
+                        {!isSelectable && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -238,7 +372,7 @@ export default function StudioPage() {
             </div>
             {basket.totalItems > 0 && (
               <Link
-                href="/basket"
+                href="/checkout"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm"
               >
                 View Basket
@@ -255,14 +389,22 @@ export default function StudioPage() {
             <div className="flex flex-row gap-4 mb-2">
               <div className="flex-1">
                 <ColorPicker
+                  colors={getFilteredColors("baseColorPicker")}
                   selectedIndex={sock.baseColorIndex}
-                  onColorSelect={index => updateSock({ baseColorIndex: index })}
+                  onSelect={index => updateSock({ baseColorIndex: index })}
+                  isOpen={openColorPicker === "baseColorPicker"}
+                  onToggle={() => toggleColorPicker("baseColorPicker")}
+                  pickerType="baseColorPicker"
                 />
               </div>
               <div className="flex-1">
                 <ColorPicker
+                  colors={getFilteredColors("outlineColorPicker")}
                   selectedIndex={sock.outlineColorIndex}
-                  onColorSelect={index => updateSock({ outlineColorIndex: index })}
+                  onSelect={index => updateSock({ outlineColorIndex: index })}
+                  isOpen={openColorPicker === "outlineColorPicker"}
+                  onToggle={() => toggleColorPicker("outlineColorPicker")}
+                  pickerType="outlineColorPicker"
                 />
               </div>
             </div>
@@ -285,13 +427,18 @@ export default function StudioPage() {
                     <option value="6">Circle</option>
                     <option value="7">Ring</option>
                     <option value="8">Dog</option>
+                    <option value="9">BuidlGuidl</option>
                   </select>
                 </div>
                 {sock.design.index !== "0" && showDesignColor && (
                   <div className="flex-1">
                     <ColorPicker
+                      colors={getFilteredColors("designColorPicker")}
                       selectedIndex={sock.design.colorIndex}
-                      onColorSelect={index => updateStyle("design", { colorIndex: index })}
+                      onSelect={index => updateStyle("design", { colorIndex: index })}
+                      isOpen={openColorPicker === "designColorPicker"}
+                      onToggle={() => toggleColorPicker("designColorPicker")}
+                      pickerType="designColorPicker"
                     />
                   </div>
                 )}
@@ -321,8 +468,12 @@ export default function StudioPage() {
                 {sock.top.index !== "0" && (
                   <div className="flex-1">
                     <ColorPicker
+                      colors={getFilteredColors("topColorPicker")}
                       selectedIndex={sock.top.colorIndex}
-                      onColorSelect={index => updateStyle("top", { colorIndex: index })}
+                      onSelect={index => updateStyle("top", { colorIndex: index })}
+                      isOpen={openColorPicker === "topColorPicker"}
+                      onToggle={() => toggleColorPicker("topColorPicker")}
+                      pickerType="topColorPicker"
                     />
                   </div>
                 )}
@@ -346,8 +497,12 @@ export default function StudioPage() {
                 {sock.heel.index !== "0" && (
                   <div className="flex-1">
                     <ColorPicker
+                      colors={getFilteredColors("heelColorPicker")}
                       selectedIndex={sock.heel.colorIndex}
-                      onColorSelect={index => updateStyle("heel", { colorIndex: index })}
+                      onSelect={index => updateStyle("heel", { colorIndex: index })}
+                      isOpen={openColorPicker === "heelColorPicker"}
+                      onToggle={() => toggleColorPicker("heelColorPicker")}
+                      pickerType="heelColorPicker"
                     />
                   </div>
                 )}
@@ -371,8 +526,12 @@ export default function StudioPage() {
                 {sock.toe.index !== "0" && (
                   <div className="flex-1">
                     <ColorPicker
+                      colors={getFilteredColors("toeColorPicker")}
                       selectedIndex={sock.toe.colorIndex}
-                      onColorSelect={index => updateStyle("toe", { colorIndex: index })}
+                      onSelect={index => updateStyle("toe", { colorIndex: index })}
+                      isOpen={openColorPicker === "toeColorPicker"}
+                      onToggle={() => toggleColorPicker("toeColorPicker")}
+                      pickerType="toeColorPicker"
                     />
                   </div>
                 )}
@@ -381,7 +540,7 @@ export default function StudioPage() {
             {/* Reset Button */}
             <button
               type="button"
-              className="mt-2 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded border border-gray-300"
+              className="mt-2 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 border border-gray-300"
               onClick={() => setSock(defaultSock)}
             >
               Reset

@@ -28,20 +28,20 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/studio"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg transition-colors"
             >
               🎨 Create Socks
             </Link>
             <Link
               href="/socks"
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 text-lg transition-colors"
             >
               🧦 View Collection
             </Link>
             {basket.totalItems > 0 && (
               <Link
-                href="/basket"
-                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors"
+                href="/checkout"
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-3 px-6 text-lg transition-colors"
               >
                 🛒 Basket ({basket.totalItems})
               </Link>
@@ -145,33 +145,6 @@ export default function HomePage() {
               <p className="text-sm mt-2">Be the first to create a sock!</p>
             </div>
           )}
-        </div>
-
-        {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="text-4xl mb-4">🎨</div>
-            <h3 className="text-xl font-bold mb-2">Custom Design Studio</h3>
-            <p className="text-gray-600 mb-4">
-              Create your own unique socks with our intuitive design studio. Choose colors, patterns, and styles to make
-              your perfect sock.
-            </p>
-            <Link href="/studio" className="text-blue-500 hover:text-blue-700 font-medium">
-              Start Creating →
-            </Link>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="text-4xl mb-4">🧦</div>
-            <h3 className="text-xl font-bold mb-2">NFT Collection</h3>
-            <p className="text-gray-600 mb-4">
-              Browse the complete collection of custom socks. Each sock is a unique NFT with on-chain metadata and SVG
-              artwork.
-            </p>
-            <Link href="/socks" className="text-blue-500 hover:text-blue-700 font-medium">
-              Browse Collection →
-            </Link>
-          </div>
         </div>
       </div>
     </div>
