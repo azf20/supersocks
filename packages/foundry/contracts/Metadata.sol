@@ -23,11 +23,20 @@ contract Metadata is Renderer, Ownable {
         _addStyle(0, PatternLib.designBG);
         _addStyle(0, PatternLib.designStar);
         _addStyle(0, PatternLib.designDiamond);
-        _addStyle(0, PatternLib.designWave);
         _addStyle(0, PatternLib.designSun);
         _addStyle(0, PatternLib.designMoon);
         _addStyle(0, PatternLib.designPaw);
-        
+        _addStyle(0, PatternLib.designWarrior);
+        _addStyle(0, PatternLib.designWarrior2);
+        _addStyle(0, PatternLib.designMagician);
+        _addStyle(0, PatternLib.designSunGlasses);
+        _addStyle(0, PatternLib.designLightningBolt);
+        _addStyle(0, PatternLib.designKey);
+        _addStyle(0, PatternLib.designNotes);
+        _addStyle(0, PatternLib.designOctopus);
+        _addStyle(0, PatternLib.designSquid);
+        _addStyle(0, PatternLib.designMonster);
+
         // Heel patterns (index 1)
         _addStyle(1, ''); // Empty heel
         _addStyle(1, PatternLib.heel);
