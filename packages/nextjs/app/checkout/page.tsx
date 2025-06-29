@@ -12,7 +12,7 @@ import { CheckoutSuccess } from "./components/CheckoutSuccess";
 import { erc20Abi, formatUnits } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
-import { usdcAddress } from "~~/utils/supersocks";
+import { chainId, superSocksAddress, usdcAddress } from "~~/utils/supersocks";
 
 export default function CheckoutPage() {
   const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
@@ -20,12 +20,14 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth">("regular");
   const [success, setSuccess] = useState(false);
 
+  const showEthOption = process.env.NEXT_PUBLIC_USDC !== "faucet";
+
   // Fetch the price once from the contract
   const { data: usdcPriceData, refetch: refetchUsdc } = useReadContracts({
     contracts: [
       {
-        address: deployedContracts[31337].SuperSocks.address,
-        abi: deployedContracts[31337].SuperSocks.abi,
+        address: superSocksAddress,
+        abi: deployedContracts[chainId].SuperSocks.abi,
         functionName: "usdcPrice",
       },
       {
@@ -38,7 +40,7 @@ export default function CheckoutPage() {
         address: usdcAddress,
         abi: erc20Abi,
         functionName: "allowance",
-        args: [address!, deployedContracts[31337].SuperSocks.address],
+        args: [address!, deployedContracts[chainId].SuperSocks.address],
       },
     ],
   });
@@ -162,14 +164,16 @@ export default function CheckoutPage() {
                   <span className="text-lg mb-1">Batch</span>
                   <span className="text-xs">EIP-5792</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("eth")}
-                  className={`${baseCardClass} ${paymentMethod === "eth" ? selectedCardClass : unselectedCardClass}`}
-                >
-                  <span className="text-lg mb-1">ETH</span>
-                  <span className="text-xs">Custom Contract</span>
-                </button>
+                {showEthOption && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("eth")}
+                    className={`${baseCardClass} ${paymentMethod === "eth" ? selectedCardClass : unselectedCardClass}`}
+                  >
+                    <span className="text-lg mb-1">ETH</span>
+                    <span className="text-xs">Custom Contract</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -194,7 +198,7 @@ export default function CheckoutPage() {
                 onSuccess={handlePaymentSuccess}
               />
             )}
-            {paymentMethod === "eth" && (
+            {paymentMethod === "eth" && showEthOption && (
               <PayWithETH
                 totalUsdcPrice={totalUsdcPrice}
                 encodedSocks={encodedSocks}
