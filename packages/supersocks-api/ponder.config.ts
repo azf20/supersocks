@@ -1,3 +1,6 @@
+import { config } from "dotenv";
+config();
+
 import { createConfig } from "ponder";
 import { getAddress, hexToNumber } from "viem";
 import { erc1155ABI } from "./abis/erc1155Abi";
