@@ -1,5 +1,6 @@
 import { useState } from "react";
 import deployedContracts from "../contracts/deployedContracts";
+import { useChainId } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 
 export function PayWithUSDCBasic({
@@ -19,6 +20,7 @@ export function PayWithUSDCBasic({
 }) {
   const [approved, setApproved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const chainId = useChainId() as 31337 | 11155111;
 
   const { writeContractAsync: writeUSDCAsync, isPending: isApproving } = useScaffoldWriteContract({
     contractName: process.env.NEXT_PUBLIC_USDC == "faucet" ? "FreeRc20" : "USDC",
@@ -33,7 +35,7 @@ export function PayWithUSDCBasic({
     try {
       await writeUSDCAsync({
         functionName: "approve",
-        args: [deployedContracts[31337].SuperSocks.address, cost],
+        args: [deployedContracts[chainId].SuperSocks.address, cost],
       });
       setApproved(true);
     } catch (e: any) {

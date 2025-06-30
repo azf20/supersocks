@@ -1,15 +1,10 @@
 import { useState } from "react";
-import deployedContracts from "../contracts/deployedContracts";
 import externalContracts from "../contracts/externalContracts";
 import { ChainId, Token } from "@uniswap/sdk-core";
 import { formatEther } from "viem";
 import { useSimulateContract } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
-
-const usdcAddress =
-  process.env.NEXT_PUBLIC_USDC == "faucet"
-    ? deployedContracts[31337].FreeRc20.address
-    : "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
+import { usdcAddress } from "~~/utils/supersocks";
 
 const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
 const USDC_TOKEN = new Token(ChainId.OPTIMISM, usdcAddress, 6, "USDC", "USDC");

@@ -5,7 +5,13 @@ import { createConfig } from "ponder";
 import { getAddress, hexToNumber } from "viem";
 import { erc1155ABI } from "./abis/erc1155Abi";
 
-import SuperSocksDeploy from "../foundry/broadcast/Deploy.s.sol/31337/run-latest.json";
+const chainId = process.env.CHAIN_ID === "11155111" ? 11155111 : 31337;
+
+import FoundrySuperSocksDeploy from "../foundry/broadcast/Deploy.s.sol/31337/run-latest.json";
+import SepoliaSuperSocksDeploy from "../foundry/broadcast/Deploy.s.sol/11155111/run-latest.json";
+
+const SuperSocksDeploy =
+  chainId === 11155111 ? SepoliaSuperSocksDeploy : FoundrySuperSocksDeploy;
 
 const contractIndex = process.env.USDC === "faucet" ? 2 : 1;
 const address = getAddress(
@@ -22,10 +28,15 @@ export default createConfig({
       rpc: process.env.PONDER_RPC_URL_1,
       disableCache: true,
     },
+    sepolia: {
+      id: 11155111,
+      rpc: process.env.PONDER_RPC_URL_2,
+      disableCache: true,
+    },
   },
   contracts: {
     ERC1155: {
-      chain: "anvil",
+      chain: chainId === 11155111 ? "sepolia" : "anvil",
       abi: erc1155ABI,
       address: address,
       startBlock: startBlock,

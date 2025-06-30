@@ -2,20 +2,21 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { BuyButtons } from "../../../components/BuyButtons";
+import { SockCard } from "../../../components/SockCard";
 import deployedContracts from "../../../contracts/deployedContracts";
 import { and, eq, gt, inArray } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
+import { useChainId } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
-import { decodeBase64SVG } from "~~/utils/svg";
 
 export default function ProfilePage() {
   const params = useParams();
   const address = params.address as `0x${string}`;
+  const chainId = useChainId() as 31337 | 11155111;
 
   // Query for token balances where the address has a positive balance
   const {
@@ -33,8 +34,8 @@ export default function ProfilePage() {
 
   // Get creator balance from the Socks contract
   const { data: creatorBalance } = useReadContract({
-    address: deployedContracts[31337].SuperSocks.address,
-    abi: deployedContracts[31337].SuperSocks.abi,
+    address: deployedContracts[chainId].SuperSocks.address,
+    abi: deployedContracts[chainId].SuperSocks.abi,
     functionName: "creatorBalance",
     args: [address],
   });
@@ -141,7 +142,6 @@ export default function ProfilePage() {
               {tokenBalances.map(balance => {
                 const token = tokenMap.get(balance.tokenId.toString());
                 let metadata: any = null;
-
                 try {
                   if (token?.metadata) {
                     metadata = JSON.parse(token.metadata);
@@ -149,71 +149,18 @@ export default function ProfilePage() {
                 } catch (error) {
                   console.error("Error parsing metadata for sock", balance.tokenId, token?.metadata, error);
                 }
-
-                // Decode SVG if available
-                const decodedSVG = metadata?.image ? decodeBase64SVG(metadata.image) : null;
-
-                const inBasket = basket.items.some(item => item.sockId === balance.tokenId.toString());
-
                 return (
-                  <div
+                  <SockCard
                     key={balance.tokenId.toString()}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    <Address address={address} onlyEnsOrAddress={true} />
-                    <Link href={`/sock/${balance.tokenId}`}>
-                      <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                        {decodedSVG ? (
-                          <div
-                            className="w-full h-full flex items-center justify-center"
-                            dangerouslySetInnerHTML={{ __html: decodedSVG }}
-                          />
-                        ) : (
-                          <div className="text-gray-400 text-center">
-                            <div className="text-4xl mb-2">🧦</div>
-                            <div className="text-sm">No Image</div>
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">{metadata?.name || `Sock #${balance.tokenId}`}</h3>
-
-                      <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
-                        <span>
-                          You own: {balance.balance.toString()} / {token.total.toString()}
-                        </span>
-                        <span>ID: #{balance.tokenId.toString()}</span>
-                      </div>
-
-                      {token && (
-                        <div className="text-xs text-gray-400">
-                          <div className="flex gap-1 mb-1">
-                            Created by: <Address address={token.creator} size="xs" onlyEnsOrAddress={true} />
-                          </div>
-                        </div>
-                      )}
-                      <BuyButtons
-                        isValid={true}
-                        errors={undefined}
-                        encodedSock={balance.tokenId.toString()}
-                        onAddToBasket={() => {
-                          if (!inBasket) {
-                            addToBasket({
-                              sockId: balance.tokenId.toString(),
-                              sockData: {
-                                svgString: decodedSVG || "",
-                                metadata,
-                                isValid: true,
-                              },
-                            });
-                          }
-                        }}
-                        basketContainsSock={inBasket}
-                      />
-                    </div>
-                  </div>
+                    id={balance.tokenId.toString()}
+                    metadata={metadata || {}}
+                    total={token?.total ? token.total.toString() : ""}
+                    creator={token?.creator}
+                    basket={basket}
+                    addToBasket={addToBasket}
+                    showBuyButtons={true}
+                    ownedCount={String(balance.balance ?? "0")}
+                  />
                 );
               })}
             </div>

@@ -1,13 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { BuyButtons } from "../../components/BuyButtons";
+import { SockCard } from "../../components/SockCard";
 import { schema } from "../../lib/ponder";
 import { desc } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
-import { Address } from "~~/components/scaffold-eth/Address/Address";
 import { useGlobalState } from "~~/services/store/store";
-import { decodeBase64SVG } from "~~/utils/svg";
 
 interface SockMetadata {
   name: string;
@@ -52,7 +49,6 @@ export default function SocksPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {socks.map(sock => {
             let metadata: SockMetadata | null = null;
-
             try {
               if (sock.metadata) {
                 metadata = JSON.parse(sock.metadata);
@@ -60,63 +56,17 @@ export default function SocksPage() {
             } catch (error) {
               console.error("Error parsing metadata for sock", sock.id, sock.metadata, error);
             }
-
-            // Decode SVG if available
-            const decodedSVG = metadata?.image ? decodeBase64SVG(metadata.image) : null;
-
-            // Check if sock is already in basket
-            const inBasket = basket.items.some(item => item.sockId === sock.id.toString());
-
             return (
-              <div
+              <SockCard
                 key={sock.id.toString()}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-              >
-                <Link
-                  href={`/sock/${sock.id}`}
-                  className="block aspect-square bg-gray-100 flex items-center justify-center hover:opacity-80 transition-opacity"
-                >
-                  {decodedSVG ? (
-                    <div
-                      className="w-full h-full flex items-center justify-center"
-                      dangerouslySetInnerHTML={{ __html: decodedSVG }}
-                    />
-                  ) : (
-                    <div className="text-gray-400 text-center">
-                      <div className="text-6xl mb-2">🧦</div>
-                      <div className="text-sm">No Image</div>
-                    </div>
-                  )}
-                </Link>
-                <div className="p-4">
-                  <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
-                    <span>ID: #{sock.id.toString()}</span>
-                    <span>Total: {sock.total.toString()}</span>
-                  </div>
-                  <div className="mb-2 text-sm text-gray-500 flex items-center gap-2">
-                    <span>Creator:</span>
-                    <Address address={sock.creator} size="sm" onlyEnsOrAddress={true} />
-                  </div>
-                  <BuyButtons
-                    isValid={true}
-                    errors={undefined}
-                    encodedSock={sock.id.toString()}
-                    onAddToBasket={() => {
-                      if (!inBasket) {
-                        addToBasket({
-                          sockId: sock.id.toString(),
-                          sockData: {
-                            svgString: decodedSVG || "",
-                            metadata,
-                            isValid: true,
-                          },
-                        });
-                      }
-                    }}
-                    basketContainsSock={inBasket}
-                  />
-                </div>
-              </div>
+                id={sock.id.toString()}
+                metadata={metadata}
+                total={sock.total?.toString()}
+                creator={sock.creator}
+                basket={basket}
+                addToBasket={addToBasket}
+                showBuyButtons={true}
+              />
             );
           })}
         </div>

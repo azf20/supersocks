@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { SockCard } from "../components/SockCard";
 import { desc } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
 import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
-import { decodeBase64SVG } from "~~/utils/svg";
 
 export default function HomePage() {
-  const { basket } = useGlobalState();
+  const { basket, addToBasket } = useGlobalState();
 
   const {
     data: recentSocks,
@@ -94,7 +94,6 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recentSocks.map(sock => {
                 let metadata: any = null;
-
                 try {
                   if (sock.metadata) {
                     metadata = JSON.parse(sock.metadata);
@@ -102,39 +101,17 @@ export default function HomePage() {
                 } catch (error) {
                   console.error("Error parsing metadata for sock", sock.id, sock.metadata, error);
                 }
-
-                // Decode SVG if available
-                const decodedSVG = metadata?.image ? decodeBase64SVG(metadata.image) : null;
-
                 return (
-                  <Link
+                  <SockCard
                     key={sock.id.toString()}
-                    href={`/sock/${sock.id}`}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  >
-                    <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                      {decodedSVG ? (
-                        <div
-                          className="w-full h-full flex items-center justify-center"
-                          dangerouslySetInnerHTML={{ __html: decodedSVG }}
-                        />
-                      ) : (
-                        <div className="text-gray-400 text-center">
-                          <div className="text-4xl mb-2">🧦</div>
-                          <div className="text-sm">No Image</div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">{metadata?.name || `Sock #${sock.id}`}</h3>
-
-                      <div className="flex justify-between items-center text-sm text-gray-500">
-                        <span>Supply: {sock.total.toString()}</span>
-                        <span>ID: #{sock.id.toString()}</span>
-                      </div>
-                    </div>
-                  </Link>
+                    id={sock.id.toString()}
+                    metadata={metadata}
+                    total={sock.total?.toString()}
+                    creator={sock.creator}
+                    basket={basket}
+                    addToBasket={addToBasket}
+                    showBuyButtons={false}
+                  />
                 );
               })}
             </div>

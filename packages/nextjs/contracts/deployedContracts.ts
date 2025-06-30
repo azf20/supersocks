@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0x83b4e0d6ff93f3183d306da23efae17773e6dfc0",
+      address: "0x43992f5f575c28a1de03b1f337974b94e44fab8c",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751060700.json",
+      deploymentFile: "run-1751315675.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0x8b03e92900e9d2251a93e6640a79353e3e10df1c",
+      address: "0x5f474bc674b6ad4d7b6a5c6429d586d53053da33",
       abi: [
         {
           type: "constructor",
@@ -1479,11 +1479,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751060700.json",
+      deploymentFile: "run-1751315675.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x741050c1d044e23d3ebd2e85ad8b6ce5c17555c7",
+      address: "0x1da1e5ee07ad91e402bd4fc14773f7a4caa6b2ad",
       abi: [
         {
           type: "constructor",
@@ -2352,11 +2352,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751060700.json",
+      deploymentFile: "run-1751315675.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x4f29f479d3e6c41ad3fc8c7c8d6f423cb2784b8e",
+      address: "0xdb94b6e81e0b9f0874aba5f4f8258c31a9b97ce8",
       abi: [
         {
           type: "constructor",
@@ -2494,13 +2494,13 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751060700.json",
+      deploymentFile: "run-1751315675.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
   11155111: {
     FreeRc20: {
-      address: "0x1bbf6cc4f7228ebfded2c831b0c09d540efc76d0",
+      address: "0xba98d25767219417b39029c0099ecd7a5278afdf",
       abi: [
         {
           type: "constructor",
@@ -2882,11 +2882,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751061312.json",
+      deploymentFile: "run-1751322673.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0xb05231899231c483b5722d8ae8b9460b85ba3e11",
+      address: "0x0aa8aa0fa618668c8de0ac36124547c3953fe1c7",
       abi: [
         {
           type: "constructor",
@@ -3972,11 +3972,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751061312.json",
+      deploymentFile: "run-1751322673.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x55527a5a43c008ddab5341b99395078111da949e",
+      address: "0x7a6a650bb7ff5c02d02752c1f9500133328f66d7",
       abi: [
         {
           type: "constructor",
@@ -4845,11 +4845,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751061312.json",
+      deploymentFile: "run-1751322673.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0xde97c0fcfd9a51d904be45a8e6a7de376d485111",
+      address: "0x9f0dae3c85182aaae427342332d3864f6af52382",
       abi: [
         {
           type: "constructor",
@@ -4987,7 +4987,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751061312.json",
+      deploymentFile: "run-1751322673.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

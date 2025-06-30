@@ -1,6 +1,7 @@
 import { erc20Abi } from "viem";
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
+
 /**
  * @example
  * const externalContracts = {
@@ -319,6 +320,12 @@ const externalContracts = {
           type: "function",
         },
       ],
+    },
+  },
+  11155111: {
+    USDC: {
+      address: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+      abi: erc20Abi,
     },
   },
 } as const;

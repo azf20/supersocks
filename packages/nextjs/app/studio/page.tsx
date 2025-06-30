@@ -7,7 +7,7 @@ import { Address } from "../../components/scaffold-eth/Address/Address";
 import deployedContracts from "../../contracts/deployedContracts";
 import toast from "react-hot-toast";
 import { formatUnits } from "viem";
-import { useReadContracts } from "wagmi";
+import { useChainId, useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
 
 // Reusable configuration row component
@@ -27,7 +27,7 @@ const ConfigRow = ({
   <div className={(border ? "border " : "") + "p-2 rounded mb-2"}>
     {label && <label className="block text-xs font-medium mb-1">{label}</label>}
     <div className="flex flex-row items-center gap-2">
-      {stylePicker && <div className="w-[180px]">{stylePicker}</div>}
+      {stylePicker && <div className="flex-1">{stylePicker}</div>}
       {colorPicker && <div className="flex-1">{colorPicker}</div>}
       {children}
     </div>
@@ -143,28 +143,30 @@ export default function StudioPage() {
     },
   };
 
+  const chainId = useChainId() as 31337 | 11155111;
+
   const { data } = useReadContracts({
     contracts: [
       {
-        address: deployedContracts[31337].Metadata.address,
-        abi: deployedContracts[31337].Metadata.abi,
+        address: deployedContracts[chainId].Metadata.address,
+        abi: deployedContracts[chainId].Metadata.abi,
         functionName: "checkSock",
         args: [sockForContract],
       },
       {
-        address: deployedContracts[31337].Metadata.address,
-        abi: deployedContracts[31337].Metadata.abi,
+        address: deployedContracts[chainId].Metadata.address,
+        abi: deployedContracts[chainId].Metadata.abi,
         functionName: "encodeSock",
         args: [sockForContract],
       },
       {
-        address: deployedContracts[31337].SuperSocks.address,
-        abi: deployedContracts[31337].SuperSocks.abi,
+        address: deployedContracts[chainId].SuperSocks.address,
+        abi: deployedContracts[chainId].SuperSocks.abi,
         functionName: "usdcPrice",
       },
       {
-        address: deployedContracts[31337].Metadata.address,
-        abi: deployedContracts[31337].Metadata.abi,
+        address: deployedContracts[chainId].Metadata.address,
+        abi: deployedContracts[chainId].Metadata.abi,
         functionName: "getStyles",
         args: [],
       },
@@ -309,7 +311,7 @@ export default function StudioPage() {
         </button>
 
         {isOpen && (
-          <div className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-96 overflow-y-auto">
+          <div className="z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-96 overflow-y-auto w-72 sm:w-80 sm:max-w-none sm:absolute sm:left-0 sm:right-auto fixed left-1/2 -translate-x-1/2 w-full max-w-xs sm:translate-x-0">
             <div className="p-3">
               {colorRows.map((row: Array<{ name: string; value: string; index: number }>, rowIndex: number) => (
                 <div
@@ -474,14 +476,14 @@ export default function StudioPage() {
   const { data: renderSockData } = useReadContracts({
     contracts: [
       {
-        address: deployedContracts[31337].Metadata.address,
-        abi: deployedContracts[31337].Metadata.abi,
+        address: deployedContracts[chainId].Metadata.address,
+        abi: deployedContracts[chainId].Metadata.abi,
         functionName: "renderSock",
         args: [sockForContract, encodedSock || BigInt(0)],
       },
       {
-        address: deployedContracts[31337].SuperSocks.address,
-        abi: deployedContracts[31337].SuperSocks.abi,
+        address: deployedContracts[chainId].SuperSocks.address,
+        abi: deployedContracts[chainId].SuperSocks.abi,
         functionName: "creator",
         args: [encodedSock || BigInt(0)],
       },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { erc20Abi } from "viem";
-import { useSendCalls, useWaitForCallsStatus } from "wagmi";
+import { useChainId, useSendCalls, useWaitForCallsStatus } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { usdcAddress } from "~~/utils/supersocks";
 
@@ -22,6 +22,7 @@ export function PayWithUSDCEIP5792({
   const { sendCallsAsync, data: sendCallsData, status } = useSendCalls();
   const { data: callsStatusData } = useWaitForCallsStatus({ id: sendCallsData?.id });
   const [error, setError] = useState<string | null>(null);
+  const chainId = useChainId() as 31337 | 11155111;
 
   useEffect(() => {
     if (callsStatusData?.status === "success" && onSuccess) {
@@ -41,12 +42,12 @@ export function PayWithUSDCEIP5792({
           to: usdcAddress,
           abi: erc20Abi,
           functionName: "approve",
-          args: [deployedContracts[31337].SuperSocks.address, cost],
+          args: [deployedContracts[chainId].SuperSocks.address, cost],
         });
       }
       calls.push({
-        to: deployedContracts[31337].SuperSocks.address,
-        abi: deployedContracts[31337].SuperSocks.abi,
+        to: deployedContracts[chainId].SuperSocks.address,
+        abi: deployedContracts[chainId].SuperSocks.abi,
         functionName: "mint",
         args: [address, encodedSocks, quantities, cost],
       });
