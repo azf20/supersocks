@@ -22,13 +22,25 @@ export function PayWithUSDCBasic({
   const [error, setError] = useState<string | null>(null);
   const chainId = useChainId() as 31337 | 11155111;
 
-  const { writeContractAsync: writeUSDCAsync, isPending: isApproving } = useScaffoldWriteContract({
+  const {
+    writeContractAsync: writeUSDCAsync,
+    isPending: isApprovalPending,
+    isMining: isApprovalMining,
+  } = useScaffoldWriteContract({
     contractName: process.env.NEXT_PUBLIC_USDC == "faucet" ? "FreeRc20" : "USDC",
   });
 
-  const { writeContractAsync: writeSuperSocksAsync, isPending: isMinting } = useScaffoldWriteContract({
+  const isApproving = isApprovalPending || isApprovalMining;
+
+  const {
+    writeContractAsync: writeSuperSocksAsync,
+    isPending: isMintPending,
+    isMining: isMintMining,
+  } = useScaffoldWriteContract({
     contractName: "SuperSocks",
   });
+
+  const isMinting = isMintPending || isMintMining;
 
   const handleApprove = async () => {
     setError(null);

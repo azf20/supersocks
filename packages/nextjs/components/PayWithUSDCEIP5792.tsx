@@ -23,6 +23,7 @@ export function PayWithUSDCEIP5792({
   const { data: callsStatusData } = useWaitForCallsStatus({ id: sendCallsData?.id });
   const [error, setError] = useState<string | null>(null);
   const chainId = useChainId() as 31337 | 11155111;
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (callsStatusData?.status === "success" && onSuccess) {
@@ -51,9 +52,12 @@ export function PayWithUSDCEIP5792({
         functionName: "mint",
         args: [address, encodedSocks, quantities, cost],
       });
+      setSending(true);
       await sendCallsAsync({ calls, experimental_fallback: true });
     } catch (e: any) {
       setError(e.message || "Payment failed");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -71,8 +75,8 @@ export function PayWithUSDCEIP5792({
 
   return (
     <div>
-      <button onClick={handleBatchPay} className="btn" disabled={status === "pending"}>
-        {status === "pending" ? "Processing..." : "Buy now"}
+      <button onClick={handleBatchPay} className="btn" disabled={status === "pending" || sending}>
+        {status === "pending" || sending ? "Processing..." : "Buy now"}
       </button>
       {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       {callsStatusData?.status === "failure" && (
