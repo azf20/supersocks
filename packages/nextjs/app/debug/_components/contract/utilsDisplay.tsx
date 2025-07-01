@@ -39,7 +39,7 @@ export const displayTxResult = (
   }
 
   if (Array.isArray(displayContent)) {
-    return <ArrayDisplay values={displayContent} size={fontSize} />;
+    return <ArrayDisplay values={displayContent as unknown[]} size={fontSize} />;
   }
 
   if (typeof displayContent === "object") {
