@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BuyButtons } from "../../components/BuyButtons";
 import { Address } from "../../components/scaffold-eth/Address/Address";
@@ -145,7 +145,7 @@ export default function StudioPage() {
 
   const chainId = useChainId() as 31337 | 11155111;
 
-  const { data } = useReadContracts({
+  const { data, isPending } = useReadContracts({
     contracts: [
       {
         address: deployedContracts[chainId].Metadata.address,
@@ -231,6 +231,42 @@ export default function StudioPage() {
       safeUpdates.toe.index = String(safeUpdates.toe.index);
     if (safeUpdates.design && typeof safeUpdates.design.index !== "string")
       safeUpdates.design.index = String(safeUpdates.design.index);
+
+    // --- New logic for base color updates ---
+    if (typeof safeUpdates.baseColorIndex !== "undefined") {
+      const newBase = safeUpdates.baseColorIndex;
+      const colorPalette = generateColorPalette();
+      // Heel & Toe: if new base matches, set to transparent
+      if (sock.heel.colorIndex === newBase) {
+        safeUpdates.heel = { ...sock.heel, colorIndex: 0, index: sock.heel.index };
+        toast.success("Updated heel color to transparent to contrast base color");
+      }
+      if (sock.toe.colorIndex === newBase) {
+        safeUpdates.toe = { ...sock.toe, colorIndex: 0, index: sock.toe.index };
+        toast.success("Updated toe color to transparent to contrast base color");
+      }
+      // Design, Outline, Top: if new base matches, increment color index
+      if (sock.design.colorIndex === newBase) {
+        let next = (newBase + 1) % colorPalette.length;
+        if (next === 0) next = 1; // skip transparent
+        safeUpdates.design = { ...sock.design, colorIndex: next, index: sock.design.index };
+        toast.success("Updated design color to contrast base color");
+      }
+      if (sock.outlineColorIndex === newBase) {
+        let next = (newBase + 1) % colorPalette.length;
+        if (next === 0) next = 1;
+        safeUpdates.outlineColorIndex = next;
+        toast.success("Updated outline color to contrast base color");
+      }
+      if (sock.top.colorIndex === newBase) {
+        let next = (newBase + 1) % colorPalette.length;
+        if (next === 0) next = 1;
+        safeUpdates.top = { ...sock.top, colorIndex: next, index: sock.top.index };
+        toast.success("Updated top color to contrast base color");
+      }
+    }
+    // --- End new logic ---
+
     setSock({ ...sock, ...safeUpdates });
   };
 
@@ -491,7 +527,15 @@ export default function StudioPage() {
   });
   const svgString = renderSockData?.[0]?.result;
   const creator = renderSockData?.[1]?.result;
-  const sockExists = creator !== "0x0000000000000000000000000000000000000000";
+  const sockExists = creator && creator !== "0x0000000000000000000000000000000000000000";
+
+  const [lastValidSvg, setLastValidSvg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (svgString) {
+      setLastValidSvg(svgString);
+    }
+  }, [svgString]);
 
   return (
     <div className="flex flex-col items-center flex-grow pt-6">
@@ -665,8 +709,8 @@ export default function StudioPage() {
                 className="border border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center"
                 style={{ minWidth: 300, minHeight: 300, width: 300, height: 300 }}
               >
-                {svgString ? (
-                  <div dangerouslySetInnerHTML={{ __html: svgString }} />
+                {svgString || lastValidSvg ? (
+                  <div dangerouslySetInnerHTML={{ __html: svgString || lastValidSvg || "" }} />
                 ) : (
                   <svg width="300" height="300" viewBox="-1 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="0" y="0" width="300" height="300" rx="24" fill="#f3f4f6" />
@@ -689,9 +733,9 @@ export default function StudioPage() {
             )}
             {/* Validation Status */}
             <div
-              className={`p-2 rounded text-sm ${isValid ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
+              className={`p-2 rounded text-sm ${isValid || isPending ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
             >
-              <strong>Validation Status:</strong> {isValid ? "Valid" : "Invalid"}
+              <strong>Validation Status:</strong> {isPending ? "Loading..." : isValid ? "Valid" : "Invalid"}
               {errors && (
                 <div className="mt-1">
                   <strong>Errors:</strong>
@@ -714,7 +758,6 @@ export default function StudioPage() {
               <div className="p-2 border rounded bg-gray-50 text-xs">
                 <h3 className="font-semibold mb-1">Pricing Information</h3>
                 <p>Each sock costs {formatUnits(usdcPrice, 6)} USDC</p>
-                <p>You can pay with USDC or ETH (with automatic conversion)</p>
               </div>
             )}
           </div>
