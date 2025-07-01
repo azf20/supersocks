@@ -30,7 +30,7 @@ const anvil = {
 
 const sepolia = {
   id: 11155111,
-  rpc: process.env.PONDER_RPC_URL_2,
+  rpc: process.env.PONDER_RPC_URL_11155111,
   disableCache: true,
 };
 
