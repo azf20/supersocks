@@ -7,11 +7,12 @@ import { erc1155ABI } from "./abis/erc1155Abi";
 
 const chainId = process.env.CHAIN_ID === "11155111" ? 11155111 : 31337;
 
-import FoundrySuperSocksDeploy from "../foundry/broadcast/Deploy.s.sol/31337/run-latest.json";
 import SepoliaSuperSocksDeploy from "../foundry/broadcast/Deploy.s.sol/11155111/run-latest.json";
 
 const SuperSocksDeploy =
-  chainId === 11155111 ? SepoliaSuperSocksDeploy : FoundrySuperSocksDeploy;
+  chainId === 11155111
+    ? SepoliaSuperSocksDeploy
+    : require("../foundry/broadcast/Deploy.s.sol/31337/run-latest.json");
 
 const contractIndex = process.env.USDC === "faucet" ? 2 : 1;
 const address = getAddress(
