@@ -22,19 +22,28 @@ const startBlock = hexToNumber(
   SuperSocksDeploy.receipts[1]!.blockNumber as `0x${string}`
 );
 
+const anvil = {
+  id: 31337,
+  rpc: process.env.PONDER_RPC_URL_1,
+  disableCache: true,
+};
+
+const sepolia = {
+  id: 11155111,
+  rpc: process.env.PONDER_RPC_URL_2,
+  disableCache: true,
+};
+
+const chains: Record<string, any> = {};
+
+if (chainId === 11155111) {
+  chains.sepolia = sepolia;
+} else {
+  chains.anvil = anvil;
+}
+
 export default createConfig({
-  chains: {
-    anvil: {
-      id: 31337,
-      rpc: process.env.PONDER_RPC_URL_1,
-      disableCache: true,
-    },
-    sepolia: {
-      id: 11155111,
-      rpc: process.env.PONDER_RPC_URL_2,
-      disableCache: true,
-    },
-  },
+  chains,
   contracts: {
     ERC1155: {
       chain: chainId === 11155111 ? "sepolia" : "anvil",
