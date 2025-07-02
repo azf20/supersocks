@@ -37,6 +37,7 @@ contract SuperSocks is Ownable, ERC1155 {
     // Constructor: Called once on contract deployment
     // Check packages/foundry/deploy/Deploy.s.sol
     constructor(address _metadata, address _usdc) {
+        _initializeOwner(msg.sender);
         usdcPrice = 100000; // 1 USDC (6 decimals) TODO: UPDATE BEFORE DEPLOY
         creatorFee = 10;
         slippage = 1; // 1% slippage

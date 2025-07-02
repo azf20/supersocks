@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0x43992f5f575c28a1de03b1f337974b94e44fab8c",
+      address: "0xa02da929ecf1c742ab52193b7c93010d69f48492",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751315675.json",
+      deploymentFile: "run-1751463274.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0x5f474bc674b6ad4d7b6a5c6429d586d53053da33",
+      address: "0xd71c6153047f5349bd829943dd2aaa67ac63944f",
       abi: [
         {
           type: "constructor",
@@ -415,7 +415,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "addStyle",
+          name: "addStyles",
           inputs: [
             {
               name: "index",
@@ -423,9 +423,9 @@ const deployedContracts = {
               internalType: "uint8",
             },
             {
-              name: "style",
-              type: "string",
-              internalType: "string",
+              name: "styles",
+              type: "string[]",
+              internalType: "string[]",
             },
           ],
           outputs: [],
@@ -1385,7 +1385,7 @@ const deployedContracts = {
               internalType: "uint8",
             },
             {
-              name: "_style",
+              name: "style",
               type: "string",
               internalType: "string",
             },
@@ -1479,11 +1479,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751315675.json",
+      deploymentFile: "run-1751463274.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x1da1e5ee07ad91e402bd4fc14773f7a4caa6b2ad",
+      address: "0xdea02cc080c95585b85bd8e3db6d76fd20fd6661",
       abi: [
         {
           type: "constructor",
@@ -2352,11 +2352,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751315675.json",
+      deploymentFile: "run-1751463274.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0xdb94b6e81e0b9f0874aba5f4f8258c31a9b97ce8",
+      address: "0xd84373f6726d029c9e5dd174b92c8ab1a37b087c",
       abi: [
         {
           type: "constructor",
@@ -2494,7 +2494,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751315675.json",
+      deploymentFile: "run-1751463274.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
@@ -2908,7 +2908,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "addStyle",
+          name: "addStyles",
           inputs: [
             {
               name: "index",
@@ -2916,9 +2916,9 @@ const deployedContracts = {
               internalType: "uint8",
             },
             {
-              name: "style",
-              type: "string",
-              internalType: "string",
+              name: "styles",
+              type: "string[]",
+              internalType: "string[]",
             },
           ],
           outputs: [],
@@ -3878,7 +3878,7 @@ const deployedContracts = {
               internalType: "uint8",
             },
             {
-              name: "_style",
+              name: "style",
               type: "string",
               internalType: "string",
             },

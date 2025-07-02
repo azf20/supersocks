@@ -6,6 +6,7 @@ import { DeployMetadata } from "./DeployMetadata.s.sol";
 import { DeploySuperSocks } from "./DeploySuperSocks.s.sol";
 import { DeploySwapper } from "./DeploySwapper.s.sol";
 import { DeployFreeRc20 } from "./DeployFreerc20.s.sol";
+import { InitializeMetadata } from "./InitializeMetadata.s.sol";
 /**
  * @notice Main deployment script for all contracts
  * @dev Run this when you want to deploy multiple contracts at once
@@ -30,6 +31,9 @@ contract DeployScript is ScaffoldETHDeploy {
 
         DeploySwapper deploySwapper = new DeploySwapper();
         deploySwapper.run(usdc, superSocks);
+
+        InitializeMetadata initializeMetadata = new InitializeMetadata();
+        initializeMetadata.run(metadata);
 
         // Deploy another contract
         // DeployMyContract myContract = new DeployMyContract();

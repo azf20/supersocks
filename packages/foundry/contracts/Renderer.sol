@@ -38,15 +38,19 @@ contract Renderer {
         return styles;
     }
 
-    function _addStyle(uint8 index, string memory _style) internal virtual {
-        styleLookup[index].push(_style);
-    }
-
     function getStyle(uint8 index, uint16 styleIndex) public view returns (string memory) {
         require(index < styleNames.length, "Style index out of bounds");
         return styleLookup[index][styleIndex];
     }
-    
+
+    function _addStyle(uint8 index, string memory _style) internal virtual {
+        styleLookup[index].push(_style);
+    }
+
+    function _updateStyle(uint8 index, uint8 styleIndex, string memory _style) internal {
+        require(index < styleNames.length, "Style index out of bounds");
+        styleLookup[index][styleIndex] = _style;
+    }
     
     // Bit sizes
     uint256 constant COLOR_BITS = 8;         // 8 bits for each color (0-255)
@@ -81,8 +85,6 @@ contract Renderer {
     constructor() {
         // No initialization needed - colors are stored in constant string
     }
-
-
 
     function validateTokenId(uint256 tokenId) public view returns (bool) {
         Sock memory sock = decodeSock(tokenId);
@@ -158,11 +160,6 @@ contract Renderer {
             _trait("Design Color", utils.uint2str(sock.design.colorIndex)), ',',
             _trait("Design Index", utils.uint2str(sock.design.index))
             ));
-    }
-    
-    function updateStyle(uint8 index, uint8 styleIndex, string memory _style) public {
-        require(index < styleNames.length, "Style index out of bounds");
-        styleLookup[index][styleIndex] = _style;
     }
 
     function baseSock(string memory baseColorClass, string memory outlineColorClass) public pure returns (string memory) {
