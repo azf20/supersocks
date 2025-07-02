@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PayButton } from "./PayButton";
 import { erc20Abi } from "viem";
 import { useChainId, useSendCalls, useWaitForCallsStatus } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -61,27 +62,25 @@ export function PayWithUSDCEIP5792({
     }
   };
 
-  if (callsStatusData?.status === "pending") {
-    return (
-      <div className="bg-yellow-100 p-4 rounded text-yellow-800 text-center">
-        Waiting for transaction confirmation...
-      </div>
-    );
-  }
-
-  if (callsStatusData?.status === "success") {
-    return <div className="bg-green-100 p-4 rounded text-green-800 text-center">Payment successful!</div>;
-  }
+  let buttonText = "Buy now";
+  if (status === "pending") buttonText = "Waiting for user confirmation...";
+  else if (status === "success" && !callsStatusData) buttonText = "Waiting for transaction confirmation...";
+  else if (sending) buttonText = "Processing...";
+  else if (callsStatusData?.status === "success") buttonText = "Payment successful!";
 
   return (
-    <div>
-      <button onClick={handleBatchPay} className="btn" disabled={status === "pending" || sending}>
-        {status === "pending" || sending ? "Processing..." : "Buy now"}
-      </button>
-      {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-      {callsStatusData?.status === "failure" && (
-        <div className="text-red-500 text-sm mt-2">Payment failed. Please try again.</div>
+    <>
+      <PayButton
+        onClick={handleBatchPay}
+        loading={sending || status === "pending" || (status === "success" && !callsStatusData)}
+        disabled={callsStatusData?.status === "success"}
+        error={error || (callsStatusData?.status === "failure" ? "Payment failed. Please try again." : undefined)}
+      >
+        {buttonText}
+      </PayButton>
+      {callsStatusData?.status === "success" && (
+        <div className="bg-green-100 p-4 rounded text-green-800 text-center mt-2">Payment successful!</div>
       )}
-    </div>
+    </>
   );
 }

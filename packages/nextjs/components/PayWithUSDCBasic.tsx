@@ -1,5 +1,6 @@
 import { useState } from "react";
 import deployedContracts from "../contracts/deployedContracts";
+import { PayButton } from "./PayButton";
 import { useChainId } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 
@@ -73,21 +74,15 @@ export function PayWithUSDCBasic({
 
   if (allowance < cost && !approved) {
     return (
-      <div>
-        <button onClick={handleApprove} disabled={isApproving} className="btn">
-          {isApproving ? "Approving..." : "Approve USDC"}
-        </button>
-        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-      </div>
+      <PayButton onClick={handleApprove} loading={isApproving} disabled={false} error={error}>
+        Approve USDC
+      </PayButton>
     );
   }
 
   return (
-    <div>
-      <button onClick={handleMint} disabled={isMinting} className="btn">
-        {isMinting ? "Minting..." : "Buy Now"}
-      </button>
-      {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-    </div>
+    <PayButton onClick={handleMint} loading={isMinting} disabled={false} error={error}>
+      Buy Now
+    </PayButton>
   );
 }

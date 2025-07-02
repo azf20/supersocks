@@ -98,7 +98,6 @@ export default function CheckoutPage() {
 
   const encodedSocks = basket.items.map(item => item.sockId);
   const quantities = basket.items.map(item => BigInt(item.count));
-  console.log(encodedSocks, quantities);
 
   return (
     <div className="flex items-center flex-col flex-grow pt-10">

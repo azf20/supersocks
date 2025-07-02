@@ -1,6 +1,5 @@
 import * as chains from "viem/chains";
 
-
 export type ScaffoldConfig = {
   targetNetworks: readonly chains.Chain[];
   pollingInterval: number;

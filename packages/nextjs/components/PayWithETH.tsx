@@ -1,5 +1,6 @@
 import { useState } from "react";
 import externalContracts from "../contracts/externalContracts";
+import { PayButton } from "./PayButton";
 import { ChainId, Token } from "@uniswap/sdk-core";
 import { formatEther } from "viem";
 import { useSimulateContract } from "wagmi";
@@ -85,12 +86,9 @@ export function PayWithETH({
 
   return (
     <div>
-      <button onClick={handlePayment} className="btn" disabled={isPending || ethPrice === 0n}>
-        {isPending
-          ? "Processing..."
-          : `Buy now ${ethPrice > 0n ? Number(formatEther(ethPrice)).toPrecision(2) : "Calculating..."} ETH`}
-      </button>
-      {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+      <PayButton onClick={handlePayment} loading={isPending} disabled={ethPrice === 0n} error={error}>
+        {ethPrice > 0n ? `Buy now ${Number(formatEther(ethPrice)).toPrecision(2)} ETH` : "Calculating..."}
+      </PayButton>
       {ethPrice === 0n && totalUsdcPrice > 0n && (
         <div className="text-yellow-500 text-sm mt-2">Calculating ETH price...</div>
       )}
