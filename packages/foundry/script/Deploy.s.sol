@@ -34,9 +34,5 @@ contract DeployScript is ScaffoldETHDeploy {
 
         InitializeMetadata initializeMetadata = new InitializeMetadata();
         initializeMetadata.run(metadata);
-
-        // Deploy another contract
-        // DeployMyContract myContract = new DeployMyContract();
-        // myContract.run();
     }
 }

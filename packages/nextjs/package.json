@@ -27,7 +27,7 @@
     "@uniswap/v2-sdk": "~4.6.1",
     "@uniswap/v4-sdk": "^1.21.4",
     "blo": "~1.2.0",
-    "burner-connector": "0.0.16",
+    "burner-connector": "0.0.17",
     "daisyui": "4.12.10",
     "hono": "4.8.3",
     "kubo-rpc-client": "~5.0.2",

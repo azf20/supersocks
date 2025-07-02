@@ -393,7 +393,7 @@ const deployedContracts = {
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0xd71c6153047f5349bd829943dd2aaa67ac63944f",
+      address: "0xf53dcb74a6b9fd436372a3c237eae6677835dbff",
       abi: [
         {
           type: "constructor",
@@ -1479,11 +1479,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751463274.json",
+      deploymentFile: "run-1751464507.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xdea02cc080c95585b85bd8e3db6d76fd20fd6661",
+      address: "0x8aee2ad6667172a02b33e829d015256ed23912b2",
       abi: [
         {
           type: "constructor",
@@ -2352,11 +2352,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751463274.json",
+      deploymentFile: "run-1751464507.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0xd84373f6726d029c9e5dd174b92c8ab1a37b087c",
+      address: "0x4e53eed635a961b7cd2ff3ec302a5e94a05125b3",
       abi: [
         {
           type: "constructor",
@@ -2494,7 +2494,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751463274.json",
+      deploymentFile: "run-1751464507.json",
       deploymentScript: "Deploy.s.sol",
     },
   },

@@ -9,10 +9,10 @@ import { USDCFaucet } from "../../components/USDCFaucet";
 import deployedContracts from "../../contracts/deployedContracts";
 import { BasketItem } from "./components/BasketItem";
 import { CheckoutSuccess } from "./components/CheckoutSuccess";
-import { erc20Abi, formatUnits } from "viem";
+import { formatUnits } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
-import { chainId, superSocksAddress, usdcAddress } from "~~/utils/supersocks";
+import { chainId, superSocksAddress } from "~~/utils/supersocks";
 
 export default function CheckoutPage() {
   const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
@@ -30,26 +30,10 @@ export default function CheckoutPage() {
         abi: deployedContracts[chainId].SuperSocks.abi,
         functionName: "usdcPrice",
       },
-      {
-        address: usdcAddress,
-        abi: erc20Abi,
-        functionName: "balanceOf",
-        args: [address!],
-      },
-      {
-        address: usdcAddress,
-        abi: erc20Abi,
-        functionName: "allowance",
-        args: [address!, deployedContracts[chainId].SuperSocks.address],
-      },
     ],
   });
   const usdcPrice = (usdcPriceData?.[0]?.result as bigint) || 0n;
   const totalUsdcPrice = usdcPrice * BigInt(basket.totalItems);
-  const usdcBalance = usdcPriceData?.[1]?.result as bigint;
-
-  // Check if USDC balance is sufficient
-  const hasSufficientUsdc = usdcBalance && usdcBalance >= totalUsdcPrice;
 
   const handleQuantityChange = (sockId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -179,7 +163,6 @@ export default function CheckoutPage() {
             {/* Payment Button(s) */}
             {paymentMethod === "regular" && (
               <PayWithUSDCBasic
-                allowance={(usdcPriceData?.[2]?.result as bigint) || 0n}
                 cost={totalUsdcPrice}
                 address={address as string}
                 encodedSocks={encodedSocks}
@@ -189,7 +172,6 @@ export default function CheckoutPage() {
             )}
             {paymentMethod === "batch" && (
               <PayWithUSDCEIP5792
-                allowance={(usdcPriceData?.[2]?.result as bigint) || 0n}
                 cost={totalUsdcPrice}
                 address={address as string}
                 encodedSocks={encodedSocks}
@@ -209,11 +191,6 @@ export default function CheckoutPage() {
 
             {!address && (
               <p className="text-red-500 text-sm mt-2">Please connect your wallet to complete the purchase</p>
-            )}
-            {paymentMethod === "regular" && !hasSufficientUsdc && (
-              <p className="text-red-500 text-sm mt-2">
-                Your USDC balance is insufficient. Please use ETH payment or add more USDC.
-              </p>
             )}
             <USDCFaucet onSuccess={refetchUsdc} />
           </div>

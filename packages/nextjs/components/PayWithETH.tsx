@@ -5,6 +5,7 @@ import { ChainId, Token } from "@uniswap/sdk-core";
 import { formatEther } from "viem";
 import { useSimulateContract } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import { useWatchBalance } from "~~/hooks/scaffold-eth/useWatchBalance";
 import { usdcAddress } from "~~/utils/supersocks";
 
 const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
@@ -24,6 +25,9 @@ export function PayWithETH({
   onSuccess?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
+
+  // Fetch ETH balance
+  const { data: ethBalance } = useWatchBalance({ address: address as `0x${string}` });
 
   // Get ETH quote for the total USDC amount
   const QuoteConfig = {
@@ -52,6 +56,9 @@ export function PayWithETH({
   const slippage = 50n; // 50% slippage
   const quote = quoteResult?.result[0];
   const ethPrice = quote ? (quote * (slippage + 100n)) / 100n : 0n;
+
+  // Check if ETH balance is sufficient
+  const hasSufficientEth = ethBalance && ethPrice ? ethBalance.value >= ethPrice : false;
 
   const { writeContractAsync, isPending } = useScaffoldWriteContract({
     contractName: "Swapper",
@@ -86,8 +93,19 @@ export function PayWithETH({
 
   return (
     <div>
-      <PayButton onClick={handlePayment} loading={isPending} disabled={ethPrice === 0n} error={error}>
-        {ethPrice > 0n ? `Buy now ${Number(formatEther(ethPrice)).toPrecision(2)} ETH` : "Calculating..."}
+      <div className="mb-2 text-sm text-gray-700">
+        ETH Balance: {ethBalance ? Number(formatEther(ethBalance.value)).toPrecision(3) : "-"}
+      </div>
+      {!hasSufficientEth && ethPrice > 0n && (
+        <div className="text-red-500 text-sm mb-2">Your ETH balance is insufficient.</div>
+      )}
+      <PayButton
+        onClick={handlePayment}
+        loading={isPending}
+        disabled={ethPrice === 0n || !hasSufficientEth}
+        error={error}
+      >
+        {ethPrice > 0n ? `Buy now ${Number(formatEther(ethPrice)).toPrecision(3)} ETH` : "Calculating..."}
       </PayButton>
       {ethPrice === 0n && totalUsdcPrice > 0n && (
         <div className="text-yellow-500 text-sm mt-2">Calculating ETH price...</div>

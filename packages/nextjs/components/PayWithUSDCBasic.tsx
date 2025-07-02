@@ -1,27 +1,44 @@
 import { useState } from "react";
 import deployedContracts from "../contracts/deployedContracts";
 import { PayButton } from "./PayButton";
+import { formatUnits } from "viem";
 import { useChainId } from "wagmi";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 
 export function PayWithUSDCBasic({
-  allowance,
   cost,
   address,
   encodedSocks,
   quantities,
   onSuccess,
 }: {
-  allowance: bigint;
   cost: bigint;
   address: string;
   encodedSocks: string[];
   quantities: bigint[];
   onSuccess?: () => void;
 }) {
-  const [approved, setApproved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chainId = useChainId() as 31337 | 11155111;
+
+  // Fetch USDC balance
+  const { data: usdcBalance } = useScaffoldReadContract({
+    contractName: process.env.NEXT_PUBLIC_USDC == "faucet" ? "FreeRc20" : "USDC",
+    functionName: "balanceOf",
+    args: [address],
+    chainId,
+  });
+
+  // Fetch USDC allowance
+  const { data: allowance, refetch: refetchAllowance } = useScaffoldReadContract({
+    contractName: process.env.NEXT_PUBLIC_USDC == "faucet" ? "FreeRc20" : "USDC",
+    functionName: "allowance",
+    args: [address, deployedContracts[chainId].SuperSocks.address],
+    chainId,
+  });
+
+  const hasSufficientUsdc = typeof usdcBalance === "bigint" ? usdcBalance >= cost : false;
 
   const {
     writeContractAsync: writeUSDCAsync,
@@ -50,7 +67,7 @@ export function PayWithUSDCBasic({
         functionName: "approve",
         args: [deployedContracts[chainId].SuperSocks.address, cost],
       });
-      setApproved(true);
+      refetchAllowance();
     } catch (e: any) {
       setError(e.message || "Approval failed");
     }
@@ -72,17 +89,29 @@ export function PayWithUSDCBasic({
     }
   };
 
-  if (allowance < cost && !approved) {
+  if ((allowance || 0n) < cost) {
     return (
-      <PayButton onClick={handleApprove} loading={isApproving} disabled={false} error={error}>
-        Approve USDC
-      </PayButton>
+      <>
+        <div className="mb-2 text-sm text-gray-700">
+          USDC Balance: {usdcBalance !== undefined ? Number(formatUnits(usdcBalance as bigint, 6)).toFixed(3) : "-"}
+        </div>
+        {!hasSufficientUsdc && <div className="text-red-500 text-sm mb-2">Your USDC balance is insufficient.</div>}
+        <PayButton onClick={handleApprove} loading={isApproving} disabled={!hasSufficientUsdc} error={error}>
+          Approve USDC
+        </PayButton>
+      </>
     );
   }
 
   return (
-    <PayButton onClick={handleMint} loading={isMinting} disabled={false} error={error}>
-      Buy Now
-    </PayButton>
+    <>
+      <div className="mb-2 text-sm text-gray-700">
+        USDC Balance: {usdcBalance !== undefined ? Number(formatUnits(usdcBalance as bigint, 6)).toFixed(3) : "-"}
+      </div>
+      {!hasSufficientUsdc && <div className="text-red-500 text-sm mb-2">Your USDC balance is insufficient.</div>}
+      <PayButton onClick={handleMint} loading={isMinting} disabled={!hasSufficientUsdc} error={error}>
+        Buy Now
+      </PayButton>
+    </>
   );
 }

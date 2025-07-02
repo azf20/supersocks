@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { PayButton } from "./PayButton";
 import { erc20Abi } from "viem";
+import { formatUnits } from "viem";
 import { useChainId, useSendCalls, useWaitForCallsStatus } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import { usdcAddress } from "~~/utils/supersocks";
 
 export function PayWithUSDCEIP5792({
-  allowance,
   cost,
   address,
   encodedSocks,
   quantities,
   onSuccess,
 }: {
-  allowance: bigint;
   cost: bigint;
   address: string;
   encodedSocks: string[];
@@ -25,6 +25,24 @@ export function PayWithUSDCEIP5792({
   const [error, setError] = useState<string | null>(null);
   const chainId = useChainId() as 31337 | 11155111;
   const [sending, setSending] = useState(false);
+
+  // Fetch USDC balance
+  const { data: usdcBalance } = useScaffoldReadContract({
+    contractName: process.env.NEXT_PUBLIC_USDC == "faucet" ? "FreeRc20" : "USDC",
+    functionName: "balanceOf",
+    args: [address],
+    chainId,
+  });
+
+  // Fetch USDC allowance
+  const { data: allowance } = useScaffoldReadContract({
+    contractName: process.env.NEXT_PUBLIC_USDC == "faucet" ? "FreeRc20" : "USDC",
+    functionName: "allowance",
+    args: [address, deployedContracts[chainId].SuperSocks.address],
+    chainId,
+  });
+
+  const hasSufficientUsdc = typeof usdcBalance === "bigint" ? usdcBalance >= cost : false;
 
   useEffect(() => {
     if (callsStatusData?.status === "success" && onSuccess) {
@@ -39,7 +57,7 @@ export function PayWithUSDCEIP5792({
     setError(null);
     try {
       const calls = [];
-      if (allowance < cost) {
+      if ((allowance || 0n) < cost) {
         calls.push({
           to: usdcAddress,
           abi: erc20Abi,
@@ -70,10 +88,14 @@ export function PayWithUSDCEIP5792({
 
   return (
     <>
+      <div className="mb-2 text-sm text-gray-700">
+        USDC Balance: {usdcBalance !== undefined ? Number(formatUnits(usdcBalance as bigint, 6)).toFixed(3) : "-"}
+      </div>
+      {!hasSufficientUsdc && <div className="text-red-500 text-sm mb-2">Your USDC balance is insufficient.</div>}
       <PayButton
         onClick={handleBatchPay}
         loading={sending || status === "pending" || (status === "success" && !callsStatusData)}
-        disabled={callsStatusData?.status === "success"}
+        disabled={callsStatusData?.status === "success" || !hasSufficientUsdc}
         error={error || (callsStatusData?.status === "failure" ? "Payment failed. Please try again." : undefined)}
       >
         {buttonText}

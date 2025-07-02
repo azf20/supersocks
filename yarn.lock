@@ -3759,7 +3759,7 @@ __metadata:
     autoprefixer: ~10.4.20
     bgipfs: ~0.0.12
     blo: ~1.2.0
-    burner-connector: 0.0.16
+    burner-connector: 0.0.17
     daisyui: 4.12.10
     eslint: ~9.23.0
     eslint-config-next: ~15.2.3
@@ -6404,14 +6404,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"burner-connector@npm:0.0.16":
-  version: 0.0.16
-  resolution: "burner-connector@npm:0.0.16"
+"burner-connector@npm:0.0.17":
+  version: 0.0.17
+  resolution: "burner-connector@npm:0.0.17"
   dependencies:
     "@rainbow-me/rainbowkit": 2.2.7
     viem: 2.31.1
     wagmi: 2.15.6
-  checksum: 93c04f2693b17919e0585deeadfb63bca31d85958017711284bdb7339cd27e80880a48eb51609a8ef001ba6f22ef6a0fb66d03d22e0ded837b3624fc02489ca1
+  checksum: 45515a0fc2b372d3cc28ffa9c05c1ea128acf4f8514c4f8e1cf8c706fdfd1c43bbd660ce4d43d6f8e4ace362635f28a8bec8de3e238e8ad3aae929eddd7f3a8f
   languageName: node
   linkType: hard
 
