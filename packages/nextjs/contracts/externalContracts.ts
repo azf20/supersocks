@@ -328,6 +328,12 @@ const externalContracts = {
       abi: erc20Abi,
     },
   },
+  10: {
+    USDC: {
+      address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+      abi: erc20Abi,
+    },
+  },
 } as const;
 
 export default externalContracts satisfies GenericContractsDeclaration;

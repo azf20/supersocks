@@ -14,11 +14,23 @@ import { InitializeMetadata } from "./InitializeMetadata.s.sol";
  * Example: yarn deploy # runs this script(without`--file` flag)
  */
 contract DeployScript is ScaffoldETHDeploy {
+
+
+    mapping(uint256 => address) public usdcAddresses;
+    bool faucet = true;
+
     function run() external {
         // Deploys all your contracts sequentially
+        usdcAddresses[10] = 0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85;
+        usdcAddresses[31337] = 0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85; // assume running an OP mainnet fork
+        usdcAddresses[11155111] = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
+
         // Add new deployments here when needed
-        address usdc = 0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85;
-        if (block.chainid == 31337 || block.chainid == 11155111) {
+        address usdc = usdcAddresses[block.chainid];
+        
+        if (faucet) {
+            require(block.chainid != 10, "Don't deploy faucet configuration on Optimism Mainnet");
+
             DeployFreeRc20 deployFreeRc20 = new DeployFreeRc20();
             usdc = deployFreeRc20.run();
         }

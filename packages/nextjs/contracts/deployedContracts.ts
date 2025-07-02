@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0xa02da929ecf1c742ab52193b7c93010d69f48492",
+      address: "0xa439423be27e740d2d8158afa7578df4acdbe831",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751463274.json",
+      deploymentFile: "run-1751493393.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0xf53dcb74a6b9fd436372a3c237eae6677835dbff",
+      address: "0xc03fd52e56a3e45d8c07187da629b79369dc423f",
       abi: [
         {
           type: "constructor",
@@ -1479,11 +1479,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751464507.json",
+      deploymentFile: "run-1751493393.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x8aee2ad6667172a02b33e829d015256ed23912b2",
+      address: "0xb80a6e68f09a8d95318833414e4a737f2f7df730",
       abi: [
         {
           type: "constructor",
@@ -2178,6 +2178,12 @@ const deployedContracts = {
           name: "SocksPaid",
           inputs: [
             {
+              name: "sockRecipient",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
               name: "total",
               type: "uint256",
               indexed: false,
@@ -2352,11 +2358,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751464507.json",
+      deploymentFile: "run-1751493393.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x4e53eed635a961b7cd2ff3ec302a5e94a05125b3",
+      address: "0xbe25da4a86e140d88580d0fd54941d5836d31571",
       abi: [
         {
           type: "constructor",
@@ -2494,7 +2500,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751464507.json",
+      deploymentFile: "run-1751493393.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
@@ -4670,6 +4676,12 @@ const deployedContracts = {
           type: "event",
           name: "SocksPaid",
           inputs: [
+            {
+              name: "sockRecipient",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
             {
               name: "total",
               type: "uint256",

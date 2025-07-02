@@ -14,9 +14,20 @@ export function PayButton({
   children: React.ReactNode;
   error?: string | null;
 }) {
-  const { chainId: connectedChainId } = useAccount();
+  const { chainId: connectedChainId, isConnected } = useAccount();
   const configuredChainId = useChainId();
   const { switchChain, chains } = useSwitchChain();
+
+  // Prevent flickering by waiting for data to load
+  if (!isConnected || connectedChainId === undefined || configuredChainId === undefined) {
+    return (
+      <div>
+        <button disabled className="w-full py-2 px-4 rounded font-bold text-white bg-gray-400 cursor-not-allowed">
+          Loading...
+        </button>
+      </div>
+    );
+  }
 
   const isWrongNetwork = connectedChainId !== configuredChainId;
 

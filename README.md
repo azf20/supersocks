@@ -1,6 +1,6 @@
 # Super Socks
 
-> This is currently in an early stage of development
+> This is in development
 
 ## Onchain SVG Socks
 
@@ -27,7 +27,6 @@ MINTING FLOWS:
 - Basic (approve then swap) - DONE
 - 5792 (approve + swap in one tx) - DONE
 - From ETH
-    - 
     - Swap from ETH then buy
     - Intermediary contract - DONE
     - Swap from ETH then buy in one tx via 5792
@@ -36,13 +35,14 @@ MINTING FLOWS:
     - Approve then bridge then buy
     - Approve then bridge + call to buy
 - Daimo pay
+- Biconomy
 
 ## Running locally
 ```
 yarn install
 
 # Run the chain
-yarn chain
+yarn fork
 
 # Deploy the contracts
 yarn compile
