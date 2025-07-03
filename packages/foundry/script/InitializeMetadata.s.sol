@@ -11,7 +11,7 @@ contract InitializeMetadata is ScaffoldETHDeploy {
         Metadata metadata = Metadata(_metadata);
         
         // Main patterns (index 0) - keeping original order
-        string[] memory mainPatterns = new string[](24);
+        string[] memory mainPatterns = new string[](25);
         mainPatterns[0] = PatternLib.designSmile;
         mainPatterns[1] = PatternLib.designHeart;
         mainPatterns[2] = PatternLib.designFrown;
@@ -36,6 +36,7 @@ contract InitializeMetadata is ScaffoldETHDeploy {
         mainPatterns[21] = PatternLib.designOctopus;
         mainPatterns[22] = PatternLib.designSquid;
         mainPatterns[23] = PatternLib.designMonster;
+        mainPatterns[24] = PatternLib.designDaimo;
         metadata.addStyles(0, mainPatterns);
         
         // Heel patterns (index 1) - keeping original order
