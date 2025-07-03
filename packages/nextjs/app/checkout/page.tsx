@@ -11,13 +11,14 @@ import { BasketItem } from "./components/BasketItem";
 import { CheckoutSuccess } from "./components/CheckoutSuccess";
 import { formatUnits } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
+import { PayWithAcross } from "~~/components/PayWithAcross";
 import { useGlobalState } from "~~/services/store/store";
 import { chainId, superSocksAddress } from "~~/utils/supersocks";
 
 export default function CheckoutPage() {
   const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
   const { address } = useAccount();
-  const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth">("regular");
+  const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth" | "across">("regular");
   const [success, setSuccess] = useState(false);
 
   const showEthOption = process.env.NEXT_PUBLIC_USDC !== "faucet";
@@ -157,6 +158,14 @@ export default function CheckoutPage() {
                     <span className="text-xs">Custom Contract</span>
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("across")}
+                  className={`${baseCardClass} ${paymentMethod === "across" ? selectedCardClass : unselectedCardClass}`}
+                >
+                  <span className="text-lg mb-1">Across</span>
+                  <span className="text-xs">Across Protocol</span>
+                </button>
               </div>
             </div>
 
@@ -185,6 +194,15 @@ export default function CheckoutPage() {
                 encodedSocks={encodedSocks}
                 quantities={quantities}
                 address={address as string}
+                onSuccess={handlePaymentSuccess}
+              />
+            )}
+            {paymentMethod === "across" && (
+              <PayWithAcross
+                cost={totalUsdcPrice}
+                address={address as string}
+                encodedSocks={encodedSocks}
+                quantities={quantities}
                 onSuccess={handlePaymentSuccess}
               />
             )}

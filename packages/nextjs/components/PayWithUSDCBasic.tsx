@@ -2,9 +2,9 @@ import { useState } from "react";
 import deployedContracts from "../contracts/deployedContracts";
 import { PayButton } from "./PayButton";
 import { formatUnits } from "viem";
-import { useChainId } from "wagmi";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import { chainId } from "~~/utils/supersocks";
 
 export function PayWithUSDCBasic({
   cost,
@@ -20,7 +20,6 @@ export function PayWithUSDCBasic({
   onSuccess?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
-  const chainId = useChainId() as 31337 | 11155111;
 
   // Fetch USDC balance
   const { data: usdcBalance } = useScaffoldReadContract({

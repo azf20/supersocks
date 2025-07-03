@@ -8,15 +8,14 @@ import { and, eq, gt, inArray } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
-import { useChainId } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
+import { chainId } from "~~/utils/supersocks";
 
 export default function ProfilePage() {
   const params = useParams();
   const address = params.address as `0x${string}`;
-  const chainId = useChainId() as 31337 | 11155111;
 
   // Query for token balances where the address has a positive balance
   const {

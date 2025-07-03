@@ -8,8 +8,9 @@ import deployedContracts from "../../contracts/deployedContracts";
 import { ColorPicker, ConfigRow, StylePicker } from "./components";
 import toast from "react-hot-toast";
 import { formatUnits } from "viem";
-import { useChainId, useReadContracts } from "wagmi";
+import { useReadContracts } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
+import { chainId } from "~~/utils/supersocks";
 
 export default function StudioPage() {
   const { basket, addToBasket, sock, setSock } = useGlobalState();
@@ -77,8 +78,6 @@ export default function StudioPage() {
       index: Number(sock.toe.index),
     },
   };
-
-  const chainId = useChainId() as 31337 | 11155111;
 
   const { data, isPending } = useReadContracts({
     contracts: [

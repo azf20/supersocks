@@ -53,7 +53,7 @@ export function PayWithETH({
     },
   });
 
-  const slippage = 50n; // 50% slippage
+  const slippage = 1n; // 50% slippage
   const quote = quoteResult?.result[0];
   const ethPrice = quote ? (quote * (slippage + 100n)) / 100n : 0n;
 

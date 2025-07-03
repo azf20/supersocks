@@ -5,6 +5,15 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@across-protocol/app-sdk@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@across-protocol/app-sdk@npm:0.3.0"
+  peerDependencies:
+    viem: ^2.31.2
+  checksum: de6798e576f33e728f15d59a0c377522936828ef736bc7362cbbabf4bada13a7f7959d02ca5f0cf63548e48f3aa8ec06e95dba9621d6f4828980698083631c0b
+  languageName: node
+  linkType: hard
+
 "@adraffy/ens-normalize@npm:^1.10.1, @adraffy/ens-normalize@npm:^1.11.0":
   version: 1.11.0
   resolution: "@adraffy/ens-normalize@npm:1.11.0"
@@ -3743,6 +3752,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@se-2/nextjs@workspace:packages/nextjs"
   dependencies:
+    "@across-protocol/app-sdk": ^0.3.0
     "@heroicons/react": ~2.1.5
     "@ponder/client": ^0.11.20
     "@ponder/react": ^0.11.20
@@ -3783,7 +3793,7 @@ __metadata:
     typescript: ~5.8.2
     usehooks-ts: ~3.1.0
     vercel: ~39.1.3
-    viem: 2.31.1
+    viem: 2.31.6
     wagmi: 2.15.6
     zustand: ~5.0.0
   languageName: unknown
@@ -16955,6 +16965,27 @@ __metadata:
     typescript:
       optional: true
   checksum: 77ed124b3b2d1bdfaebc229d067db582c202cdb69b8b50a0499bd4e4678d268c1a667301d9e2a1195a59d3451b3429b0bdbcabc38aeeea69cb655663d244944c
+  languageName: node
+  linkType: hard
+
+"viem@npm:2.31.6":
+  version: 2.31.6
+  resolution: "viem@npm:2.31.6"
+  dependencies:
+    "@noble/curves": 1.9.2
+    "@noble/hashes": 1.8.0
+    "@scure/bip32": 1.7.0
+    "@scure/bip39": 1.6.0
+    abitype: 1.0.8
+    isows: 1.0.7
+    ox: 0.8.1
+    ws: 8.18.2
+  peerDependencies:
+    typescript: ">=5.0.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 2df78251cb9e86a2c4ae17818ba082334ec3abc9faf2bf7158877fc80a21bdaa196ec917f7f0e280a6008db695be57f6e1b8b5b2d2ebd6d5a3ed3e159ef48d80
   languageName: node
   linkType: hard
 

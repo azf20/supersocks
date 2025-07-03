@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { PayButton } from "./PayButton";
 import { erc20Abi } from "viem";
 import { formatUnits } from "viem";
-import { useChainId, useSendCalls, useWaitForCallsStatus } from "wagmi";
+import { useSendCalls, useWaitForCallsStatus } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import { usdcAddress } from "~~/utils/supersocks";
+import { chainId } from "~~/utils/supersocks";
 
 export function PayWithUSDCEIP5792({
   cost,
@@ -23,7 +24,6 @@ export function PayWithUSDCEIP5792({
   const { sendCallsAsync, data: sendCallsData, status } = useSendCalls();
   const { data: callsStatusData } = useWaitForCallsStatus({ id: sendCallsData?.id });
   const [error, setError] = useState<string | null>(null);
-  const chainId = useChainId() as 31337 | 11155111;
   const [sending, setSending] = useState(false);
 
   // Fetch USDC balance

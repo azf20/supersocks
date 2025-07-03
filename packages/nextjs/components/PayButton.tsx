@@ -1,5 +1,6 @@
 import React from "react";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
+import { chainId as configuredChainId } from "~~/utils/supersocks";
 
 export function PayButton({
   onClick,
@@ -15,7 +16,6 @@ export function PayButton({
   error?: string | null;
 }) {
   const { chainId: connectedChainId, isConnected } = useAccount();
-  const configuredChainId = useChainId();
   const { switchChain, chains } = useSwitchChain();
 
   // Prevent flickering by waiting for data to load

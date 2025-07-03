@@ -17,6 +17,7 @@
     "vercel:yolo": "vercel --build-env YARN_ENABLE_IMMUTABLE_INSTALLS=false --build-env ENABLE_EXPERIMENTAL_COREPACK=1 --build-env NEXT_PUBLIC_IGNORE_BUILD_ERROR=true --build-env VERCEL_TELEMETRY_DISABLED=1"
   },
   "dependencies": {
+    "@across-protocol/app-sdk": "^0.3.0",
     "@heroicons/react": "~2.1.5",
     "@ponder/client": "^0.11.20",
     "@ponder/react": "^0.11.20",
@@ -41,7 +42,7 @@
     "react-dom": "~19.0.0",
     "react-hot-toast": "~2.4.0",
     "usehooks-ts": "~3.1.0",
-    "viem": "2.31.1",
+    "viem": "2.31.6",
     "wagmi": "2.15.6",
     "zustand": "~5.0.0"
   },
