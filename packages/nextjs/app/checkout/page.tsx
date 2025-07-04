@@ -19,8 +19,18 @@ import { chainId, superSocksAddress } from "~~/utils/supersocks";
 export default function CheckoutPage() {
   const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
   const { address } = useAccount();
-  const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth" | "across" | "daimo">("regular");
   const [success, setSuccess] = useState(false);
+
+  // Get allowed payment methods from environment variable
+  const allowedPaymentMethods = process.env.NEXT_PUBLIC_PAYMENT_METHODS
+    ? process.env.NEXT_PUBLIC_PAYMENT_METHODS.split(",").map(method => method.trim().toLowerCase())
+    : ["regular", "batch", "eth", "across", "daimo"]; // Default to all methods if not specified
+
+  // Set default payment method to first available method
+  const defaultPaymentMethod = allowedPaymentMethods[0] as "regular" | "batch" | "eth" | "across" | "daimo";
+  const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth" | "across" | "daimo">(
+    defaultPaymentMethod,
+  );
 
   const showEthOption = process.env.NEXT_PUBLIC_USDC !== "faucet";
 
@@ -167,23 +177,27 @@ export default function CheckoutPage() {
               <h3 className="font-semibold mb-3">Payment Method</h3>
               <div className="flex gap-4 mb-4 overflow-x-auto no-scrollbar flex-wrap justify-center">
                 {/* Payment method buttons */}
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("regular")}
-                  className={`${baseCardClass} ${paymentMethod === "regular" ? selectedCardClass : unselectedCardClass}`}
-                >
-                  <span className="text-lg mb-1">Regular</span>
-                  <span className="text-xs">Approve + Buy</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("batch")}
-                  className={`${baseCardClass} ${paymentMethod === "batch" ? selectedCardClass : unselectedCardClass}`}
-                >
-                  <span className="text-lg mb-1">Batch</span>
-                  <span className="text-xs">EIP-5792</span>
-                </button>
-                {showEthOption && (
+                {allowedPaymentMethods.includes("regular") && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("regular")}
+                    className={`${baseCardClass} ${paymentMethod === "regular" ? selectedCardClass : unselectedCardClass}`}
+                  >
+                    <span className="text-lg mb-1">Regular</span>
+                    <span className="text-xs">Approve + Buy</span>
+                  </button>
+                )}
+                {allowedPaymentMethods.includes("batch") && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("batch")}
+                    className={`${baseCardClass} ${paymentMethod === "batch" ? selectedCardClass : unselectedCardClass}`}
+                  >
+                    <span className="text-lg mb-1">Batch</span>
+                    <span className="text-xs">EIP-5792</span>
+                  </button>
+                )}
+                {allowedPaymentMethods.includes("eth") && showEthOption && (
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("eth")}
@@ -193,22 +207,26 @@ export default function CheckoutPage() {
                     <span className="text-xs">Custom Contract</span>
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("across")}
-                  className={`${baseCardClass} ${paymentMethod === "across" ? selectedCardClass : unselectedCardClass}`}
-                >
-                  <span className="text-lg mb-1">Across</span>
-                  <span className="text-xs">Across Protocol</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("daimo")}
-                  className={`${baseCardClass} ${paymentMethod === "daimo" ? selectedCardClass : unselectedCardClass}`}
-                >
-                  <span className="text-lg mb-1">Daimo</span>
-                  <span className="text-xs">Daimo Pay</span>
-                </button>
+                {allowedPaymentMethods.includes("across") && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("across")}
+                    className={`${baseCardClass} ${paymentMethod === "across" ? selectedCardClass : unselectedCardClass}`}
+                  >
+                    <span className="text-lg mb-1">Across</span>
+                    <span className="text-xs">Across Protocol</span>
+                  </button>
+                )}
+                {allowedPaymentMethods.includes("daimo") && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("daimo")}
+                    className={`${baseCardClass} ${paymentMethod === "daimo" ? selectedCardClass : unselectedCardClass}`}
+                  >
+                    <span className="text-lg mb-1">Daimo</span>
+                    <span className="text-xs">Daimo Pay</span>
+                  </button>
+                )}
               </div>
             </div>
 
