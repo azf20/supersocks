@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FreeRc20: {
-      address: "0xa439423be27e740d2d8158afa7578df4acdbe831",
+      address: "0xcfb08c2be1cb619870d160d06bec6a54338a63a9",
       abi: [
         {
           type: "constructor",
@@ -389,11 +389,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751493393.json",
+      deploymentFile: "run-1751570998.json",
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0xc03fd52e56a3e45d8c07187da629b79369dc423f",
+      address: "0xfca21acda48da615cce4ffbf8bf33af04cd92cf6",
       abi: [
         {
           type: "constructor",
@@ -1479,11 +1479,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751493393.json",
+      deploymentFile: "run-1751570998.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xb80a6e68f09a8d95318833414e4a737f2f7df730",
+      address: "0x7a4eeed736b3fd828f0cbd6c9f0d126fc5417d49",
       abi: [
         {
           type: "constructor",
@@ -1500,10 +1500,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "nonpayable",
-        },
-        {
-          type: "receive",
-          stateMutability: "payable",
         },
         {
           type: "function",
@@ -1639,6 +1635,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "cutoffDate",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "isApprovedForAll",
           inputs: [
             {
@@ -1655,6 +1664,19 @@ const deployedContracts = {
           outputs: [
             {
               name: "result",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isLive",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
               type: "bool",
               internalType: "bool",
             },
@@ -1860,12 +1882,32 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "setCutoffDate",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setIsLive",
+          inputs: [
+            {
+              name: "_isLive",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
           name: "setMetadata",
           inputs: [
             {
               name: "_metadata",
               type: "address",
-              internalType: "contract Metadata",
+              internalType: "address",
             },
           ],
           outputs: [],
@@ -1890,19 +1932,6 @@ const deployedContracts = {
           inputs: [
             {
               name: "_slippage",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "setUsdcPrice",
-          inputs: [
-            {
-              name: "_price",
               type: "uint256",
               internalType: "uint256",
             },
@@ -1941,6 +1970,13 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "sweep",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
           type: "function",
@@ -2086,6 +2122,19 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "CreatorFeeSet",
+          inputs: [
+            {
+              name: "fee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
           name: "CreatorPaid",
           inputs: [
             {
@@ -2100,6 +2149,58 @@ const deployedContracts = {
               indexed: true,
               internalType: "address",
             },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "CutoffDateSet",
+          inputs: [
+            {
+              name: "cutoffDate",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "IsLiveSet",
+          inputs: [
+            {
+              name: "isLive",
+              type: "bool",
+              indexed: false,
+              internalType: "bool",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "MetadataSet",
+          inputs: [
+            {
+              name: "metadata",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnerWithdrawn",
+          inputs: [
             {
               name: "amount",
               type: "uint256",
@@ -2150,6 +2251,32 @@ const deployedContracts = {
               type: "address",
               indexed: true,
               internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PriceSet",
+          inputs: [
+            {
+              name: "price",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "SlippageSet",
+          inputs: [
+            {
+              name: "slippage",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
             },
           ],
           anonymous: false,
@@ -2338,6 +2465,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "NotLive",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "NotOwnerNorApproved",
           inputs: [],
         },
@@ -2358,11 +2490,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751493393.json",
+      deploymentFile: "run-1751570998.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0xbe25da4a86e140d88580d0fd54941d5836d31571",
+      address: "0xb1e40fc66ce2baf18280dfd802485ae8d8dc5035",
       abi: [
         {
           type: "constructor",
@@ -2500,7 +2632,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751493393.json",
+      deploymentFile: "run-1751570998.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
@@ -4001,10 +4133,6 @@ const deployedContracts = {
           stateMutability: "nonpayable",
         },
         {
-          type: "receive",
-          stateMutability: "payable",
-        },
-        {
           type: "function",
           name: "balanceOf",
           inputs: [
@@ -4138,6 +4266,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "cutoffDate",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "isApprovedForAll",
           inputs: [
             {
@@ -4154,6 +4295,19 @@ const deployedContracts = {
           outputs: [
             {
               name: "result",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isLive",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
               type: "bool",
               internalType: "bool",
             },
@@ -4359,12 +4513,32 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "setCutoffDate",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setIsLive",
+          inputs: [
+            {
+              name: "_isLive",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
           name: "setMetadata",
           inputs: [
             {
               name: "_metadata",
               type: "address",
-              internalType: "contract Metadata",
+              internalType: "address",
             },
           ],
           outputs: [],
@@ -4389,19 +4563,6 @@ const deployedContracts = {
           inputs: [
             {
               name: "_slippage",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "setUsdcPrice",
-          inputs: [
-            {
-              name: "_price",
               type: "uint256",
               internalType: "uint256",
             },
@@ -4440,6 +4601,13 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "sweep",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
           type: "function",
@@ -4585,6 +4753,19 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "CreatorFeeSet",
+          inputs: [
+            {
+              name: "fee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
           name: "CreatorPaid",
           inputs: [
             {
@@ -4599,6 +4780,58 @@ const deployedContracts = {
               indexed: true,
               internalType: "address",
             },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "CutoffDateSet",
+          inputs: [
+            {
+              name: "cutoffDate",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "IsLiveSet",
+          inputs: [
+            {
+              name: "isLive",
+              type: "bool",
+              indexed: false,
+              internalType: "bool",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "MetadataSet",
+          inputs: [
+            {
+              name: "metadata",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnerWithdrawn",
+          inputs: [
             {
               name: "amount",
               type: "uint256",
@@ -4649,6 +4882,32 @@ const deployedContracts = {
               type: "address",
               indexed: true,
               internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PriceSet",
+          inputs: [
+            {
+              name: "price",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "SlippageSet",
+          inputs: [
+            {
+              name: "slippage",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
             },
           ],
           anonymous: false,
@@ -4833,6 +5092,11 @@ const deployedContracts = {
         {
           type: "error",
           name: "NoUSDCToWithdraw",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotLive",
           inputs: [],
         },
         {

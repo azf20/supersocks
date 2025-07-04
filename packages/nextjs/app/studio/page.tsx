@@ -79,28 +79,36 @@ export default function StudioPage() {
     },
   };
 
+  const metadataContract = {
+    address: deployedContracts[chainId].Metadata.address,
+    abi: deployedContracts[chainId].Metadata.abi,
+    chainId: chainId,
+  };
+
+  const superSocksContract = {
+    address: deployedContracts[chainId].SuperSocks.address,
+    abi: deployedContracts[chainId].SuperSocks.abi,
+    chainId: chainId,
+  };
+
   const { data, isPending } = useReadContracts({
     contracts: [
       {
-        address: deployedContracts[chainId].Metadata.address,
-        abi: deployedContracts[chainId].Metadata.abi,
+        ...metadataContract,
         functionName: "checkSock",
         args: [sockForContract],
       },
       {
-        address: deployedContracts[chainId].Metadata.address,
-        abi: deployedContracts[chainId].Metadata.abi,
+        ...metadataContract,
         functionName: "encodeSock",
         args: [sockForContract],
       },
       {
-        address: deployedContracts[chainId].SuperSocks.address,
-        abi: deployedContracts[chainId].SuperSocks.abi,
+        ...superSocksContract,
         functionName: "usdcPrice",
       },
       {
-        address: deployedContracts[chainId].Metadata.address,
-        abi: deployedContracts[chainId].Metadata.abi,
+        ...metadataContract,
         functionName: "getStyles",
         args: [],
       },
@@ -249,14 +257,12 @@ export default function StudioPage() {
   const { data: renderSockData } = useReadContracts({
     contracts: [
       {
-        address: deployedContracts[chainId].Metadata.address,
-        abi: deployedContracts[chainId].Metadata.abi,
+        ...metadataContract,
         functionName: "renderSock",
         args: [sockForContract, encodedSock || BigInt(0)],
       },
       {
-        address: deployedContracts[chainId].SuperSocks.address,
-        abi: deployedContracts[chainId].SuperSocks.abi,
+        ...superSocksContract,
         functionName: "creator",
         args: [encodedSock || BigInt(0)],
       },

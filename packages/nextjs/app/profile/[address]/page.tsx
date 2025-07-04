@@ -37,6 +37,7 @@ export default function ProfilePage() {
     abi: deployedContracts[chainId].SuperSocks.abi,
     functionName: "creatorBalance",
     args: [address],
+    chainId: chainId,
   });
 
   // Get the token IDs that the user owns

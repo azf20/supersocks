@@ -1,5 +1,6 @@
 import { createAcrossClient } from "@across-protocol/app-sdk";
 import { useQuery } from "@tanstack/react-query";
+import { encodeFunctionData, erc20Abi } from "viem";
 import { arbitrum, base, mainnet, optimism, unichain } from "viem/chains";
 import { useWalletClient } from "wagmi";
 
@@ -16,32 +17,135 @@ type Route = {
   outputToken: string;
 };
 
-type QuoteParams = {
-  route: Route;
-  inputAmount: bigint;
-};
-
 type ProgressCallback = (progress: any) => void;
 
-export function useAcross() {
-  const wallet = useWalletClient();
+// Custom error types
+export type AcrossError = {
+  type: "AMOUNT_TOO_LOW";
+  message: string;
+  originalError?: any;
+};
 
-  // Get quote for a specific route
-  const getQuote = async ({ route, inputAmount }: QuoteParams) => {
-    try {
-      const quote = await client.getQuote({
-        route,
-        inputAmount,
+// Structured input for the hook
+export type UseAcrossInput = {
+  // Route selection (optional - for quote fetching)
+  route?: Route | null;
+  inputAmount?: bigint | null;
+
+  // Route discovery (optional - for fetching available routes)
+  destinationChainId?: number;
+  destinationToken?: string;
+
+  // User context
+  userAddress?: string;
+};
+
+export function useAcross(input: UseAcrossInput) {
+  const wallet = useWalletClient();
+  const { route, inputAmount, destinationChainId, destinationToken, userAddress } = input;
+
+  // Fetch available routes
+  const {
+    data: routes,
+    isLoading: isLoadingRoutes,
+    isError: isRoutesError,
+    error: routesError,
+  } = useQuery({
+    queryKey: ["across-routes", destinationChainId, destinationToken],
+    queryFn: async () => {
+      if (!destinationChainId || !destinationToken) {
+        throw new Error("Destination chain ID and token are required");
+      }
+
+      const routes = await client.getAvailableRoutes({
+        destinationChainId,
+        destinationToken: destinationToken as `0x${string}`,
       });
-      return quote;
-    } catch (error) {
-      console.error("Error getting quote:", error);
-      throw error;
-    }
-  };
+
+      console.log("Available routes from SDK:", routes);
+
+      // Return the SDK routes directly
+      return routes;
+    },
+    enabled: !!destinationChainId && !!destinationToken,
+  });
+
+  // Get quote with TanStack Query
+  const {
+    data: quote,
+    isLoading: isLoadingQuote,
+    isError: isQuoteError,
+    error: quoteError,
+    refetch: refetchQuote,
+  } = useQuery({
+    queryKey: ["across-quote", route, inputAmount?.toString(), userAddress],
+    queryFn: async () => {
+      if (!route || !inputAmount || !userAddress) {
+        console.error(route, inputAmount, userAddress);
+        throw new Error("Route, input amount, and user address are required");
+      }
+
+      const multicallHandlerOptimism = "0x924a9f036260DdD5808007E1AA95f08eD08aA569";
+
+      const generateCallData = (amount: bigint) => {
+        return encodeFunctionData({
+          abi: erc20Abi,
+          functionName: "transfer",
+          args: [userAddress, amount],
+        });
+      };
+
+      const message = {
+        actions: [
+          {
+            value: 0n,
+            target: route.outputToken,
+            callData: generateCallData(inputAmount),
+            update: (updatedOutputAmount: bigint) => {
+              return {
+                callData: generateCallData(updatedOutputAmount),
+              };
+            },
+          },
+        ],
+        fallbackRecipient: userAddress,
+      };
+
+      console.log("getQuote", route, inputAmount, message);
+      try {
+        const quote = await client.getQuote({
+          route,
+          inputAmount,
+          crossChainMessage: message,
+          recipient: multicallHandlerOptimism,
+        });
+        return quote;
+      } catch (error: any) {
+        console.error("Error getting quote:", error);
+
+        // Handle specific Across errors
+        if (error.message?.includes("Sent amount is too low relative to fees")) {
+          const acrossError: AcrossError = {
+            type: "AMOUNT_TOO_LOW",
+            message: "The amount is too low to cover bridge fees. Please try a larger amount.",
+            originalError: error,
+          };
+          throw acrossError;
+        }
+
+        // For all other errors, just throw the original error
+        throw error;
+      }
+    },
+    enabled: !!route && !!inputAmount && !!userAddress,
+  });
 
   // Execute a quote
-  const executeQuote = async (quote: any, onProgress?: ProgressCallback) => {
+  const executeQuote = async (onProgress?: ProgressCallback) => {
+    if (!quote) {
+      throw new Error("No quote available");
+    }
+
     if (!wallet.data) {
       throw new Error("Wallet not connected");
     }
@@ -50,6 +154,7 @@ export function useAcross() {
       await client.executeQuote({
         walletClient: wallet.data,
         deposit: quote.deposit,
+        atomicIfSupported: true,
         onProgress: progress => {
           console.log("Bridge progress:", progress);
           if (onProgress) {
@@ -63,26 +168,28 @@ export function useAcross() {
     }
   };
 
-  // Hook to get quote with TanStack Query
-  const useQuote = (route: Route | null, inputAmount: bigint | null) => {
-    return useQuery({
-      queryKey: ["across-quote", route, inputAmount?.toString()],
-      queryFn: () => {
-        if (!route || !inputAmount) {
-          throw new Error("Route and input amount are required");
-        }
-        return getQuote({ route, inputAmount });
-      },
-      enabled: !!route && !!inputAmount,
-      staleTime: 30000, // 30 seconds
-    });
-  };
-
   return {
-    client,
-    getQuote,
+    // Routes data
+    routes,
+    isLoadingRoutes,
+    isRoutesError,
+    routesError,
+
+    // Quote data
+    quote,
+    isLoadingQuote,
+    isQuoteError,
+    quoteError: quoteError as AcrossError | null,
+    refetchQuote,
+
+    // Execute function
     executeQuote,
-    useQuote,
-    wallet,
+
+    // Wallet state
+    wallet: wallet.data,
+    isWalletConnected: !!wallet.data,
+
+    // Client (for advanced usage)
+    client,
   };
 }

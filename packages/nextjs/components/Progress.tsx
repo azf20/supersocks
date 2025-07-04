@@ -57,9 +57,9 @@ export function Progress({ progress, error, className }: ProgressProps) {
   })();
 
   return (
-    <div className={`px-2 w-full flex flex-col items-center gap-2 ${className || ""}`}>
-      <p className="text-gray-600 text-sm">{label}</p>
+    <div className={`py-2 w-full flex flex-col items-center gap-1 ${className || ""}`}>
       <LoadingIndicator status={status} />
+      <p className="text-gray-600 text-sm">{label}</p>
     </div>
   );
 }

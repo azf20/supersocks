@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { DaimoPayProvider } from "@daimo/pay";
 import { PonderProvider } from "@ponder/react";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -53,7 +54,9 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
             avatar={BlockieAvatar}
             theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
           >
-            <ScaffoldEthApp>{children}</ScaffoldEthApp>
+            <DaimoPayProvider>
+              <ScaffoldEthApp>{children}</ScaffoldEthApp>
+            </DaimoPayProvider>
           </RainbowKitProvider>
         </QueryClientProvider>
       </PonderProvider>

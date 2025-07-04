@@ -1,3 +1,4 @@
+import { Chain } from "viem";
 import * as chains from "viem/chains";
 
 export type ScaffoldConfig = {
@@ -11,23 +12,28 @@ export type ScaffoldConfig = {
 
 export const DEFAULT_ALCHEMY_API_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 
-const targetNetworks =
-  process.env.NEXT_PUBLIC_CHAIN_ID === "11155111"
-    ? [
-        chains.sepolia,
-        chains.baseSepolia,
-        chains.arbitrumSepolia,
-        chains.optimismSepolia,
-        chains.unichainSepolia,
-        chains.optimism,
-        chains.arbitrum,
-        chains.base,
-        chains.mainnet,
-        chains.unichain,
-      ]
-    : process.env.NEXT_PUBLIC_CHAIN_ID === "10"
-      ? [chains.optimism, chains.arbitrum, chains.base, chains.mainnet, chains.unichain]
-      : [chains.foundry];
+const targetNetworks: Chain[] = [
+  chains.sepolia,
+  chains.baseSepolia,
+  chains.arbitrumSepolia,
+  chains.optimismSepolia,
+  chains.unichainSepolia,
+  chains.optimism,
+  chains.arbitrum,
+  chains.base,
+  chains.mainnet,
+  chains.unichain,
+  chains.polygon,
+  chains.linea,
+  chains.bsc,
+  chains.worldchain,
+  chains.mantle,
+  chains.celo,
+];
+
+if (process.env.CHAIN_ID === "31337") {
+  targetNetworks.push(chains.foundry);
+}
 
 const scaffoldConfig = {
   // The networks on which your DApp is live

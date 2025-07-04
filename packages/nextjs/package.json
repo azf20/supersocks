@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@across-protocol/app-sdk": "^0.3.0",
+    "@daimo/pay": "^1.11.6",
     "@heroicons/react": "~2.1.5",
     "@ponder/client": "^0.11.20",
     "@ponder/react": "^0.11.20",

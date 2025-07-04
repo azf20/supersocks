@@ -17,11 +17,19 @@ contract SuperSocks is Ownable, ERC1155 {
     error NoUSDCToWithdraw();
     error InvalidTokenId();
     error InsufficientUSDC();
+    error NotLive();
 
     event CreatorBalanceWithdrawn(address indexed creator, uint256 amount);
+    event OwnerWithdrawn(uint256 amount);
     event SockCreated(uint256 indexed sockId, address indexed creator);
     event CreatorPaid(uint256 indexed sockId, address indexed creator, uint256 amount);
     event SocksPaid(address indexed sockRecipient, uint256 total, uint256 creatorFee);
+    event MetadataSet(address indexed metadata);
+    event PriceSet(uint256 price);
+    event CreatorFeeSet(uint256 fee);
+    event SlippageSet(uint256 slippage);
+    event IsLiveSet(bool isLive);
+    event CutoffDateSet(uint256 cutoffDate);
 
     uint256 public usdcPrice;
     uint256 public slippage;
@@ -30,20 +38,11 @@ contract SuperSocks is Ownable, ERC1155 {
     uint256 public creatorFee;
 
     uint256 public totalCreatorBalance;
+    uint256 public cutoffDate;
+    bool public isLive;
 
     mapping(uint256 => address) public creator;
     mapping(address => uint256) public creatorBalance;
-
-    // Constructor: Called once on contract deployment
-    // Check packages/foundry/deploy/Deploy.s.sol
-    constructor(address _metadata, address _usdc) {
-        _initializeOwner(msg.sender);
-        usdcPrice = 100000; // 1 USDC (6 decimals) TODO: UPDATE BEFORE DEPLOY
-        creatorFee = 10;
-        slippage = 1; // 1% slippage
-        usdc = _usdc;
-        metadata = Metadata(_metadata);
-    }
 
     /// @dev Returns the token collection name.
     function name() public pure returns (string memory) {
@@ -55,39 +54,61 @@ contract SuperSocks is Ownable, ERC1155 {
         return "SOCKS";
     }
 
+    /// @dev Returns the Uniform Resource Identifier (URI) for token `id`.
+    function uri(uint256 id) public view override returns (string memory) {
+        return metadata.tokenURI(id);
+    }
+
     function contractURI() public pure returns (string memory) {
         string memory json = '{"name": "SuperSocks","description":"Onchain customizable socks."}';
         return string.concat("data:application/json;utf8,", json);
     }
 
     /// @dev Updates the renderer contract
-    function setMetadata(Metadata _metadata) external onlyOwner {
-        metadata = _metadata;
+    function setMetadata(address _metadata) public onlyOwner {
+        metadata = Metadata(_metadata);
+        emit MetadataSet(_metadata);
     }
 
-    function setPrice(uint256 _price) external onlyOwner {
+    function setPrice(uint256 _price) public onlyOwner {
         usdcPrice = _price;
+        emit PriceSet(_price);
     }
 
-    function setCreatorFee(uint256 _creatorFee) external onlyOwner {
+    function setCreatorFee(uint256 _creatorFee) public onlyOwner {
         creatorFee = _creatorFee;
+        emit CreatorFeeSet(_creatorFee);
     }
 
-    function setSlippage(uint256 _slippage) external onlyOwner {
+    function setSlippage(uint256 _slippage) public onlyOwner {
         slippage = _slippage;
+        emit SlippageSet(_slippage);
     }
 
-    /// @dev Returns the Uniform Resource Identifier (URI) for token `id`.
-    function uri(uint256 id) public view override returns (string memory) {
-        return metadata.tokenURI(id);
+    function setIsLive(bool _isLive) public onlyOwner {
+        isLive = _isLive;
+        emit IsLiveSet(_isLive);
     }
 
-    /// @dev Sets the USDC price for minting
-    function setUsdcPrice(uint256 _price) external onlyOwner {
-        usdcPrice = _price;
+    function setCutoffDate() public onlyOwner {
+        cutoffDate = block.timestamp + 30 days;
+        emit CutoffDateSet(cutoffDate);
+    }
+    // Constructor: Called once on contract deployment
+    // Check packages/foundry/deploy/Deploy.s.sol
+    constructor(address _metadata, address _usdc) {
+        _initializeOwner(msg.sender);
+        setPrice(1000000); // 1 USDC (6 decimals)
+        setCreatorFee(20);
+        setSlippage(1); // 1% slippage
+        setIsLive(true);
+        setCutoffDate();
+        setMetadata(_metadata);
+        usdc = _usdc;
     }
 
     function _mint(address to, uint256[] memory sockIds, uint256[] memory amounts, uint256 valuePerSock) internal {
+        if (!isLive) revert NotLive();
 
         uint256 totalAmount = 0;
         for (uint256 i = 0; i < sockIds.length; i++) {
@@ -127,14 +148,22 @@ contract SuperSocks is Ownable, ERC1155 {
         emit SocksPaid(to, usdcAmount, (usdcAmount * creatorFee) / 100);
     }
 
-    /// @dev Withdraws accumulated USDC (after swapping ETH to USDC)
+    /// @dev Withdraws accumulated USDC
     function withdraw() public onlyOwner {
         uint256 usdcBalance = ERC20(usdc).balanceOf(address(this));
         uint256 ownerShare = usdcBalance - totalCreatorBalance;
         if (ownerShare > 0) {
             ERC20(usdc).transfer(owner(), ownerShare);
         }
-        emit CreatorBalanceWithdrawn(owner(), ownerShare);
+        emit OwnerWithdrawn(ownerShare);
+    }
+
+    function sweep() public onlyOwner {
+        if (block.timestamp > cutoffDate) {
+            uint256 usdcBalance = ERC20(usdc).balanceOf(address(this));
+            ERC20(usdc).transfer(owner(), usdcBalance);
+            emit OwnerWithdrawn(usdcBalance);
+        }
     }
 
     function withdrawCreatorBalance() public {
@@ -146,8 +175,4 @@ contract SuperSocks is Ownable, ERC1155 {
         emit CreatorBalanceWithdrawn(msg.sender, amount);
     }
 
-    /**
-     * Function that allows the contract to receive ETH
-     */
-    receive() external payable { }
 }
