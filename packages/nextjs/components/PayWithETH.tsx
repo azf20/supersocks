@@ -8,6 +8,7 @@ import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWrite
 import { useWatchBalance } from "~~/hooks/scaffold-eth/useWatchBalance";
 import { usdcAddress } from "~~/utils/supersocks";
 
+
 const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
 const USDC_TOKEN = new Token(ChainId.OPTIMISM, usdcAddress, 6, "USDC", "USDC");
 
@@ -19,7 +20,7 @@ export function PayWithETH({
   onSuccess,
 }: {
   totalUsdcPrice: bigint;
-  encodedSocks: string[];
+  encodedSocks: bigint[];
   quantities: bigint[];
   address: string;
   onSuccess?: () => void;
@@ -77,12 +78,9 @@ export function PayWithETH({
 
     setError(null);
     try {
-      // Convert string sockIds to bigint for the contract
-      const sockIdsAsBigInt = encodedSocks.map(sockId => BigInt(sockId));
-
       await writeContractAsync({
         functionName: "mintSocksWithETH",
-        args: [address, sockIdsAsBigInt, quantities, totalUsdcPrice, address],
+        args: [address, encodedSocks, quantities, totalUsdcPrice, address],
         value: ethPrice,
       });
       if (onSuccess) onSuccess();

@@ -5,6 +5,7 @@ import { erc20Abi, formatUnits } from "viem";
 import { useChains, useReadContracts } from "wagmi";
 import { useAcross } from "~~/hooks/useAcross";
 
+
 //import { chainId } from "~~/utils/supersocks";
 
 const chainId = 10;
@@ -26,13 +27,13 @@ type Route = {
 export function PayWithAcross({
   cost,
   address,
-  // encodedSocks,
-  // quantities,
+  encodedSocks,
+  quantities,
   onSuccess,
 }: {
   cost: bigint;
   address: string;
-  encodedSocks: string[];
+  encodedSocks: bigint[];
   quantities: bigint[];
   onSuccess?: () => void;
 }) {
@@ -77,6 +78,8 @@ export function PayWithAcross({
       destinationChainId: chainId,
       destinationToken: usdcAddress,
       userAddress: address,
+      sockIds: encodedSocks,
+      amounts: quantities,
     });
 
   // Handle quote execution

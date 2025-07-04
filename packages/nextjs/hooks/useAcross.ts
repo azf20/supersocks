@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { encodeFunctionData, erc20Abi } from "viem";
 import { arbitrum, base, mainnet, optimism, unichain } from "viem/chains";
 import { useWalletClient } from "wagmi";
+import deployedContracts from "~~/contracts/deployedContracts";
+import { chainId } from "~~/utils/supersocks";
 
 // Create the Across client
 const client = createAcrossClient({
@@ -32,6 +34,9 @@ export type UseAcrossInput = {
   route?: Route | null;
   inputAmount?: bigint | null;
 
+  sockIds: bigint[];
+  amounts: bigint[];
+
   // Route discovery (optional - for fetching available routes)
   destinationChainId?: number;
   destinationToken?: string;
@@ -42,7 +47,7 @@ export type UseAcrossInput = {
 
 export function useAcross(input: UseAcrossInput) {
   const wallet = useWalletClient();
-  const { route, inputAmount, destinationChainId, destinationToken, userAddress } = input;
+  const { route, inputAmount, destinationChainId, destinationToken, userAddress, sockIds, amounts } = input;
 
   // Fetch available routes
   const {
@@ -86,12 +91,21 @@ export function useAcross(input: UseAcrossInput) {
       }
 
       const multicallHandlerOptimism = "0x924a9f036260DdD5808007E1AA95f08eD08aA569";
+      const superSocks = deployedContracts[chainId].SuperSocks;
 
-      const generateCallData = (amount: bigint) => {
+      const generateApproveCallData = (amount: bigint) => {
         return encodeFunctionData({
           abi: erc20Abi,
-          functionName: "transfer",
-          args: [userAddress, amount],
+          functionName: "approve",
+          args: [superSocks.address, amount],
+        });
+      };
+
+      const generateMintCallData = (amount: bigint) => {
+        return encodeFunctionData({
+          abi: superSocks.abi,
+          functionName: "mint",
+          args: [userAddress, sockIds, amounts, amount],
         });
       };
 
@@ -100,10 +114,20 @@ export function useAcross(input: UseAcrossInput) {
           {
             value: 0n,
             target: route.outputToken,
-            callData: generateCallData(inputAmount),
+            callData: generateApproveCallData(inputAmount),
             update: (updatedOutputAmount: bigint) => {
               return {
-                callData: generateCallData(updatedOutputAmount),
+                callData: generateApproveCallData(updatedOutputAmount),
+              };
+            },
+          },
+          {
+            value: 0n,
+            target: superSocks.address,
+            callData: generateMintCallData(inputAmount),
+            update: (updatedOutputAmount: bigint) => {
+              return {
+                callData: generateMintCallData(updatedOutputAmount),
               };
             },
           },

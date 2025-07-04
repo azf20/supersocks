@@ -6,6 +6,7 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadCo
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { chainId } from "~~/utils/supersocks";
 
+
 export function PayWithUSDCBasic({
   cost,
   address,
@@ -15,7 +16,7 @@ export function PayWithUSDCBasic({
 }: {
   cost: bigint;
   address: string;
-  encodedSocks: string[];
+  encodedSocks: bigint[];
   quantities: bigint[];
   onSuccess?: () => void;
 }) {
@@ -76,7 +77,7 @@ export function PayWithUSDCBasic({
     setError(null);
     try {
       // Convert string sockIds to bigint for the contract
-      const sockIdsAsBigInt = encodedSocks.map(sockId => BigInt(sockId));
+      const sockIdsAsBigInt = encodedSocks;
 
       await writeSuperSocksAsync({
         functionName: "mint",

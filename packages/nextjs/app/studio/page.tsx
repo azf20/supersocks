@@ -105,7 +105,7 @@ export default function StudioPage() {
       },
       {
         ...superSocksContract,
-        functionName: "usdcPrice",
+        functionName: "config",
       },
       {
         ...metadataContract,
@@ -119,8 +119,18 @@ export default function StudioPage() {
   const isValid = checkResult?.[0];
   const errors = checkResult?.[1];
   const encodedSock = data?.[1]?.result;
-  const usdcPrice = data?.[2]?.result;
+  const configData = data?.[2]?.result;
   const styles = data?.[3]?.result;
+
+  // Extract config values
+  const usdcPrice = configData?.[0];
+  const creatorFee = configData?.[2];
+  const platformFee = configData?.[3];
+
+  // Calculate fee percentages
+  const creatorFeePercent = creatorFee ? Number(creatorFee) / 100 : 0; // Convert basis points to percentage
+  const platformFeePercent = platformFee ? Number(platformFee) / 100 : 0;
+  const minterFeePercent = 100 - creatorFeePercent - platformFeePercent;
 
   const selectedDesignStyle = styles?.[0]?.[Number(sock.design.index)] || "";
 
@@ -316,6 +326,7 @@ export default function StudioPage() {
                   isOpen={openColorPicker === "baseColorPicker"}
                   onToggle={() => toggleColorPicker("baseColorPicker")}
                   pickerType="baseColorPicker"
+                  baseColorIndex={sock.baseColorIndex}
                 />
               }
               colorPicker={
@@ -326,6 +337,7 @@ export default function StudioPage() {
                   isOpen={openColorPicker === "outlineColorPicker"}
                   onToggle={() => toggleColorPicker("outlineColorPicker")}
                   pickerType="outlineColorPicker"
+                  baseColorIndex={sock.baseColorIndex}
                 />
               }
             />
@@ -351,6 +363,7 @@ export default function StudioPage() {
                     isOpen={openColorPicker === "designColorPicker"}
                     onToggle={() => toggleColorPicker("designColorPicker")}
                     pickerType="designColorPicker"
+                    baseColorIndex={sock.baseColorIndex}
                   />
                 )
               }
@@ -376,6 +389,7 @@ export default function StudioPage() {
                     isOpen={openColorPicker === "topColorPicker"}
                     onToggle={() => toggleColorPicker("topColorPicker")}
                     pickerType="topColorPicker"
+                    baseColorIndex={sock.baseColorIndex}
                   />
                 )
               }
@@ -401,6 +415,7 @@ export default function StudioPage() {
                     isOpen={openColorPicker === "heelColorPicker"}
                     onToggle={() => toggleColorPicker("heelColorPicker")}
                     pickerType="heelColorPicker"
+                    baseColorIndex={sock.baseColorIndex}
                   />
                 )
               }
@@ -426,6 +441,7 @@ export default function StudioPage() {
                     isOpen={openColorPicker === "toeColorPicker"}
                     onToggle={() => toggleColorPicker("toeColorPicker")}
                     pickerType="toeColorPicker"
+                    baseColorIndex={sock.baseColorIndex}
                   />
                 )
               }
@@ -497,6 +513,25 @@ export default function StudioPage() {
               <div className="p-2 border rounded bg-gray-50 text-xs">
                 <h3 className="font-semibold mb-1">Pricing Information</h3>
                 <p>Each sock costs {formatUnits(usdcPrice, 6)} USDC</p>
+
+                {/* Fee Breakdown */}
+                <div className="mt-2 pt-2 border-t border-gray-200">
+                  <h4 className="font-medium mb-1">Fee Breakdown:</h4>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span>Sock designer:</span>
+                      <span className="text-blue-600">{creatorFeePercent}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Supersocks:</span>
+                      <span className="text-green-600">{platformFeePercent}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>You get back:</span>
+                      <span className="text-purple-600 font-medium">{minterFeePercent}%</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

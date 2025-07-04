@@ -23,7 +23,7 @@ export default function HomePage() {
       <div className="px-5 w-full max-w-6xl">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4">Super Socks</h1>
+          <h1 className="text-5xl font-bold mb-4">SUPERSOCKS</h1>
           <p className="text-xl text-gray-600 mb-8">Create, collect, and trade unique custom socks on the blockchain</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

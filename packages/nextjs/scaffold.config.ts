@@ -31,7 +31,7 @@ const targetNetworks: Chain[] = [
   chains.celo,
 ];
 
-if (process.env.CHAIN_ID === "31337") {
+if (process.env.NEXT_PUBLIC_CHAIN_ID === "31337") {
   targetNetworks.push(chains.foundry);
 }
 

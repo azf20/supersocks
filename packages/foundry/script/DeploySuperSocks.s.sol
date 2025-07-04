@@ -14,8 +14,8 @@ contract DeploySuperSocks is ScaffoldETHDeploy {
      *      - Setup correct `deployer` account and fund it
      *      - Export contract addresses & ABIs to `nextjs` packages
      */
-    function run(address _metadata, address _usdc) external ScaffoldEthDeployerRunner returns (address payable) {
-        SuperSocks superSocks = new SuperSocks(_metadata, _usdc);
+    function run(address _metadata, address _usdc, SuperSocks.Config memory _config) external ScaffoldEthDeployerRunner returns (address payable) {
+        SuperSocks superSocks = new SuperSocks(_metadata, _usdc, _config);
         return payable(address(superSocks));
     }
 }

@@ -7,6 +7,7 @@ import { DeploySuperSocks } from "./DeploySuperSocks.s.sol";
 import { DeploySwapper } from "./DeploySwapper.s.sol";
 import { DeployFreeRc20 } from "./DeployFreerc20.s.sol";
 import { InitializeMetadata } from "./InitializeMetadata.s.sol";
+import { SuperSocks } from "../contracts/SuperSocks.sol";
 /**
  * @notice Main deployment script for all contracts
  * @dev Run this when you want to deploy multiple contracts at once
@@ -17,7 +18,9 @@ contract DeployScript is ScaffoldETHDeploy {
 
 
     mapping(uint256 => address) public usdcAddresses;
-    bool faucet = true;
+    bool faucet = false;
+
+    mapping(uint256 => SuperSocks.Config) public superSocksConfigs;
 
     function run() external {
         // Deploys all your contracts sequentially
@@ -39,7 +42,30 @@ contract DeployScript is ScaffoldETHDeploy {
         address metadata = deployMetadata.run();
 
         DeploySuperSocks deploySuperSocks = new DeploySuperSocks();
-        address payable superSocks = deploySuperSocks.run(metadata, usdc);
+
+        superSocksConfigs[10] = SuperSocks.Config({
+            usdcPrice: 1000000,
+            slippage: 50,
+            creatorFee: 1000,
+            platformFee: 2000,
+            isLive: true
+        });
+        superSocksConfigs[31337] = SuperSocks.Config({
+            usdcPrice: 100000,
+            slippage: 50,
+            creatorFee: 1000,
+            platformFee: 2000,
+            isLive: true
+        });
+        superSocksConfigs[11155111] = SuperSocks.Config({
+            usdcPrice: 100000,
+            slippage: 50,
+            creatorFee: 1000,
+            platformFee: 2000,
+            isLive: true
+        });
+
+        address payable superSocks = deploySuperSocks.run(metadata, usdc, superSocksConfigs[block.chainid]);
 
         DeploySwapper deploySwapper = new DeploySwapper();
         deploySwapper.run(usdc, superSocks);

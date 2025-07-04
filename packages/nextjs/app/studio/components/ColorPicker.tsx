@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
+
 interface Color {
   name: string;
   value: string;
@@ -13,6 +14,7 @@ interface ColorPickerProps {
   isOpen: boolean;
   onToggle: () => void;
   pickerType: string;
+  baseColorIndex?: number;
 }
 
 // Organize colors into rows: transparent on its own row, then rows of 8
@@ -58,7 +60,15 @@ const isColorSelectable = (colorIndex: number, pickerType: string, baseColorInde
   return true;
 };
 
-export const ColorPicker = ({ colors, selectedIndex, onSelect, isOpen, onToggle, pickerType }: ColorPickerProps) => {
+export const ColorPicker = ({
+  colors,
+  selectedIndex,
+  onSelect,
+  isOpen,
+  onToggle,
+  pickerType,
+  baseColorIndex,
+}: ColorPickerProps) => {
   const selectedColor = colors.find(c => c.index === selectedIndex);
   const colorRows = organizeColorsIntoRows(colors);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -114,7 +124,7 @@ export const ColorPicker = ({ colors, selectedIndex, onSelect, isOpen, onToggle,
                 className={`grid gap-2 ${row.length === 1 ? "grid-cols-1" : "grid-cols-8"} ${rowIndex > 0 ? "mt-2" : ""}`}
               >
                 {row.map((color: Color) => {
-                  const isSelectable = isColorSelectable(color.index, pickerType);
+                  const isSelectable = isColorSelectable(color.index, pickerType, baseColorIndex);
                   return (
                     <button
                       key={color.index}

@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { chainId, usdcAddress } from "~~/utils/supersocks";
 
+
 export function PayWithDaimo({
   cost,
   onSuccess,
@@ -15,7 +16,7 @@ export function PayWithDaimo({
 }: {
   cost: bigint;
   address: `0x${string}`;
-  encodedSocks: string[];
+  encodedSocks: bigint[];
   quantities: bigint[];
   onSuccess?: () => void;
 }) {
@@ -28,7 +29,7 @@ export function PayWithDaimo({
   const callData = encodeFunctionData({
     abi: deployedContracts[chainId].SuperSocks.abi,
     functionName: "mint",
-    args: [address, encodedSocks.map(sockId => BigInt(sockId)), quantities, cost],
+    args: [address, encodedSocks, quantities, cost],
   });
 
   const { isConnected } = useAccount();
@@ -85,7 +86,7 @@ export function PayWithDaimo({
               }`}
               disabled={!isConnected}
             >
-              Pay with Daimo
+              {isConnected ? "Pay with Daimo" : "Connect Wallet to Pay"}
             </button>
           )}
         </DaimoPayButton.Custom>

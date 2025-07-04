@@ -30,13 +30,26 @@ export default function CheckoutPage() {
       {
         address: superSocksAddress,
         abi: deployedContracts[chainId].SuperSocks.abi,
-        functionName: "usdcPrice",
+        functionName: "config",
         chainId,
       },
     ],
   });
-  const usdcPrice = (usdcPriceData?.[0]?.result as bigint) || 0n;
+  const configData = usdcPriceData?.[0]?.result;
+  const usdcPrice = configData?.[0] || 0n;
+  const creatorFee = configData?.[2];
+  const platformFee = configData?.[3];
   const totalUsdcPrice = usdcPrice * BigInt(basket.totalItems);
+
+  // Calculate fee percentages and amounts
+  const creatorFeePercent = creatorFee ? Number(creatorFee) / 100 : 0;
+  const platformFeePercent = platformFee ? Number(platformFee) / 100 : 0;
+  const minterFeePercent = 100 - creatorFeePercent - platformFeePercent;
+
+  // Calculate fee amounts for the total order
+  const totalCreatorFee = (totalUsdcPrice * BigInt(creatorFee || 0)) / 10000n;
+  const totalPlatformFee = (totalUsdcPrice * BigInt(platformFee || 0)) / 10000n;
+  const totalMinterFee = totalUsdcPrice - totalCreatorFee - totalPlatformFee;
 
   const handleQuantityChange = (sockId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -83,7 +96,7 @@ export default function CheckoutPage() {
     );
   }
 
-  const encodedSocks = basket.items.map(item => item.sockId);
+  const encodedSocks = basket.items.map(item => BigInt(item.sockId));
   const quantities = basket.items.map(item => BigInt(item.count));
 
   return (
@@ -127,6 +140,25 @@ export default function CheckoutPage() {
               <div className="flex justify-between items-center text-xl font-bold">
                 <span>Total:</span>
                 <span>{formatUnits(totalUsdcPrice, 6)} USDC</span>
+              </div>
+
+              {/* Fee Breakdown */}
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
+                <h4 className="font-semibold mb-2 text-sm">Fee Breakdown:</h4>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>Sock designer ({creatorFeePercent}%):</span>
+                    <span className="text-blue-600">{formatUnits(totalCreatorFee, 6)} USDC</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Supersocks ({platformFeePercent}%):</span>
+                    <span className="text-green-600">{formatUnits(totalPlatformFee, 6)} USDC</span>
+                  </div>
+                  <div className="flex justify-between font-medium border-t pt-1">
+                    <span>You get back ({minterFeePercent}%):</span>
+                    <span className="text-purple-600">{formatUnits(totalMinterFee, 6)} USDC</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -220,7 +252,7 @@ export default function CheckoutPage() {
             {paymentMethod === "daimo" && (
               <PayWithDaimo
                 cost={totalUsdcPrice}
-                address={address as string}
+                address={address as `0x${string}`}
                 encodedSocks={encodedSocks}
                 quantities={quantities}
                 onSuccess={handlePaymentSuccess}

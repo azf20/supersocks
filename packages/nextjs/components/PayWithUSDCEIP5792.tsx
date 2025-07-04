@@ -8,6 +8,7 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadCo
 import { usdcAddress } from "~~/utils/supersocks";
 import { chainId } from "~~/utils/supersocks";
 
+
 export function PayWithUSDCEIP5792({
   cost,
   address,
@@ -17,7 +18,7 @@ export function PayWithUSDCEIP5792({
 }: {
   cost: bigint;
   address: string;
-  encodedSocks: string[];
+  encodedSocks: bigint[];
   quantities: bigint[];
   onSuccess?: () => void;
 }) {

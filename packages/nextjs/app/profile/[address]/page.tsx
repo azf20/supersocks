@@ -9,6 +9,7 @@ import { usePonderQuery } from "@ponder/react";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
 import { chainId } from "~~/utils/supersocks";
@@ -32,13 +33,31 @@ export default function ProfilePage() {
   });
 
   // Get creator balance from the Socks contract
-  const { data: creatorBalance } = useReadContract({
+  const { data: userBalance, refetch: refetchUserBalance } = useReadContract({
     address: deployedContracts[chainId].SuperSocks.address,
     abi: deployedContracts[chainId].SuperSocks.abi,
-    functionName: "creatorBalance",
+    functionName: "userBalance",
     args: [address],
     chainId: chainId,
   });
+
+  // Withdraw functionality
+  const { writeContractAsync: writeSuperSocksAsync, isPending: isWithdrawPending } = useScaffoldWriteContract({
+    contractName: "SuperSocks",
+  });
+
+  const handleWithdraw = async () => {
+    try {
+      await writeSuperSocksAsync({
+        functionName: "userWithdraw",
+        args: [address],
+      });
+      // Refetch the balance after successful withdrawal
+      refetchUserBalance();
+    } catch (error) {
+      console.error("Withdrawal failed:", error);
+    }
+  };
 
   // Get the token IDs that the user owns
   const ownedTokenIds = tokenBalances?.map(balance => balance.tokenId) || [];
@@ -120,9 +139,18 @@ export default function ProfilePage() {
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-purple-600">
-                  {creatorBalance ? formatUnits(creatorBalance, 6) : 0} USDC
+                  {userBalance ? formatUnits(userBalance, 6) : 0} USDC
                 </div>
-                <div className="text-gray-600">Creator Balance</div>
+                <div className="text-gray-600">Balance</div>
+                {userBalance && userBalance > 0n && (
+                  <button
+                    onClick={handleWithdraw}
+                    disabled={isWithdrawPending}
+                    className="mt-2 bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-1 px-3 rounded text-sm"
+                  >
+                    {isWithdrawPending ? "Withdrawing..." : "Withdraw"}
+                  </button>
+                )}
               </div>
             </div>
           </div>
