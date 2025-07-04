@@ -6,6 +6,7 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { getBlockExplorerTxLink, getParsedError, notification } from "~~/utils/scaffold-eth";
 import { TransactorFuncOptions } from "~~/utils/scaffold-eth/contract";
 
+
 type TransactionFunc = (
   tx: (() => Promise<Hash>) | Parameters<SendTransactionMutate<Config, undefined>>[0],
   options?: TransactorFuncOptions,
@@ -55,6 +56,10 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       // Get full transaction from public client
       const publicClient = getPublicClient(wagmiConfig);
 
+      if (!publicClient) {
+        throw new Error("Public client not found");
+      }
+
       notificationId = notification.loading(<TxnNotification message="Awaiting for user confirmation" />);
       if (typeof tx === "function") {
         // Tx is already prepared by the caller
@@ -78,6 +83,10 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
         confirmations: options?.blockConfirmations,
       });
       notification.remove(notificationId);
+
+      if (!transactionReceipt) {
+        throw new Error("Transaction receipt not found");
+      }
 
       if (transactionReceipt.status === "reverted") throw new Error("Transaction reverted");
 

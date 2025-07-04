@@ -5,6 +5,7 @@ import { createConfig } from "wagmi";
 import scaffoldConfig, { DEFAULT_ALCHEMY_API_KEY, ScaffoldConfig } from "~~/scaffold.config";
 import { getAlchemyHttpUrl } from "~~/utils/scaffold-eth";
 
+
 const { targetNetworks } = scaffoldConfig;
 
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
@@ -13,7 +14,7 @@ export const enabledChains = targetNetworks.find((network: Chain) => network.id 
   : ([...targetNetworks, mainnet] as const);
 
 export const wagmiConfig = createConfig({
-  chains: enabledChains,
+  chains: enabledChains as any,
   connectors: wagmiConnectors,
   ssr: true,
   client({ chain }) {

@@ -2,34 +2,18 @@ import { getParsedError } from "./getParsedError";
 import { AllowedChainIds } from "./networks";
 import { notification } from "./notification";
 import { MutateOptions } from "@tanstack/react-query";
-import {
-  Abi,
-  AbiParameter,
-  AbiParameterToPrimitiveType,
-  AbiParametersToPrimitiveTypes,
-  ExtractAbiEvent,
-  ExtractAbiEventNames,
-  ExtractAbiFunction,
-} from "abitype";
+import { Abi, AbiParameter, AbiParameterToPrimitiveType, AbiParametersToPrimitiveTypes, ExtractAbiEvent, ExtractAbiEventNames, ExtractAbiFunction } from "abitype";
 import type { ExtractAbiFunctionNames } from "abitype";
 import type { Simplify } from "type-fest";
 import type { MergeDeepRecord } from "type-fest/source/merge-deep";
-import {
-  Address,
-  Block,
-  GetEventArgs,
-  GetTransactionReceiptReturnType,
-  GetTransactionReturnType,
-  Log,
-  TransactionReceipt,
-  WriteContractErrorType,
-} from "viem";
+import { Address, Block, GetEventArgs, GetTransactionReceiptReturnType, GetTransactionReturnType, Log, TransactionReceipt, WriteContractErrorType } from "viem";
 import { Config, UseReadContractParameters, UseWatchContractEventParameters, UseWriteContractParameters } from "wagmi";
 import { WriteContractParameters, WriteContractReturnType, simulateContract } from "wagmi/actions";
 import { WriteContractVariables } from "wagmi/query";
 import deployedContractsData from "~~/contracts/deployedContracts";
 import externalContractsData from "~~/contracts/externalContracts";
 import scaffoldConfig from "~~/scaffold.config";
+
 
 type AddExternalFlag<T> = {
   [ChainId in keyof T]: {
@@ -86,6 +70,7 @@ type IsContractDeclarationMissing<TYes, TNo> = typeof contractsData extends { [k
 
 type ContractsDeclaration = IsContractDeclarationMissing<GenericContractsDeclaration, typeof contractsData>;
 
+// @ts-ignore
 type Contracts = ContractsDeclaration[ConfiguredChainId];
 
 export type ContractName = keyof Contracts;
