@@ -6,7 +6,6 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadCo
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { chainId } from "~~/utils/supersocks";
 
-
 export function PayWithUSDCBasic({
   cost,
   address,
@@ -89,7 +88,7 @@ export function PayWithUSDCBasic({
     }
   };
 
-  if ((allowance || 0n) < cost) {
+  if ((allowance || 0n) < cost && !isMinting) {
     return (
       <>
         <div className="mb-2 text-sm text-gray-700">
