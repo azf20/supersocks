@@ -340,16 +340,16 @@ contract Renderer {
     function getTraits(uint256 encodedSockId) public view returns (string memory attributes) {
         Sock memory sock = decodeSock(encodedSockId);
         attributes = string(abi.encodePacked(
-            _trait("Base Color", utils.uint2str(sock.baseColorIndex), true),
-            _trait("Outline Color", utils.uint2str(sock.outlineColorIndex), true),
-            sock.top.index > 0 ? _trait("Top Color", utils.uint2str(sock.top.colorIndex), true) : '',
+            _trait("Base Color", getColor(sock.baseColorIndex), true),
+            _trait("Outline Color", getColor(sock.outlineColorIndex), true),
+            sock.top.index > 0 ? _trait("Top Color", getColor(sock.top.colorIndex), true) : '',
             _trait("Top Style", utils.uint2str(sock.top.index), true),
-            sock.heel.index > 0 ? _trait("Heel Color", utils.uint2str(sock.heel.colorIndex), true) : '',
+            sock.heel.index > 0 ? _trait("Heel Color", getColor(sock.heel.colorIndex), true) : '',
             _trait("Heel Style", utils.uint2str(sock.heel.index), true),
-            sock.toe.index > 0 ? _trait("Toe Color", utils.uint2str(sock.toe.colorIndex), true) : '',
+            sock.toe.index > 0 ? _trait("Toe Color", getColor(sock.toe.colorIndex), true) : '',
             _trait("Toe Style", utils.uint2str(sock.toe.index), true),
-            sock.design.index > 0 ? _trait("Design Color", utils.uint2str(sock.design.colorIndex), true) : '',
-            _trait("Design Index", utils.uint2str(sock.design.index), false)
+            sock.design.index > 0 ? _trait("Design Color", getColor(sock.design.colorIndex), true) : '',
+            _trait("Design Style", utils.uint2str(sock.design.index), false)
             ));
     }
 

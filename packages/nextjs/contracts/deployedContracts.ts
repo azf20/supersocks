@@ -5,395 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
-    FreeRc20: {
-      address: "0x476c89643a61988a75b2f3ae638f3a88296ca7d4",
-      abi: [
-        {
-          type: "constructor",
-          inputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "DOMAIN_SEPARATOR",
-          inputs: [],
-          outputs: [
-            {
-              name: "result",
-              type: "bytes32",
-              internalType: "bytes32",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "allowance",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "spender",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "result",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "approve",
-          inputs: [
-            {
-              name: "spender",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "balanceOf",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "result",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "burn",
-          inputs: [
-            {
-              name: "from",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "decimals",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint8",
-              internalType: "uint8",
-            },
-          ],
-          stateMutability: "pure",
-        },
-        {
-          type: "function",
-          name: "mint",
-          inputs: [
-            {
-              name: "to",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "name",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          stateMutability: "pure",
-        },
-        {
-          type: "function",
-          name: "nonces",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "result",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "permit",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "spender",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "value",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "deadline",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "v",
-              type: "uint8",
-              internalType: "uint8",
-            },
-            {
-              name: "r",
-              type: "bytes32",
-              internalType: "bytes32",
-            },
-            {
-              name: "s",
-              type: "bytes32",
-              internalType: "bytes32",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "symbol",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          stateMutability: "pure",
-        },
-        {
-          type: "function",
-          name: "totalSupply",
-          inputs: [],
-          outputs: [
-            {
-              name: "result",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "transfer",
-          inputs: [
-            {
-              name: "to",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "transferFrom",
-          inputs: [
-            {
-              name: "from",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "to",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "event",
-          name: "Approval",
-          inputs: [
-            {
-              name: "owner",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "spender",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "event",
-          name: "Transfer",
-          inputs: [
-            {
-              name: "from",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "to",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "error",
-          name: "AllowanceOverflow",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "AllowanceUnderflow",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "InsufficientAllowance",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "InsufficientBalance",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "InvalidPermit",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "Permit2AllowanceIsFixedAtInfinity",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "PermitExpired",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "TotalSupplyOverflow",
-          inputs: [],
-        },
-      ],
-      inheritedFunctions: {},
-      deploymentFile: "run-1751623538.json",
-      deploymentScript: "Deploy.s.sol",
-    },
+  10: {
     Metadata: {
-      address: "0x387c576493981c3e072af174a91043e0aa751c9f",
+      address: "0x1bbf6cc4f7228ebfded2c831b0c09d540efc76d0",
       abi: [
         {
           type: "constructor",
@@ -1479,11 +1093,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751889941.json",
+      deploymentFile: "run-1751895967.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0x30c1dc97fc7012736abcaea72cf60b64d6e39616",
+      address: "0xb05231899231c483b5722d8ae8b9460b85ba3e11",
       abi: [
         {
           type: "constructor",
@@ -2265,25 +1879,6 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "MinterPaid",
-          inputs: [
-            {
-              name: "minter",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "event",
           name: "OwnerWithdrawal",
           inputs: [
             {
@@ -2336,19 +1931,6 @@ const deployedContracts = {
               type: "address",
               indexed: true,
               internalType: "address",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "event",
-          name: "PlatformFeePaid",
-          inputs: [
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
             },
           ],
           anonymous: false,
@@ -2592,11 +2174,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751889941.json",
+      deploymentFile: "run-1751895967.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x8c93b2d2d843bf72dcf2c1d38a76a12ba0112191",
+      address: "0x55527a5a43c008ddab5341b99395078111da949e",
       abi: [
         {
           type: "constructor",
@@ -2734,7 +2316,2708 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751889941.json",
+      deploymentFile: "run-1751895967.json",
+      deploymentScript: "Deploy.s.sol",
+    },
+  },
+  31337: {
+    FreeRc20: {
+      address: "0x476c89643a61988a75b2f3ae638f3a88296ca7d4",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "DOMAIN_SEPARATOR",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "allowance",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "approve",
+          inputs: [
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "burn",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "decimals",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "name",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "nonces",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permit",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "value",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transfer",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "transferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "Approval",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Transfer",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AllowanceOverflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "AllowanceUnderflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientAllowance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientBalance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidPermit",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Permit2AllowanceIsFixedAtInfinity",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PermitExpired",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TotalSupplyOverflow",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1751623538.json",
+      deploymentScript: "Deploy.s.sol",
+    },
+    Metadata: {
+      address: "0x14112fc94f3cbb6bd441631087c70819feee319c",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "COLORS",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "addStyles",
+          inputs: [
+            {
+              name: "index",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "styles",
+              type: "string[]",
+              internalType: "string[]",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "baseSock",
+          inputs: [
+            {
+              name: "baseColorClass",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "outlineColorClass",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "cancelOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "checkSock",
+          inputs: [
+            {
+              name: "sock",
+              type: "tuple",
+              internalType: "struct Renderer.Sock",
+              components: [
+                {
+                  name: "baseColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "top",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "heel",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "toe",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "design",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "isValid",
+              type: "bool",
+              internalType: "bool",
+            },
+            {
+              name: "errors",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "completeOwnershipHandover",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "decodeSock",
+          inputs: [
+            {
+              name: "encoded",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "sock",
+              type: "tuple",
+              internalType: "struct Renderer.Sock",
+              components: [
+                {
+                  name: "baseColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "top",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "heel",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "toe",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "design",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "drawSock",
+          inputs: [
+            {
+              name: "sock",
+              type: "tuple",
+              internalType: "struct Renderer.Sock",
+              components: [
+                {
+                  name: "baseColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "top",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "heel",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "toe",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "design",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "encodeSock",
+          inputs: [
+            {
+              name: "sock",
+              type: "tuple",
+              internalType: "struct Renderer.Sock",
+              components: [
+                {
+                  name: "baseColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "top",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "heel",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "toe",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "design",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "generateFillStyle",
+          inputs: [
+            {
+              name: "component",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "sockId",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "color",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "generateStrokeStyle",
+          inputs: [
+            {
+              name: "component",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "sockId",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "color",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "generateStyles",
+          inputs: [
+            {
+              name: "sock",
+              type: "tuple",
+              internalType: "struct Renderer.Sock",
+              components: [
+                {
+                  name: "baseColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "top",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "heel",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "toe",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "design",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              name: "sockId",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getColor",
+          inputs: [
+            {
+              name: "spot",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getColorCount",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getStyle",
+          inputs: [
+            {
+              name: "index",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "styleIndex",
+              type: "uint16",
+              internalType: "uint16",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getStyles",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string[][]",
+              internalType: "string[][]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getTraits",
+          inputs: [
+            {
+              name: "encodedSockId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "attributes",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "ownershipHandoverExpiresAt",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "render",
+          inputs: [
+            {
+              name: "encodedSockId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "renderSock",
+          inputs: [
+            {
+              name: "sock",
+              type: "tuple",
+              internalType: "struct Renderer.Sock",
+              components: [
+                {
+                  name: "baseColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "outlineColorIndex",
+                  type: "uint8",
+                  internalType: "uint8",
+                },
+                {
+                  name: "top",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "heel",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "toe",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+                {
+                  name: "design",
+                  type: "tuple",
+                  internalType: "struct Renderer.Style",
+                  components: [
+                    {
+                      name: "colorIndex",
+                      type: "uint8",
+                      internalType: "uint8",
+                    },
+                    {
+                      name: "index",
+                      type: "uint16",
+                      internalType: "uint16",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "requestOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "styleLookup",
+          inputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "styleNames",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "tokenURI",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "updateStyle",
+          inputs: [
+            {
+              name: "index",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "styleIndex",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "style",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "validateTokenId",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverCanceled",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverRequested",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "oldOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NewOwnerIsZeroAddress",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoHandoverRequest",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Unauthorized",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1751895656.json",
+      deploymentScript: "Deploy.s.sol",
+    },
+    SuperSocks: {
+      address: "0xc5c44c8927c519fed4a4bd946d34b2182fe07c44",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "_metadata",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_usdc",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_config",
+              type: "tuple",
+              internalType: "struct SuperSocks.Config",
+              components: [
+                {
+                  name: "usdcPrice",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "slippage",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "creatorFee",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "platformFee",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "isLive",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "balanceOfBatch",
+          inputs: [
+            {
+              name: "owners",
+              type: "address[]",
+              internalType: "address[]",
+            },
+            {
+              name: "ids",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "balances",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "cancelOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "completeOwnershipHandover",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "config",
+          inputs: [],
+          outputs: [
+            {
+              name: "usdcPrice",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "slippage",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "creatorFee",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "platformFee",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "isLive",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "contractURI",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "creator",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "creatorBalance",
+          inputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "cutoffDate",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isApprovedForAll",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "metadata",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract Metadata",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "sockIds",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "usdcAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "minterBalance",
+          inputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "name",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "ownershipHandoverExpiresAt",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "platformBalance",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "requestOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "safeBatchTransferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "ids",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "safeTransferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setApprovalForAll",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "isApproved",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setConfig",
+          inputs: [
+            {
+              name: "_config",
+              type: "tuple",
+              internalType: "struct SuperSocks.Config",
+              components: [
+                {
+                  name: "usdcPrice",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "slippage",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "creatorFee",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "platformFee",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "isLive",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setCutoffDate",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setMetadata",
+          inputs: [
+            {
+              name: "_metadata",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "supportsInterface",
+          inputs: [
+            {
+              name: "interfaceId",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "sweep",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "uri",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "usdc",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "userBalance",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "userWithdraw",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "usersWithdraw",
+          inputs: [
+            {
+              name: "users",
+              type: "address[]",
+              internalType: "address[]",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "ApprovalForAll",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "isApproved",
+              type: "bool",
+              indexed: false,
+              internalType: "bool",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "ConfigSet",
+          inputs: [
+            {
+              name: "config",
+              type: "tuple",
+              indexed: false,
+              internalType: "struct SuperSocks.Config",
+              components: [
+                {
+                  name: "usdcPrice",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "slippage",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "creatorFee",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "platformFee",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "isLive",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "CreatorPaid",
+          inputs: [
+            {
+              name: "sockId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+            {
+              name: "creator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "CutoffDateSet",
+          inputs: [
+            {
+              name: "cutoffDate",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "MetadataSet",
+          inputs: [
+            {
+              name: "metadata",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnerWithdrawal",
+          inputs: [
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverCanceled",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverRequested",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "oldOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "SockCreated",
+          inputs: [
+            {
+              name: "sockId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+            {
+              name: "creator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "SocksPaid",
+          inputs: [
+            {
+              name: "sockRecipient",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "total",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "creatorFee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "platformFee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "TransferBatch",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "ids",
+              type: "uint256[]",
+              indexed: false,
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              indexed: false,
+              internalType: "uint256[]",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "TransferSingle",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "id",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "URI",
+          inputs: [
+            {
+              name: "value",
+              type: "string",
+              indexed: false,
+              internalType: "string",
+            },
+            {
+              name: "id",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "UserWithdrawal",
+          inputs: [
+            {
+              name: "minter",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AccountBalanceOverflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "AlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ArrayLengthsMismatch",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientBalance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientUSDC",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidTokenId",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NewOwnerIsZeroAddress",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoHandoverRequest",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoUSDCToWithdraw",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotLive",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotOwnerNorApproved",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TransferToNonERC1155ReceiverImplementer",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TransferToZeroAddress",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Unauthorized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ZeroAmount",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1751895656.json",
+      deploymentScript: "Deploy.s.sol",
+    },
+    Swapper: {
+      address: "0x75468314f4c7b2d51589ae1e0087d58103dca3d1",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "currency1",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_superSocks",
+              type: "address",
+              internalType: "address payable",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "mintSocksWithETH",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "sockIds",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "amounts",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+            {
+              name: "minUsdcAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "refundAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "permit2",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPermit2",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolKey",
+          inputs: [],
+          outputs: [
+            {
+              name: "currency0",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "currency1",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "fee",
+              type: "uint24",
+              internalType: "uint24",
+            },
+            {
+              name: "tickSpacing",
+              type: "int24",
+              internalType: "int24",
+            },
+            {
+              name: "hooks",
+              type: "address",
+              internalType: "contract IHooks",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolManager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "router",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract UniversalRouter",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "superSocks",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract SuperSocks",
+            },
+          ],
+          stateMutability: "view",
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1751895656.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
@@ -4998,25 +7281,6 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "MinterPaid",
-          inputs: [
-            {
-              name: "minter",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "event",
           name: "OwnerWithdrawal",
           inputs: [
             {
@@ -5069,19 +7333,6 @@ const deployedContracts = {
               type: "address",
               indexed: true,
               internalType: "address",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "event",
-          name: "PlatformFeePaid",
-          inputs: [
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
             },
           ],
           anonymous: false,

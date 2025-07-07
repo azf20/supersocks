@@ -31,11 +31,9 @@ contract SuperSocks is Ownable, ERC1155 {
     event OwnerWithdrawal(uint256 amount);
     event SockCreated(uint256 indexed sockId, address indexed creator);
     event CreatorPaid(uint256 indexed sockId, address indexed creator, uint256 amount);
-    event MinterPaid(address indexed minter, uint256 amount);
     event SocksPaid(address indexed sockRecipient, uint256 total, uint256 creatorFee, uint256 platformFee);
     event MetadataSet(address indexed metadata);
     event ConfigSet(Config config);
-    event PlatformFeePaid(uint256 amount);
     event CutoffDateSet(uint256 cutoffDate);
 
     /**
@@ -190,11 +188,9 @@ contract SuperSocks is Ownable, ERC1155 {
 
         platformFeeAmount = valuePerSock * totalAmount * config.platformFee / 10000;
         platformBalance += platformFeeAmount;
-        emit PlatformFeePaid(platformFeeAmount);
         
         uint256 minterFeeAmount = valuePerSock * totalAmount - totalCreatorFee - platformFeeAmount;
         minterBalance[to] += minterFeeAmount;
-        emit MinterPaid(to, minterFeeAmount);
 
         totalSupply += totalAmount;
     }
