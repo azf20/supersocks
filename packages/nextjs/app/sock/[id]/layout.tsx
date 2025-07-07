@@ -22,11 +22,11 @@ const getPublicClient = () => {
 
 interface LayoutProps {
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: LayoutProps): Promise<Metadata> {
-  const id = params.id;
+  const { id } = await params;
 
   if (!id) {
     return {
@@ -117,6 +117,6 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
   }
 }
 
-export default function SockLayout({ children }: LayoutProps) {
+export default async function SockLayout({ children }: LayoutProps) {
   return children;
 }
