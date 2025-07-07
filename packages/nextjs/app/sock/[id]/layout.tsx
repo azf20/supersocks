@@ -1,6 +1,5 @@
 import deployedContracts from "../../../contracts/deployedContracts";
 import { chainId } from "../../../utils/supersocks";
-import { decodeBase64SVG } from "../../../utils/svg";
 import { Metadata } from "next";
 import { createPublicClient, http } from "viem";
 import { optimism, sepolia } from "viem/chains";
@@ -70,23 +69,11 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     });
 
     const title = metadata?.name || `SuperSock #${id}`;
-    const description = `${metadata?.description} created by ${creator} | Supersocks`;
+    const description = `Created by ${creator} | Supersocks`;
 
-    // Generate OpenGraph image from SVG if available
-    let openGraphImage = undefined;
-    if (metadata?.image) {
-      try {
-        // Decode the base64 SVG using the utility function
-        const decodedSVG = decodeBase64SVG(metadata.image);
-        if (decodedSVG) {
-          // Convert the decoded SVG to a data URI for OpenGraph
-          const base64 = Buffer.from(decodedSVG).toString("base64");
-          openGraphImage = `data:image/svg+xml;base64,${base64}`;
-        }
-      } catch (error) {
-        console.error("Error processing image for OpenGraph:", error);
-      }
-    }
+    // Generate OpenGraph image URL using the API route
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL || "http://localhost:3000";
+    const openGraphImage = `${baseUrl}/api/sock/${id}/image`;
 
     return {
       title,
