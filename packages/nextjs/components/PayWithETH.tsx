@@ -6,8 +6,7 @@ import { formatEther } from "viem";
 import { useSimulateContract } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { useWatchBalance } from "~~/hooks/scaffold-eth/useWatchBalance";
-import { usdcAddress } from "~~/utils/supersocks";
-
+import { chainId, usdcAddress } from "~~/utils/supersocks";
 
 const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
 const USDC_TOKEN = new Token(ChainId.OPTIMISM, usdcAddress, 6, "USDC", "USDC");
@@ -52,6 +51,7 @@ export function PayWithETH({
     query: {
       enabled: totalUsdcPrice > 0n,
     },
+    chainId: chainId,
   });
 
   const slippage = 1n; // 50% slippage

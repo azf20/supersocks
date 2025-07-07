@@ -6,7 +6,6 @@ import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { chainId, usdcAddress } from "~~/utils/supersocks";
 
-
 export function PayWithDaimo({
   cost,
   onSuccess,
@@ -69,7 +68,7 @@ export function PayWithDaimo({
 
       <div className="flex justify-center mt-2">
         <DaimoPayButton.Custom
-          appId="pay-demo"
+          appId={process.env.NEXT_PUBLIC_DAIMO_APP_ID || "pay-demo"}
           toChain={chainId}
           toUnits={costInUsdc}
           toToken={getAddress(usdcAddress)}

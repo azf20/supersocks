@@ -143,6 +143,7 @@ export function useAcross(input: UseAcrossInput) {
           crossChainMessage: message,
           recipient: multicallHandlerOptimism,
         });
+        console.log("quote", quote);
         return quote;
       } catch (error: any) {
         console.error("Error getting quote:", error);
