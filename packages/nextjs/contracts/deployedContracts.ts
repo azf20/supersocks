@@ -393,7 +393,7 @@ const deployedContracts = {
       deploymentScript: "Deploy.s.sol",
     },
     Metadata: {
-      address: "0x7595abaf14b551f13d77f832b1a91198d9cc965a",
+      address: "0x387c576493981c3e072af174a91043e0aa751c9f",
       abi: [
         {
           type: "constructor",
@@ -1479,11 +1479,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751657388.json",
+      deploymentFile: "run-1751889941.json",
       deploymentScript: "Deploy.s.sol",
     },
     SuperSocks: {
-      address: "0xe65520bece0978bb681538273bae50fa9b6d519f",
+      address: "0x30c1dc97fc7012736abcaea72cf60b64d6e39616",
       abi: [
         {
           type: "constructor",
@@ -2039,6 +2039,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -2078,19 +2091,6 @@ const deployedContracts = {
               name: "",
               type: "address",
               internalType: "address",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "usdcPrice",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
             },
           ],
           stateMutability: "view",
@@ -2592,11 +2592,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751657388.json",
+      deploymentFile: "run-1751889941.json",
       deploymentScript: "Deploy.s.sol",
     },
     Swapper: {
-      address: "0x73e5c1b6649b6c301d64e292b147744cbba48e8e",
+      address: "0x8c93b2d2d843bf72dcf2c1d38a76a12ba0112191",
       abi: [
         {
           type: "constructor",
@@ -2734,7 +2734,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1751657388.json",
+      deploymentFile: "run-1751889941.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
@@ -4772,6 +4772,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -4811,19 +4824,6 @@ const deployedContracts = {
               name: "",
               type: "address",
               internalType: "address",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "usdcPrice",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
             },
           ],
           stateMutability: "view",

@@ -58,20 +58,14 @@ contract SuperSocks is Ownable, ERC1155 {
     Metadata public metadata;
     Config public config;
 
-    /**
-     * @notice Returns the current USDC price per sock
-     * @return The USDC price per sock in smallest units
-     */
-    function usdcPrice() public view returns (uint256) {
-        return config.usdcPrice;
-    }
-
     uint256 public cutoffDate;
 
     mapping(uint256 => address) public creator;
     mapping(address => uint256) public creatorBalance;
     mapping(address => uint256) public minterBalance;
     uint256 public platformBalance;
+
+    uint256 public totalSupply;
 
     /**
      * @notice Get the total USDC balance for a user (creator + minter balances)
@@ -201,6 +195,8 @@ contract SuperSocks is Ownable, ERC1155 {
         uint256 minterFeeAmount = valuePerSock * totalAmount - totalCreatorFee - platformFeeAmount;
         minterBalance[to] += minterFeeAmount;
         emit MinterPaid(to, minterFeeAmount);
+
+        totalSupply += totalAmount;
     }
 
     /**

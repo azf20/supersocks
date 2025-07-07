@@ -24,7 +24,21 @@ export default function HomePage() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4">SUPERSOCKS</h1>
-          <p className="text-xl text-gray-600 mb-8">Create, collect, and trade unique custom socks on the blockchain</p>
+          <p className="text-xl text-gray-600 mb-2">Create and collect onchain socks.</p>
+          <p className="text-md text-gray-600 mb-8">
+            A{" "}
+            <Link href="https://uxscout.xyz/" target="_blank" className="text-blue-500">
+              UXScout
+            </Link>{" "}
+            exploration. Part of the{" "}
+            <Link
+              href="https://github.com/ethereum-optimism/ecosystem-contributions/issues/274"
+              target="_blank"
+              className="text-blue-500"
+            >
+              Optimism Foundation EIP-7702 UX Mission.
+            </Link>{" "}
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/studio"

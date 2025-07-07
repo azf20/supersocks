@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PayButton } from "./PayButton";
+import { toast } from "react-hot-toast";
 import { erc20Abi } from "viem";
 import { formatUnits } from "viem";
 import { useSendCalls, useWaitForCallsStatus } from "wagmi";
@@ -7,7 +8,6 @@ import deployedContracts from "~~/contracts/deployedContracts";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import { usdcAddress } from "~~/utils/supersocks";
 import { chainId } from "~~/utils/supersocks";
-
 
 export function PayWithUSDCEIP5792({
   cost,
@@ -47,9 +47,10 @@ export function PayWithUSDCEIP5792({
 
   useEffect(() => {
     if (callsStatusData?.status === "success" && onSuccess) {
+      toast.success("Payment successful!");
       onSuccess();
-    }
-    if (callsStatusData?.status === "failure") {
+    } else if (callsStatusData?.status === "failure") {
+      toast.error("Payment failed. Please try again.");
       setError("Payment failed. Please try again.");
     }
   }, [callsStatusData, onSuccess]);
@@ -74,6 +75,7 @@ export function PayWithUSDCEIP5792({
       });
       setSending(true);
       await sendCallsAsync({ calls, experimental_fallback: true });
+      toast("Payment in progress...");
     } catch (e: any) {
       setError(e.message || "Payment failed");
     } finally {
