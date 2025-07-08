@@ -1,15 +1,9 @@
 import { useState } from "react";
-import externalContracts from "../contracts/externalContracts";
 import { PayButton } from "./PayButton";
-import { ChainId, Token } from "@uniswap/sdk-core";
 import { formatEther } from "viem";
-import { useSimulateContract } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { useWatchBalance } from "~~/hooks/scaffold-eth/useWatchBalance";
-import { chainId, usdcAddress } from "~~/utils/supersocks";
-
-const ETH_TOKEN = new Token(ChainId.OPTIMISM, "0x0000000000000000000000000000000000000000", 18, "ETH", "Ether");
-const USDC_TOKEN = new Token(ChainId.OPTIMISM, usdcAddress, 6, "USDC", "USDC");
+import { useUniswapETHQuote } from "~~/hooks/useUniswapETHQuote";
 
 export function PayWithETH({
   totalUsdcPrice,
@@ -29,34 +23,8 @@ export function PayWithETH({
   // Fetch ETH balance
   const { data: ethBalance } = useWatchBalance({ address: address as `0x${string}` });
 
-  // Get ETH quote for the total USDC amount
-  const QuoteConfig = {
-    poolKey: {
-      currency0: ETH_TOKEN.address,
-      currency1: USDC_TOKEN.address,
-      fee: 500,
-      tickSpacing: 10,
-      hooks: "0x0000000000000000000000000000000000000000",
-    },
-    zeroForOne: true,
-    exactAmount: totalUsdcPrice,
-    hookData: "0x00",
-  };
-
-  const { data: quoteResult } = useSimulateContract({
-    address: externalContracts[31337].QUOTER.address,
-    abi: externalContracts[31337].QUOTER.abi,
-    functionName: "quoteExactOutputSingle",
-    args: [QuoteConfig],
-    query: {
-      enabled: totalUsdcPrice > 0n,
-    },
-    chainId: chainId,
-  });
-
-  const slippage = 1n; // 50% slippage
-  const quote = quoteResult?.result[0];
-  const ethPrice = quote ? (quote * (slippage + 100n)) / 100n : 0n;
+  // Get ETH quote using the custom hook
+  const { ethPrice, isLoading: isQuoteLoading } = useUniswapETHQuote(totalUsdcPrice, 100n); // 1% slippage
 
   // Check if ETH balance is sufficient
   const hasSufficientEth = ethBalance && ethPrice ? ethBalance.value >= ethPrice : false;
@@ -99,7 +67,7 @@ export function PayWithETH({
       )}
       <PayButton
         onClick={handlePayment}
-        loading={isPending}
+        loading={isPending || isQuoteLoading}
         disabled={ethPrice === 0n || !hasSufficientEth}
         error={error}
       >

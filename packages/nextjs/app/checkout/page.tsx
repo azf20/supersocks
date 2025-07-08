@@ -16,6 +16,7 @@ import { PayWithDaimo } from "~~/components/PayWithDaimo";
 import { useGlobalState } from "~~/services/store/store";
 import { chainId, superSocksAddress } from "~~/utils/supersocks";
 
+
 export default function CheckoutPage() {
   const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
   const { address } = useAccount();
@@ -28,7 +29,7 @@ export default function CheckoutPage() {
 
   // Set default payment method to first available method
   const defaultPaymentMethod = allowedPaymentMethods[0] as "regular" | "batch" | "eth" | "across" | "daimo";
-  const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth" | "across" | "daimo">(
+  const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth" | "across" | "biconomy" | "daimo">(
     defaultPaymentMethod,
   );
 

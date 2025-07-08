@@ -274,6 +274,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@biconomy/abstractjs@npm:^1.0.21":
+  version: 1.0.21
+  resolution: "@biconomy/abstractjs@npm:1.0.21"
+  peerDependencies:
+    "@metamask/delegation-toolkit": ^0.11.0
+    "@rhinestone/module-sdk": 0.2.7
+    typescript: ^5.8.2
+    viem: ^2.26.2
+  checksum: f2e1c5059fa2faceec2915a1463e7d9f12bf4d25b59166e2c03dc20b0b53b580ce887d3c0b9ae9fe18a89c90b45bf6107a8e4422027fb04e8bed400fe6e2497c
+  languageName: node
+  linkType: hard
+
 "@chainsafe/is-ip@npm:^2.0.1":
   version: 2.1.0
   resolution: "@chainsafe/is-ip@npm:2.1.0"
@@ -4016,6 +4028,7 @@ __metadata:
   resolution: "@se-2/nextjs@workspace:packages/nextjs"
   dependencies:
     "@across-protocol/app-sdk": ^0.3.0
+    "@biconomy/abstractjs": ^1.0.21
     "@daimo/pay": ^1.11.6
     "@heroicons/react": ~2.1.5
     "@ponder/client": ^0.11.20
