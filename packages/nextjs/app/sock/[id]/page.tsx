@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { BuyButtons } from "../../../components/BuyButtons";
 import { desc, eq } from "@ponder/client";
 import { usePonderQuery } from "@ponder/react";
+import { ScissorsIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth/Address/Address";
 import { schema } from "~~/lib/ponder";
 import { useGlobalState } from "~~/services/store/store";
@@ -72,7 +73,16 @@ export default function SockDetailPage() {
       </Link>
       <div className="bg-white rounded-lg shadow-lg overflow-hidden p-6">
         <div className="flex flex-col md:flex-row gap-8">
-          <div className="flex-shrink-0 w-full md:w-64 flex items-center justify-center aspect-square bg-gray-100">
+          <div className="flex-shrink-0 w-full md:w-64 flex items-center justify-center aspect-square bg-gray-100 relative">
+            {/* Remix Button - top right */}
+            <Link
+              href={`/studio?sockId=${id}`}
+              className="absolute top-2 right-2 z-10 bg-white/80 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full p-1 shadow-sm transition-colors"
+              title="Remix this sock in the studio"
+            >
+              <ScissorsIcon className="w-4 h-4" />
+              <span className="sr-only">Remix</span>
+            </Link>
             {decodedSVG ? (
               <div
                 className="w-full h-full flex items-center justify-center"
