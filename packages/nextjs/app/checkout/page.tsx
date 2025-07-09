@@ -12,10 +12,10 @@ import { CheckoutSuccess } from "./components/CheckoutSuccess";
 import { formatUnits } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { PayWithAcross } from "~~/components/PayWithAcross";
+import { PayWithBiconomy } from "~~/components/PayWithBiconomy";
 import { PayWithDaimo } from "~~/components/PayWithDaimo";
 import { useGlobalState } from "~~/services/store/store";
 import { chainId, superSocksAddress } from "~~/utils/supersocks";
-
 
 export default function CheckoutPage() {
   const { basket, clearBasket, updateBasketItemQuantity, removeFromBasket } = useGlobalState();
@@ -28,7 +28,13 @@ export default function CheckoutPage() {
     : ["regular", "batch", "eth", "across", "daimo"]; // Default to all methods if not specified
 
   // Set default payment method to first available method
-  const defaultPaymentMethod = allowedPaymentMethods[0] as "regular" | "batch" | "eth" | "across" | "daimo";
+  const defaultPaymentMethod = allowedPaymentMethods[0] as
+    | "regular"
+    | "batch"
+    | "eth"
+    | "across"
+    | "daimo"
+    | "biconomy";
   const [paymentMethod, setPaymentMethod] = useState<"regular" | "batch" | "eth" | "across" | "biconomy" | "daimo">(
     defaultPaymentMethod,
   );
@@ -228,6 +234,16 @@ export default function CheckoutPage() {
                     <span className="text-xs">Daimo Pay</span>
                   </button>
                 )}
+                {allowedPaymentMethods.includes("biconomy") && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("biconomy")}
+                    className={`${baseCardClass} ${paymentMethod === "biconomy" ? selectedCardClass : unselectedCardClass}`}
+                  >
+                    <span className="text-lg mb-1">Biconomy</span>
+                    <span className="text-xs">Cross-chain orchestration</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -272,6 +288,15 @@ export default function CheckoutPage() {
               <PayWithDaimo
                 cost={totalUsdcPrice}
                 address={address as `0x${string}`}
+                encodedSocks={encodedSocks}
+                quantities={quantities}
+                onSuccess={handlePaymentSuccess}
+              />
+            )}
+            {paymentMethod === "biconomy" && (
+              <PayWithBiconomy
+                cost={totalUsdcPrice}
+                address={address as string}
                 encodedSocks={encodedSocks}
                 quantities={quantities}
                 onSuccess={handlePaymentSuccess}
