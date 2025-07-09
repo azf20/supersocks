@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BuyButtons } from "../../components/BuyButtons";
@@ -14,7 +14,16 @@ import { ShareIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useGlobalState } from "~~/services/store/store";
 import { chainId } from "~~/utils/supersocks";
 
-export default function StudioPage() {
+// Wrapper for Suspense boundary
+export default function StudioPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StudioPage />
+    </Suspense>
+  );
+}
+
+function StudioPage() {
   const { basket, addToBasket, sock, setSock } = useGlobalState();
   const searchParams = useSearchParams();
   const router = useRouter();
