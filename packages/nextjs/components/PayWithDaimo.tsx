@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { chainId, usdcAddress } from "~~/utils/supersocks";
 
+
 export function PayWithDaimo({
   cost,
   onSuccess,
@@ -14,13 +15,22 @@ export function PayWithDaimo({
   address,
 }: {
   cost: bigint;
-  address: `0x${string}`;
+  address: `0x${string}` | undefined;
   encodedSocks: bigint[];
   quantities: bigint[];
   onSuccess?: () => void;
 }) {
   // Convert cost from wei to USDC units (6 decimals)
   const costInUsdc = formatUnits(cost, 6);
+  const { isConnected } = useAccount();
+
+  if (!address) {
+    return (
+      <button className="w-full py-2 px-4 rounded font-bold text-white transition-colors bg-gray-400 cursor-not-allowed">
+        Connect Wallet to Pay
+      </button>
+    );
+  }
 
   // For now, we'll use a placeholder recipient address
   // In a real implementation, this would be the contract address or a payment processor
@@ -30,8 +40,6 @@ export function PayWithDaimo({
     functionName: "mint",
     args: [address, encodedSocks, quantities, cost],
   });
-
-  const { isConnected } = useAccount();
 
   const handlePaymentStarted = (e: any) => {
     console.log("Daimo payment started:", e);

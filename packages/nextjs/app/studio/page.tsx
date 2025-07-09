@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BuyButtons } from "../../components/BuyButtons";
 import { Address } from "../../components/scaffold-eth/Address/Address";
 import deployedContracts from "../../contracts/deployedContracts";
@@ -9,11 +10,14 @@ import { ColorPicker, ConfigRow, StylePicker } from "./components";
 import toast from "react-hot-toast";
 import { formatUnits } from "viem";
 import { useReadContracts } from "wagmi";
+import { ShareIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useGlobalState } from "~~/services/store/store";
 import { chainId } from "~~/utils/supersocks";
 
 export default function StudioPage() {
   const { basket, addToBasket, sock, setSock } = useGlobalState();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Single state for which color picker is open (null if none)
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
@@ -115,12 +119,46 @@ export default function StudioPage() {
     ],
   });
 
+  // Get sockId from URL parameter
+  const sockIdFromUrl = searchParams.get("sockId") || "";
+  console.log("sockIdFromUrl", sockIdFromUrl);
+
+  const { data: decodedSockData } = useReadContracts({
+    contracts: [
+      {
+        ...metadataContract,
+        functionName: "decodeSock",
+        args: [BigInt(sockIdFromUrl)],
+      },
+    ],
+    query: {
+      enabled: sockIdFromUrl !== "",
+    },
+  });
+
   const checkResult = data?.[0]?.result;
   const isValid = checkResult?.[0];
   const errors = checkResult?.[1];
   const encodedSock = data?.[1]?.result;
   const configData = data?.[2]?.result;
   const styles = data?.[3]?.result;
+  const decodedSock = decodedSockData?.[0]?.result; // decodeSock result
+
+  // Handle decoded sock from URL parameter
+  useEffect(() => {
+    if (decodedSock) {
+      try {
+        setSock(decodedSock as unknown as typeof sock);
+        toast.success(`Loaded sock design from URL (ID: ${sockIdFromUrl})`);
+
+        // Clean up the URL by removing the search parameters
+        router.replace("/studio");
+      } catch (error) {
+        console.error("Error decoding sock from URL:", error);
+        toast.error("Failed to load sock design from URL");
+      }
+    }
+  }, [decodedSock, sockIdFromUrl, setSock, router]);
 
   // Extract config values
   const usdcPrice = configData?.[0];
@@ -297,8 +335,9 @@ export default function StudioPage() {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold">Sock Studio</h1>
           <div className="flex items-center gap-3">
-            <div className="bg-blue-100 px-3 py-1 rounded-lg">
-              <span className="text-blue-800 font-medium">🛒 Basket: {basket.totalItems} items</span>
+            <div className="bg-blue-100 px-3 py-1 rounded-lg flex gap-1 items-center">
+              <ShoppingCartIcon className="w-4 h-4" />
+              <span className="text-blue-800 font-medium">Basket: {basket.totalItems} items</span>
             </div>
             {basket.totalItems > 0 && (
               <Link
@@ -307,6 +346,34 @@ export default function StudioPage() {
               >
                 View Basket
               </Link>
+            )}
+            {/* Share Button */}
+            {encodedSock && isValid && (
+              <button
+                type="button"
+                onClick={() => {
+                  const shareUrl = `${window.location.origin}/studio?sockId=${encodedSock.toString()}`;
+                  navigator.clipboard
+                    .writeText(shareUrl)
+                    .then(() => {
+                      toast.success("Share link copied to clipboard!");
+                    })
+                    .catch(() => {
+                      // Fallback for older browsers
+                      const textArea = document.createElement("textarea");
+                      textArea.value = shareUrl;
+                      document.body.appendChild(textArea);
+                      textArea.select();
+                      document.execCommand("copy");
+                      document.body.removeChild(textArea);
+                      toast.success("Share link copied to clipboard!");
+                    });
+                }}
+                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-3 rounded text-sm flex items-center gap-1"
+              >
+                <ShareIcon className="w-4 h-4" />
+                Share
+              </button>
             )}
           </div>
         </div>
@@ -486,18 +553,18 @@ export default function StudioPage() {
                 <Address address={creator} size="sm" />
               </div>
             )}
-            {/* Validation Status */}
-            <div
-              className={`p-2 rounded text-sm ${isValid || isPending ? "bg-green-100 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700"}`}
-            >
-              <strong>Validation Status:</strong> {isPending ? "Loading..." : isValid ? "Valid" : "Invalid"}
-              {errors && (
-                <div className="mt-1">
-                  <strong>Errors:</strong>
-                  <p className="text-xs mt-1">{errors}</p>
-                </div>
-              )}
-            </div>
+            {/* Validation Status (only show if invalid) */}
+            {!isPending && isValid === false && (
+              <div className="p-2 rounded text-sm bg-red-100 border border-red-400 text-red-700">
+                <strong>Validation Status:</strong> Invalid
+                {errors && (
+                  <div className="mt-1">
+                    <strong>Errors:</strong>
+                    <p className="text-xs mt-1">{errors}</p>
+                  </div>
+                )}
+              </div>
+            )}
             {/* Add to Basket and Buy Now Buttons */}
             <BuyButtons
               isValid={!!isValid}
@@ -508,6 +575,7 @@ export default function StudioPage() {
                 item => item.sockId === (encodedSock ? encodedSock.toString() : ""),
               )}
             />
+
             {/* Price Info */}
             {usdcPrice && (
               <div className="p-2 border rounded bg-gray-50 text-xs">
