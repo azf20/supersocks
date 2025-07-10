@@ -63,30 +63,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">{recentSocks ? recentSocks.length : "..."}</div>
-            <div className="text-gray-600">Recent Socks</div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-green-600 mb-2">
-              {recentSocks ? recentSocks.reduce((sum, sock) => sum + Number(sock.total), 0) : "..."}
-            </div>
-            <div className="text-gray-600">Total Supply</div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-purple-600 mb-2">
-              {recentSocks ? new Set(recentSocks.map(sock => sock.creator)).size : "..."}
-            </div>
-            <div className="text-gray-600">Unique Creators</div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-orange-600 mb-2">{basket.totalItems}</div>
-            <div className="text-gray-600">In Your Basket</div>
-          </div>
-        </div>
-
         {/* Recent Socks Preview */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-6">
