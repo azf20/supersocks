@@ -1,6 +1,10 @@
 # Super Socks
 
-Super Socks is a full-stack onchain NFT platform for creating, collecting, and remixing generative SVG socks. The project is organized as a monorepo with three main packages:
+Super Socks is a full-stack NFT platform for creating, remixing and buying onchain SVG socks, built as part of the [EIP-7702 UX & Developer Tooling Mission](https://github.com/ethereum-optimism/ecosystem-contributions/issues/274) from the Optimism Foundation.
+
+Read more about the background to Supersocks [here](https://www.azfuller.com/blog/supersocks), and see [here](https://github.com/azf20/7702-mission/tree/main) for more on this OP Mission.
+
+The project is organized as a monorepo with three main packages:
 
 ## Packages
 
@@ -34,12 +38,8 @@ MINTING FLOWS:
 - Basic (approve then swap) - DONE
 - 5792 (approve + swap in one tx) - DONE
 - From ETH - DONE
-    - Swap from ETH then buy
-    - Intermediary contract - DONE
-    - Swap from ETH then buy in one tx via 5792
 - Across with USDC - DONE
 - Daimo pay - DONE
-- Biconomy - BLOCKED
 
 ## Running locally
 ```
